@@ -599,7 +599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   music: mus_snowy
-  modToLoad: Examples 2
+  modToLoad: Soulbound
 --- !u!114 &11456550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -641,7 +641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cafce2c3f7e465f478d7b302ab1b8236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: test2
+  sceneName:
   position: {x: 320, y: 400}
   uduu2: 0
   direction: 2
