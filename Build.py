@@ -21,7 +21,7 @@ If not provided, the script will automatically use 7-Zip to package all of your 
 
 ### Script Vars ###
 
-# This is the version of CYF to name the executables and the Documentation folder
+# This is the version of CYF to name the executables and the docs folder
 CYFversion = "0.6.6 LTS 3"
 
 # This is the path we will build to
@@ -105,10 +105,10 @@ def buildWithUnity(folder, argument, target):
     subprocess.call([unityPath, "-batchmode", "-logFile " + buildPath + "\\output_" + folder + ".txt", argument, target, "-quit"])
     print("Done.")
 
-    # Copy over the Documentation
-    print("Copying Documentation...", end="")
+    # Copy over the documentation
+    print("Copying docs...", end="")
     sys.stdout.flush()
-    shutil.copytree("Documentation CYF 1.0", buildPath + "\\" + folder + "\\Documentation CYF " + CYFversion)
+    shutil.copytree("docs", buildPath + "\\" + folder + "\\docs")
     print("Done.")
 
     # Copy over the Default and Mods folders
@@ -233,10 +233,10 @@ def buildForMac():
     subprocess.call([unityPath, "-batchmode", "-logFile " + buildPath + "\\output_mac.txt", macTarget[1], buildPath + "\\" + macTarget[0] + "\\" + macTarget[2], "-quit"])
     print("Done.")
 
-    # Copy over the Documentation
-    print("Copying Documentation...", end="")
+    # Copy over the documentation
+    print("Copying docs...", end="")
     sys.stdout.flush()
-    shutil.copytree("Documentation CYF 1.0", buildPath + "\\" + macTarget[0] + "\\Documentation CYF " + CYFversion)
+    shutil.copytree("docs", buildPath + "\\" + macTarget[0] + "\\docs")
     print("Done.")
 
     # Copy over the Default and Mods folders
