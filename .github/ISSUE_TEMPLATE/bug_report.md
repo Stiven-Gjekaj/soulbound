@@ -1,29 +1,30 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Report something that is broken
 
 ---
 
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+**To reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
+2. Click on '...'
+3. Scroll down to '...'
 4. See error
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+If applicable, add screenshots to help explain the problem.
 
-**Setup (please complete the following information):**
+**Setup**
  - OS: [e.g. Windows, Linux, Mac]
- - Version [e.g. 0.6.1.2]
-- Mod (Please upload it and send a link)
+ - Where it happened: [the built game, or the Unity editor]
+ - Commit or version:
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here. If the Lua error screen appeared, paste its
+full text.
