@@ -3675,10 +3675,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c34b83df9c146438231c210eb94b45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelToLoad: test2
-  ModFolder: Examples
-  FirstLevelToLoad: test2
-  FirstModFolder: Examples
+  LevelToLoad:
+  ModFolder: Soulbound
+  FirstLevelToLoad:
+  FirstModFolder: Soulbound
 --- !u!114 &11406152
 MonoBehaviour:
   m_ObjectHideFlags: 1

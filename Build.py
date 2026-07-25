@@ -77,16 +77,7 @@ hidePaths = [
     "Default\\Sprites\\UI\\Buttons\\mecrybt_1.png",
     "Default\\Sprites\\UI\\Buttons\\tembt_0.png",
     "Default\\Sprites\\UI\\Buttons\\tembt_1.png",
-    "Default\\Sprites\\UI\\Buttons\\tiembt_0.png",
-    "Mods\\@0.5.0_SEE_CRATE",
-    "Mods\\@OverWorld Test\\Sounds\\Secret",
-    "Mods\\@OverWorld Test\\Lua\\Events\\Secret",
-    "Mods\\Examples\\Sounds\\Laugh.wav",
-    "Mods\\Examples\\Sounds\\Secret",
-    "Mods\\Examples\\Sprites\\Overworld\\CharacterSelector\\Mystery",
-    "Mods\\Examples 2\\Lua\\Events\\Secret",
-    "Mods\\Examples 2\\Sounds\\Secret",
-    "Mods\\Examples 2\\Sprites\\Overworld\\Punder\\Secret"
+    "Default\\Sprites\\UI\\Buttons\\tiembt_0.png"
 ]
 for i in range(8):
     hidePaths.append("Default\\Sounds\\meow" + str(i + 1) + ".wav")

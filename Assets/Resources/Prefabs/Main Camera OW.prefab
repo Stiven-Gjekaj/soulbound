@@ -246,7 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c34b83df9c146438231c210eb94b45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FirstLevelToLoad: test2
+  FirstLevelToLoad:
   BeginningPosition: {x: 320, y: 200}
 --- !u!114 &114439786359422494
 MonoBehaviour:
