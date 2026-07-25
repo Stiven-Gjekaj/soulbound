@@ -1,0 +1,45 @@
+# Terminology
+
+`arena` - The inside of the white box in which the player is allowed to move.
+
+`bullet` - Everything in a wave that can collide with you. Flowey's pellets would be
+referred to as bullets, but so would Papyrus' bones, anything Woshua can shoot (of any
+colour), even the dancing Migosp.
+
+`encounter text` - The text that shows up before you've selected FIGHT/ACT/ITEM/MERCY.
+
+`monster dialogue` - Text from monsters in an encounter, often seen before attacking. Can
+also be multiple dialogue boxes for special encounters.
+
+`dialog` - A user interface component that contains text. For example, the battle dialog
+window. The distinction between "dialog" and "dialogue" is that "dialog" refers to
+interface windows containing text, and "dialogue" refers to the speech content of
+monsters.
+
+`wave` - A single attack behaviour (or attack "wave", to say), measured from when you
+start defending until when it stops. Vegetoid's bouncing vegetables attack would count as
+a wave. Papyrus' special Cool Dude attack would also count as a wave. Unitale works with
+"wave scripts" for attacks; you can use multiple wave scripts at the same time for when
+you have various monsters.
+
+`<CYF>` `overworld` - A CYF feature that is external to battles. It allows the user to
+explore maps, like in Undertale. The overworld can contain event objects, too. You can
+find a tutorial on maps in
+[How to create a map](../overworld/how-to-create-a-map.md) and a tutorial on events in
+[How to create an event](../overworld/how-to-create-an-event.md).
+
+`<CYF>` `modDev` - This is a feature exclusive to CYF. In CYF, you can access some extra
+options from the Mod Selection screen. These mainly include the options to wipe
+`RealGlobals` and `AlMightyGlobals`, as well as toggle `safe mode` and
+`retrocompatibilty mode`.
+
+In CYF v0.6.2.1 and beyond, the modDev screen is located in an "options menu" accessible
+by clicking "Options" from within the Mod Selection screen.
+
+`<CYF>` `retrocompatibilty mode` - This CYF feature is designed in such a way where, if
+it's enabled, functions from 0.2.1a that were changed in CYF will function exactly as
+they did in 0.2.1a.
+
+`<CYF>` `safe mode` - This is a CYF-mode that removes swear words found in CYF. Mod
+authors can also use this to do the same in their mods, maybe even also using this to
+remove blood or mature content.
