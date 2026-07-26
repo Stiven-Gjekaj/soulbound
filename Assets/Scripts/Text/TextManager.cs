@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoonSharp.Interpreter;
@@ -395,7 +395,7 @@ public class TextManager : MonoBehaviour {
         rotation = rot;
 
         // Move the text up a little if there are more than 3 lines so they can possibly fit in the arena
-        if (!GlobalControls.retroMode && !UnitaleUtil.IsOverworld && UIController.instance && this == UIController.instance.mainTextManager) {
+        if (!GlobalControls.retroMode && UIController.instance && this == UIController.instance.mainTextManager) {
             int     lines = (textQueue[line].Text.Split('\n').Length > 3 && (UIController.instance.state == "ACTIONSELECT" || UIController.instance.state == "DIALOGRESULT")) ? 4 : 3;
             Vector3 pos   = self.localPosition;
 
@@ -417,9 +417,7 @@ public class TextManager : MonoBehaviour {
     }
 
     [MoonSharpHidden] public void SetTextFrameAlpha(float a) {
-        string objectName = UnitaleUtil.IsOverworld ? "textframe_border_outer" : "arena_border_outer";
-
-        GameObject target = GameObject.Find(objectName);
+        GameObject target = GameObject.Find("arena_border_outer");
         List<Image> imagesChild = target.GetComponentsInChildren<Image>().ToList();
         imagesChild.Add(target.GetComponent<Image>());
 
@@ -777,15 +775,6 @@ public class TextManager : MonoBehaviour {
     }
 
     protected virtual void Update() {
-        if (mugshotList != null)
-            if (UnitaleUtil.IsOverworld && mugshot.alpha != 0 && mugshotList.Length > 1) {
-                if (!mugshot.animcomplete && (letterTimer < 0 || LineComplete())) {
-                    mugshot.StopAnimation();
-                    mugshot.Set(mugshotList.Last());
-                } else if (mugshot.animcomplete && !(letterTimer < 0 || LineComplete()))
-                    mugshot.SetAnimation(mugshotList, mugshotTimer);
-            }
-
         if (!isactive || textQueue[currentLine] == null || paused || lateStartWaiting)
             return;
 
