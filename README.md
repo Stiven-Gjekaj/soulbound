@@ -2,19 +2,19 @@
 
 # Soulbound
 
-### An Undertale-style game, built on Create Your Frisk
+### A boss rush, built on Create Your Frisk
 
-_A Lua-moddable battle and overworld engine, running on Unity_
+_A Lua-moddable battle engine, running on Unity_
 
 <p align="center">
   <img src="https://img.shields.io/badge/Unity-2018.4.36f1-000000?style=for-the-badge&logo=unity&logoColor=white" alt="Unity 2018.4.36f1"/>
-  <img src="https://img.shields.io/badge/engine-129_C%23_files,_25k_lines-239120?style=for-the-badge" alt="The engine is 129 C# files and about 25,000 lines"/>
-  <img src="https://img.shields.io/badge/docs-46_pages-007ec6?style=for-the-badge" alt="46 documentation pages"/>
+  <img src="https://img.shields.io/badge/engine-111_C%23_files,_19.5k_lines-239120?style=for-the-badge" alt="The engine is 111 C# files and about 19,500 lines"/>
+  <img src="https://img.shields.io/badge/docs-35_pages-007ec6?style=for-the-badge" alt="35 documentation pages"/>
 </p>
 
 <p align="center">
   <a href="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml"><img src="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml/badge.svg" alt="Build"/></a>
-  <img src="https://img.shields.io/badge/version-0.0-blue?style=flat-square" alt="Version 0.0"/>
+  <img src="https://img.shields.io/badge/version-0.1-blue?style=flat-square" alt="Version 0.1"/>
   <img src="https://img.shields.io/badge/license-GPL--3.0-green?style=flat-square" alt="GPL-3.0 License"/>
 </p>
 
@@ -32,12 +32,13 @@ _A Lua-moddable battle and overworld engine, running on Unity_
 
 ## Overview
 
-**Soulbound** is a game built on
+**Soulbound** is a boss rush based on Soultale, built on
 [Create Your Frisk](https://github.com/RhenaudTheLukark/CreateYourFrisk), a
 Lua-moddable Undertale engine forked from
-[Unitale](https://github.com/lvk/Unitale/). The engine handles battles, an
-overworld, shaders, and a scripting API; the game itself is written as Lua and
-art inside a mod folder.
+[Unitale](https://github.com/lvk/Unitale/). You pick a boss from a menu and fight
+it. There is no overworld, so the engine's has been taken out. What is left
+handles battles, shaders, and a scripting API; the game itself is written as Lua
+and art inside a mod folder.
 
 This repository is the Unity project. The engine lives in `Assets/`, the game
 lives in `Assets/Mods/Soulbound/`, and every page of engine documentation is
@@ -58,13 +59,20 @@ enemypositions = { { 0, 0 } }
 
 ## Status
 
-**v0.0.** The repository is a clean, documented base. There is no gameplay yet,
-only a placeholder encounter so the engine boots into a playable state.
+**v0.1.** The engine now fits the game. There is no gameplay yet, only a
+placeholder encounter so it boots into a playable state.
 
-What v0.0 delivered: the upstream engine stripped of about 37 MB of example
-content, its 644 KB documentation website converted by hand into 46 Markdown
-pages, a scaffolded mod folder for the game, and a build that passes CI on
-Windows, macOS, and Linux. The [changelog](CHANGELOG.md) has the full account.
+v0.0 turned an unmodified Create Your Frisk snapshot into a documented base: about
+37 MB of example content removed, the 644 KB documentation website converted by
+hand into Markdown, a scaffolded mod folder, and a build passing CI on Windows,
+macOS, and Linux.
+
+v0.1 removed the overworld. A boss rush has no maps, events, cutscenes or shops,
+and roughly a third of the engine existed to support them. Out went 18 scripts and
+6 Lua bindings, three scenes, eight prefabs, six sprite folders, the Tiled map
+importer, and 11 documentation pages: 5,800 lines of C# and about 1.5 MB. The
+[changelog](CHANGELOG.md) has the full account, and
+[milestones](docs/project/milestones.md) covers what comes next.
 
 ---
 
@@ -78,11 +86,11 @@ Windows, macOS, and Linux. The [changelog](CHANGELOG.md) has the full account.
 
 - Turn-based battles with the FIGHT/ACT/ITEM/MERCY loop
 - Bullet patterns, with rectangular or pixel-perfect collision
-- An overworld with maps, events, cutscenes, and shops
 - Sprites, animation, text objects, and dialogue bubbles
 - Shaders, applied to a sprite or the whole screen
 - An inventory, with consumables, weapons, and armor
 - Save and load, plus session and persistent globals
+- Every fight scripted in Lua, hot-swappable from a mod folder
 
 </td>
 <td width="50%" valign="top">
@@ -91,10 +99,10 @@ Windows, macOS, and Linux. The [changelog](CHANGELOG.md) has the full account.
 
 - Unity 2018.4.36f1, C#, with MoonSharp as the Lua interpreter
 - Game content isolated in one mod folder the engine loads at runtime
-- 46 pages of engine documentation, converted from the upstream site
+- 35 pages of engine documentation, converted from the upstream site
 - Multi-target builds through `Build.py`, or GitHub Actions
 - CI building Windows, macOS, and Linux on every push
-- No demo content, no dead workflows, no documentation website
+- No overworld, no demo content, no dead workflows
 
 </td>
 </tr>
