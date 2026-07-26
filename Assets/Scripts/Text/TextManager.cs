@@ -195,9 +195,6 @@ public class TextManager : MonoBehaviour {
                 defaultColor.a = fontDefaultColor.a;
         }
 
-        // Default voice in the overworld
-        if (gameObject.name == "TextManager OW")
-            defaultVoice = "monsterfont";
     }
 
     protected virtual void Awake() {
@@ -408,11 +405,6 @@ public class TextManager : MonoBehaviour {
             if (lines != 4) return;
             decoratedTextOffset = true;
             self.localPosition  = new Vector3(pos.x, pos.y + (decoratedTextOffset ? 9 : 0), pos.z);
-        } else if (gameObject.name == "TextManager OW") {
-            int lines = textQueue[line].Text.Split('\n').Length;
-            lines = lines >= 4 ? 4 : 3;
-            Vector3 pos = gameObject.GetComponent<RectTransform>().localPosition;
-            MoveTo(pos.x, 22 + ((lines - 1) * font.LineSpacing / 2));
         }
     }
 
