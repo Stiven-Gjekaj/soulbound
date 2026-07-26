@@ -45,6 +45,10 @@ vertical position to get the edges of the player's hitbox, if you need that for 
 - **number** `Player.speed` - Player's speed in pixels per second. Default is 120.
 - **string** `Player.name` - get or set the player's current name.
 
+  Setting it lasts for the fight only. The name the player chose is stored separately and
+  is restored when the battle ends, so renaming them for a scene does not overwrite it.
+  See [The boss rush loop](../../project/boss-rush-loop.md).
+
   6 letters max. By default, it is a name randomly chosen from a small list of
   pre-set names.
 

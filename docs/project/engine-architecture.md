@@ -25,7 +25,7 @@ Disclaimer --[Menu]----> Intro -> TitleScreen -> EnterName --+
 | `Disclaimer` | entry point, always start play mode here | `SelectOMatic`, `GlobalControls` |
 | `Intro` | the intro sequence | `DisclaimerScript` |
 | `TitleScreen` | title screen | `Title`, `EnterNameScript` |
-| `EnterName` | name entry | `Title` |
+| `EnterName` | name entry | `Title`, `SelectOMatic`, `OptionsScript` |
 | `ModSelect` | the boss select, still named for the mod picker it was | `DisclaimerScript`, `OptionsScript`, `UIController`, `GameOverBehavior`, `Title`, `EnterNameScript` |
 | `Options` | options menu | `SelectOMatic`, `KeybindSettings` |
 | `KeybindSettings` | key rebinding | `OptionsScript` |

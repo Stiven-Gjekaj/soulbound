@@ -51,6 +51,21 @@ marks itself cleared has made the record mean nothing.
 v0.3 shows only the cleared marker. Best time and attempts are recorded and have nowhere to
 appear until v0.4 gives them one.
 
+## The player profile
+
+The player's name is the other thing stored per player rather than per session. It sits in
+the AlMighty global `player_name`, beside the boss records, so one file holds the whole
+profile and wiping `save.gd` cannot clear the name while leaving the records behind.
+
+The boss select asks for it once. Arriving there with no stored name, and not returning
+from a fight, sends the player to the `EnterName` scene first. Both routes off the
+disclaimer screen end at the boss select, so that one check catches every player exactly
+once. After that, the options screen has a "Change name..." row.
+
+`PlayerCharacter.Reset` runs at the end of every battle and restores the name from the
+profile. That has a useful consequence: a boss script may set `Player.name` mid-fight for
+effect, and the player's real name comes back when the fight ends.
+
 ## Sparing counts
 
 The clear is recorded in `CheckAndTriggerVictory`, which fires when the fight has no
