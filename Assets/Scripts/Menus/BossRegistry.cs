@@ -40,7 +40,12 @@ public static class BossRegistry {
 
     /// <summary>Full path to the registry file.</summary>
     public static string FilePath {
-        get { return Path.Combine(FileLoader.DataRoot, "Mods/" + StaticInits.GAME_MODFOLDER + "/Lua/" + FileName); }
+        get { return LuaPath(FileName); }
+    }
+
+    /// <summary>Full path to a file under the game's Lua folder.</summary>
+    private static string LuaPath(string relative) {
+        return Path.Combine(FileLoader.DataRoot, "Mods/" + StaticInits.GAME_MODFOLDER + "/Lua/" + relative);
     }
 
     /// <summary>Re-reads the registry from disk, discarding whatever was loaded before.</summary>
@@ -84,6 +89,44 @@ public static class BossRegistry {
                 name     = ReadString(row.Table, "name"),
                 subtitle = ReadString(row.Table, "subtitle")
             });
+        }
+
+        Validate();
+    }
+
+    /// <summary>
+    /// Checks that the registry describes bosses the game can actually start. Sends the
+    /// player to the error screen at the first problem found, naming what is wrong.
+    /// </summary>
+    private static void Validate() {
+        if (entries.Count == 0) {
+            Fail("The boss registry lists no bosses.\n\nThere has to be at least one, or there is nothing to select.");
+            return;
+        }
+
+        HashSet<string> seen = new HashSet<string>();
+        for (int i = 0; i < entries.Count; i++) {
+            BossEntry boss = entries[i];
+
+            if (boss.id == "") {
+                Fail("Boss " + (i + 1) + " in the registry has no id.\n\nThe id names the boss's encounter script under Lua/Encounters.");
+                return;
+            }
+
+            if (!seen.Add(boss.id)) {
+                Fail("Two bosses in the registry share the id \"" + boss.id + "\".\n\nEach boss needs its own encounter script.");
+                return;
+            }
+
+            string encounter = LuaPath("Encounters/" + boss.id + ".lua");
+            if (!File.Exists(encounter)) {
+                Fail("The boss \"" + boss.id + "\" has no encounter script.\n\nIt should be at:\n" + encounter);
+                return;
+            }
+
+            // A boss with no name shows its id, which is at least something to click on.
+            if (boss.name == "")
+                boss.name = boss.id;
         }
     }
 
