@@ -21,7 +21,6 @@ public class GlobalControls : MonoBehaviour {
     public static LuaInputBinding luaInput = new LuaInputBinding(input);    // Input Lua object, usable on the Lua side
 
     public static bool modDev;          // True if we reached a battle through the boss select screen
-    public static bool crate;           // True if CrateYourFrisk mode is active, false otherwise
     public static bool retroMode;       // True if the Unitale 0.2.1a retrocompatibility mode is active, false otherwise
     public static bool stopScreenShake; // Used to stop any screenshake currently ongoing
     public static bool isInFight;       // True if we're in a battle, false otherwise
@@ -45,8 +44,9 @@ public class GlobalControls : MonoBehaviour {
 
         KeyboardInput.LoadPlayerKeys();
 
-        // Use permanent globals to load Crate Your Frisk, Retromode and Fullscreen mode preferences
-        ReloadCrate();
+        #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+            Misc.WindowName = ControlPanel.instance.WindowBasisName;
+        #endif
 
         // Check if retro mode has a stored preference that is a boolean
         if (LuaScriptBinder.GetPermanentGlobal("CYFRetroMode") != null
@@ -69,14 +69,6 @@ public class GlobalControls : MonoBehaviour {
         DiscordControls.Start();
 
         awakened = true;
-    }
-
-    public static void ReloadCrate() {
-        if (LuaScriptBinder.GetPermanentGlobal("CrateYourFrisk") != null && LuaScriptBinder.GetPermanentGlobal("CrateYourFrisk").Boolean)
-            crate = true;
-        #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-            Misc.WindowName = crate ? ControlPanel.instance.WinodwBsaisNmae : ControlPanel.instance.WindowBasisName;
-        #endif
     }
 
     #if UNITY_STANDALONE_WIN && !UNITY_EDITOR

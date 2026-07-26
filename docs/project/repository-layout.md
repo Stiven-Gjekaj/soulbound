@@ -85,8 +85,8 @@ branch it deleted was already unreachable:
 - The disclaimer screen's "Press Menu to go to the Overworld" prompt, which had been
   pointing at a feature that no longer existed since v0.1
 
-`Assets/Scripts/Why` was kept: `DogGyrator.cs` is used by `Error.unity` and `Temmify.cs` by
-five engine files.
+`Assets/Scripts/Why` was kept for `DogGyrator.cs`, which `Error.unity` uses. Its other
+file, `Temmify.cs`, went with Crate Your Frisk in v0.3.
 
 ## Engine files that reference content
 
