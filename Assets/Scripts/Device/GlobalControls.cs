@@ -28,7 +28,6 @@ public class GlobalControls : MonoBehaviour {
     public static bool allowWipeSave;   // Allows you to wipe your save in the Error scene if it couldn't load properly
     private bool screenShaking;         // True if a screenshake is occuring, false otherwise
 
-    public static string[] nonOWScenes = { "Battle", "Error", "ModSelect", "Options", "TitleScreen", "Disclaimer", "EnterName", "Intro", "KeybindSettings" };   // Scenes in which you're not considered to be in the overworld
     public static string[] escapableScenes = { "Battle", "Error" };  // Scenes you can leave by pressing Escape
 
     private static bool awakened;   // Used to only run Awake() once

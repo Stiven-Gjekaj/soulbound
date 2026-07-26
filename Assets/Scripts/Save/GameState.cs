@@ -1,8 +1,6 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using MoonSharp.Interpreter;
 
 /// <summary>
@@ -18,9 +16,6 @@ public class GameState {
     public Dictionary<string, string> playerVariablesStr = new Dictionary<string, string>();
     public Dictionary<string, double> playerVariablesNum = new Dictionary<string, double>();
     public Dictionary<string, bool> playerVariablesBool = new Dictionary<string, bool>();
-    public string lastScene;
-    public Dictionary<string, MapData> mapInfos = new Dictionary<string, MapData>();
-    public Dictionary<string, TempMapData> tempMapInfos = new Dictionary<string, TempMapData>();
     public List<string> inventory = new List<string>();
     public List<string> boxContents = new List<string>();
     public float playerTime;
@@ -78,10 +73,6 @@ public class GameState {
             LuaScriptBinder.SetSessionGlobal("PlayerPosY", DynValue.NewNumber(SaveLoad.savedGame.playerVariablesNum["PlayerPosY"]));
             LuaScriptBinder.SetSessionGlobal("PlayerPosZ", DynValue.NewNumber(SaveLoad.savedGame.playerVariablesNum["PlayerPosZ"]));
         }
-
-        lastScene = GlobalControls.nonOWScenes.Contains(SceneManager.GetActiveScene().name) || GlobalControls.isInFight
-            ? SaveLoad.savedGame.lastScene
-            : SceneManager.GetActiveScene().name;
 
         soundDictionary = MusicManager.hiddenDictionary;
         controlpanel = ControlPanel.instance;
@@ -147,8 +138,6 @@ public class GameState {
         PlayerCharacter.instance = player;
         ControlPanel.instance = controlpanel;
         MusicManager.hiddenDictionary = soundDictionary;
-
-        LuaScriptBinder.SetSessionGlobal("PlayerMap", DynValue.NewString(lastScene));
     }
 }
 
