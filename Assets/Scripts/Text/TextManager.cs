@@ -1267,11 +1267,7 @@ public class TextManager : MonoBehaviour {
         newhp = Mathf.Round(newhp * Mathf.Pow(10, ControlPanel.instance.MaxDigitsAfterComma)) / Mathf.Pow(10, ControlPanel.instance.MaxDigitsAfterComma);
         if (newhp <= 0) {
             GameOverBehavior gob = FindObjectOfType<GameOverBehavior>();
-            if (!MusicManager.IsStoppedOrNull(PlayerOverworld.audioKept)) {
-                gob.musicBefore = PlayerOverworld.audioKept;
-                gob.music = gob.musicBefore.clip;
-                gob.musicBefore.Stop();
-            } else if (!MusicManager.IsStoppedOrNull(Camera.main.GetComponent<AudioSource>())) {
+            if (!MusicManager.IsStoppedOrNull(Camera.main.GetComponent<AudioSource>())) {
                 gob.musicBefore = Camera.main.GetComponent<AudioSource>();
                 gob.music = gob.musicBefore.clip;
                 gob.musicBefore.Stop();

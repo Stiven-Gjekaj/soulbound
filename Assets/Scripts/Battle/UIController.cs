@@ -1182,13 +1182,9 @@ public class UIController : MonoBehaviour {
 
         if (NewMusicManager.audiolist.ContainsKey("src"))
             NewMusicManager.audiolist.Remove("src");
-        if (NewMusicManager.audiolist.ContainsKey("StaticKeptAudio"))
-            NewMusicManager.audiolist.Remove("StaticKeptAudio");
 
         MusicManager.src = Camera.main.GetComponent<AudioSource>();
         NewMusicManager.audiolist.Add("src", MusicManager.src);
-        if (PlayerOverworld.audioKept)
-            NewMusicManager.audiolist.Add("StaticKeptAudio", PlayerOverworld.audioKept);
 
         ProjectileController.globalPixelPerfectCollision = false;
         ControlPanel.instance.FrameBasedMovement = false;
@@ -1246,8 +1242,7 @@ public class UIController : MonoBehaviour {
         psContainer.transform.SetAsFirstSibling();
 
         //Play that funky music
-        if (MusicManager.IsStoppedOrNull(PlayerOverworld.audioKept))
-            GameObject.Find("Main Camera").GetComponent<AudioSource>().Play();
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().Play();
 
         if (SendToStaticInit != null)
             SendToStaticInit();

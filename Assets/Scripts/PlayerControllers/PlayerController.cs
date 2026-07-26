@@ -189,11 +189,7 @@ public class PlayerController : MonoBehaviour {
                 if (deathMusic == "")
                     deathMusic = null;
             }
-            if (!MusicManager.IsStoppedOrNull(PlayerOverworld.audioKept)) {
-                GetComponent<GameOverBehavior>().musicBefore = PlayerOverworld.audioKept;
-                GetComponent<GameOverBehavior>().music = GetComponent<GameOverBehavior>().musicBefore.clip;
-                GetComponent<GameOverBehavior>().musicBefore.Stop();
-            } else if (!MusicManager.IsStoppedOrNull(Camera.main.GetComponent<AudioSource>())) {
+            if (!MusicManager.IsStoppedOrNull(Camera.main.GetComponent<AudioSource>())) {
                 GetComponent<GameOverBehavior>().musicBefore = Camera.main.GetComponent<AudioSource>();
                 GetComponent<GameOverBehavior>().music = GetComponent<GameOverBehavior>().musicBefore.clip;
                 GetComponent<GameOverBehavior>().musicBefore.Stop();

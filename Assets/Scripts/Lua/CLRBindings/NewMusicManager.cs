@@ -212,8 +212,5 @@ public class NewMusicManager {
         audioname.Clear();
         audiolist.Add("src", MusicManager.src);
         audioname.Add("src", MusicManager.filename);
-        if (!PlayerOverworld.audioKept) return;
-        audiolist.Add("StaticKeptAudio", PlayerOverworld.audioKept);
-        audioname.Add("StaticKeptAudio", "Sorry, nyi");
     }
 }

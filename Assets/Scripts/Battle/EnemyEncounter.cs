@@ -158,20 +158,18 @@ public class EnemyEncounter : MonoBehaviour {
             }
         }
 
-        if (MusicManager.IsStoppedOrNull(PlayerOverworld.audioKept)) {
-            if (musicFile != null) {
-                try {
-                    AudioClip music = AudioClipRegistry.GetMusic(musicFile);
-                    musicSource.clip = music;
-                    MusicManager.filename = "music:" + musicFile.ToLower();
-                } catch (Exception) { UnitaleUtil.Warn("Loading custom music failed."); }
-            } else {
-                musicSource.clip = AudioClipRegistry.GetMusic("mus_battle1");
-                musicSource.volume = .6f;
-                MusicManager.filename = "music:mus_battle1";
-            }
-            NewMusicManager.audioname["src"] = MusicManager.filename;
+        if (musicFile != null) {
+            try {
+                AudioClip music = AudioClipRegistry.GetMusic(musicFile);
+                musicSource.clip = music;
+                MusicManager.filename = "music:" + musicFile.ToLower();
+            } catch (Exception) { UnitaleUtil.Warn("Loading custom music failed."); }
+        } else {
+            musicSource.clip = AudioClipRegistry.GetMusic("mus_battle1");
+            musicSource.volume = .6f;
+            MusicManager.filename = "music:mus_battle1";
         }
+        NewMusicManager.audioname["src"] = MusicManager.filename;
         // Instantiate all the enemy objects
         if (enemyCount > enemyPositions.Length) {
             UnitaleUtil.DisplayLuaError(StaticInits.ENCOUNTER, "All enemies in an encounter must have a screen position defined. Either your enemypositions table is missing, "
@@ -188,9 +186,6 @@ public class EnemyEncounter : MonoBehaviour {
         script.SetVar("enemies", DynValue.NewTable(luaEnemyTable));
         Table luaWaveTable = new Table(null);
         script.SetVar("Wave", DynValue.NewTable(luaWaveTable));
-
-        //if (MusicManager.isStoppedOrNull(PlayerOverworld.audioKept))
-        //    musicSource.Play(); // play that funky music
     }
 
     protected string RandomEncounterText() {
