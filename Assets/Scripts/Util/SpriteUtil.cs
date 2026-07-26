@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,10 +21,9 @@ public static class SpriteUtil {
                     XmlDocument xmld = new XmlDocument();
                     xmld.Load(fi.FullName);
                     if (xmld["spritesheet"] != null && "single".Equals(xmld["spritesheet"].GetAttribute("type")))
-                        if (!UnitaleUtil.IsOverworld)
-                            UIController.instance.encounter.EnabledEnemies[bubbleID].bubbleWidth = ParseUtil.GetFloat(xmld["spritesheet"].GetElementsByTagName("width").Count > 0
-                                ? xmld["spritesheet"].GetElementsByTagName("width")[0].InnerText
-                                : xmld["spritesheet"].GetElementsByTagName("wideness")[0].InnerText);
+                        UIController.instance.encounter.EnabledEnemies[bubbleID].bubbleWidth = ParseUtil.GetFloat(xmld["spritesheet"].GetElementsByTagName("width").Count > 0
+                            ? xmld["spritesheet"].GetElementsByTagName("width")[0].InnerText
+                            : xmld["spritesheet"].GetElementsByTagName("wideness")[0].InnerText);
                 } else
                     UIController.instance.encounter.EnabledEnemies[bubbleID].bubbleWidth = 0;
             }
@@ -90,7 +89,7 @@ public static class SpriteUtil {
         SpriteTexture.filterMode = FilterMode.Point;
         SpriteTexture.wrapMode = TextureWrapMode.Clamp;
 
-        Sprite newSprite = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0.5f, UnitaleUtil.IsOverworld ? 0 : 0.5f), PIXELS_PER_UNIT);
+        Sprite newSprite = Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0.5f, 0.5f), PIXELS_PER_UNIT);
 
         FileLoader.SanitizePath(ref relativeFileName, pathSuffix);
         newSprite.name = relativeFileName.Substring(0, relativeFileName.Length - 4);
@@ -107,11 +106,10 @@ public static class SpriteUtil {
     public static DynValue MakeIngameSprite(string filename, int childNumber = -1) { return MakeIngameSprite(filename, "BelowArena", childNumber); }
 
     public static DynValue MakeIngameSprite(string filename, string tag = "BelowArena", int childNumber = -1) {
-        string canvas = UnitaleUtil.IsOverworld ? "Canvas Two/" : "Canvas/";
-        tag = (UnitaleUtil.IsOverworld && tag == "BelowArena") ? "Default" : tag;
+        const string canvas = "Canvas/";
         if (ParseUtil.TestInt(tag) && childNumber == -1) {
             childNumber = ParseUtil.GetInt(tag);
-            tag = UnitaleUtil.IsOverworld ? "Default" : "BelowArena";
+            tag = "BelowArena";
         }
 
         Image i = Object.Instantiate(SpriteRegistry.GENERIC_SPRITE_PREFAB);
@@ -120,12 +118,12 @@ public static class SpriteUtil {
             SwapSpriteFromFile(i, filename);
             sprCtrl = LuaSpriteController.GetOrCreate(i.gameObject);
             // TODO: Restore in 0.7
-            //if (!UnitaleUtil.IsOverworld) i.name = filename;
+            //i.name = filename;
             sprCtrl.spritename = filename;
         } else
             throw new CYFException("You can't create a sprite object with a nil sprite!");
         if (!GameObject.Find(tag + "Layer") && tag != "none")
-            if ((!UnitaleUtil.IsOverworld && tag == "BelowArena") || (UnitaleUtil.IsOverworld && tag == "Default"))
+            if (tag == "BelowArena")
                 i.transform.SetParent(GameObject.Find(canvas).transform);
             else
                 throw new CYFException("The sprite layer " + tag + " doesn't exist.");
