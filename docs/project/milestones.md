@@ -138,9 +138,11 @@ branch being deleted is already unreachable.
 - The scene flow from the title screen. v0.1 pointed it at the mod selector so it
   led somewhere real, but a boss rush probably does not want an Undertale intro and
   a "name the fallen human" screen in front of its boss select.
-- Documentation: `engine-architecture.md` and `repository-layout.md` both
-  describe the overworld at length, and the docs index is organised around an
-  engine that has one.
+- Documentation: the API reference still describes overworld behaviour in **35
+  places** across eight pages, heaviest in `misc-functions.md` (11),
+  `sprites-and-animation.md` (9) and `discord.md` (5). v0.1 fixed the links and the
+  project pages; this is the prose pass, and it wants doing once rather than twice,
+  which is why it waited for the branch collapse.
 
 Indicative commits:
 
@@ -157,9 +159,9 @@ v0.2.9   removed the map fields from the session save format
 v0.2.10  renamed the overworld text box to the name entry text box
 v0.2.11  renamed the overworld teardown to a session reset
 v0.2.12  simplified the scene flow from the title screen
-v0.2.13  rewrote the engine architecture doc for a battle-only engine
-v0.2.14  rewrote the repository layout doc
-v0.2.15  reorganised the documentation index around the battle API
+v0.2.13  removed the overworld notes from the sprite and animation reference
+v0.2.14  removed the overworld notes from the misc and general references
+v0.2.15  removed the overworld notes from the Discord, text and time references
 v0.2.16  updated the README for the stripped engine
 ```
 
