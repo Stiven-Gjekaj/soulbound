@@ -106,11 +106,14 @@ git push origin v0.3.0
 ```
 
 That fires [`.github/workflows/release.yml`](../../.github/workflows/release.yml), which
-builds all three platforms, assembles the same payload `build.yml` produces, zips each one
-as `Soulbound-<version>-<platform>.zip`, and publishes a GitHub release with those three
-archives attached.
+builds all three platforms, zips each one as `Soulbound-<version>-<platform>.zip`, and
+publishes a GitHub release with those three archives attached.
 
-Three things worth knowing:
+A release zip holds what a player needs to run the game and nothing else: the player
+build, `Default/` for the assets the engine falls back to, `Mods/` for the game itself,
+and on macOS the instructions for getting past Gatekeeper.
+
+Four things worth knowing:
 
 - **Releases are marked pre-release.** The workflow always passes `--prerelease`. There is
   no finished game to ship yet, and the flag keeps that clear on the releases page. Remove
@@ -119,9 +122,13 @@ Three things worth knowing:
   version out of [`CHANGELOG.md`](../../CHANGELOG.md). Write that section before tagging.
   If no section matches, the release still publishes, with a pointer to the changelog
   instead of notes.
+- **The documentation is not in a release.** It is engine API reference for people
+  writing bosses, it is readable in the repository, and someone who downloaded a game does
+  not need 444 KB of it next to the executable.
 - **`build.yml` is unchanged.** It still runs on every push and pull request and uploads
-  unzipped artifacts. That is the per-commit check; `release.yml` is the distribution path.
-  Tagging does not skip the normal build.
+  unzipped artifacts, `docs` included, because those artifacts are for the people building
+  the game rather than playing it. That is the per-commit check; `release.yml` is the
+  distribution path. Tagging does not skip the normal build.
 
 The version reaches the executable through `versioning: Custom`, which passes the tag to
 `unity-builder`, which passes it to `BuildScript.Build` as `buildVersion`, which sets

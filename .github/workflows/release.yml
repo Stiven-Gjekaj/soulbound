@@ -58,8 +58,12 @@ jobs:
           versioning: Custom
           version: ${{ steps.version.outputs.version }}
 
-      # Assemble the same payload build.yml produces: the player, plus the
-      # engine defaults, the mods folder and the documentation.
+      # Assemble what a player needs to run the game: the player build, the engine
+      # defaults it falls back to, and the mods folder that holds the game itself.
+      # The documentation is deliberately not here. It is engine API reference for
+      # people writing bosses, it is readable in the repository, and a player who
+      # downloaded a game does not need 444 KB of it. build.yml still carries it,
+      # because its artifacts are for the people who do.
       - name: Assemble the build
         run: |
           set -eu
@@ -67,7 +71,6 @@ jobs:
           sudo mkdir -v "$OUT/Default" "$OUT/Mods"
           sudo cp -Rv "${{ github.workspace }}/Assets/Default/" "$OUT/"
           sudo cp -Rv "${{ github.workspace }}/Assets/Mods/" "$OUT/"
-          sudo cp -Rv "${{ github.workspace }}/docs/" "${{ github.workspace }}/build"
           sudo find "$OUT" -name "*.meta" -type f -delete
 
       - name: Add the Mac instructions
@@ -80,7 +83,7 @@ jobs:
           cd "${{ github.workspace }}/build"
           sudo mv "${{ matrix.targetPlatform }}" "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}"
           sudo zip -qr "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}.zip" \
-            "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}" docs
+            "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}"
 
       - uses: actions/upload-artifact@v4
         with:
