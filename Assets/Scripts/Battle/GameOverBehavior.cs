@@ -355,42 +355,23 @@ public class GameOverBehavior : MonoBehaviour {
     public void EndGameOver() {
         // Death used to send the player back to their last save point, teleporting
         // them onto the map they died on. There are no maps, so it restarts instead.
-        if (!UnitaleUtil.IsOverworld) {
-            UIController.EndBattle(true);
-            Destroy(gameObject);
-            // Discord Rich Presence
-            DiscordControls.StartModSelect();
-            SceneManager.LoadScene("ModSelect");
-        } else
-            EndGameOverRevive();
+        UIController.EndBattle(true);
+        Destroy(gameObject);
+        // Discord Rich Presence
+        DiscordControls.StartModSelect();
+        SceneManager.LoadScene("ModSelect");
     }
 
     public void EndGameOverRevive() {
-        if (!UnitaleUtil.IsOverworld) {
-            transform.SetParent(playerParent);
-            transform.SetSiblingIndex(playerIndex);
-            transform.position = new Vector3(transform.position.x, transform.position.y, playerZ);
-        } else {
-            transform.parent.SetParent(playerParent);
-            transform.parent.SetSiblingIndex(playerIndex);
-        }
+        transform.SetParent(playerParent);
+        transform.SetSiblingIndex(playerIndex);
+        transform.position = new Vector3(transform.position.x, transform.position.y, playerZ);
         battleCamera.SetActive(true);
-
-        if (!UnitaleUtil.IsOverworld)
-            battleContainer.GetComponent<Canvas>().enabled = true;
-
-        if (UnitaleUtil.IsOverworld) {
-            canvasOW.SetActive(true);
-            canvasTwo.SetActive(true);
-            GetComponent<SpriteRenderer>().enabled = true;
-        }
+        battleContainer.GetComponent<Canvas>().enabled = true;
         ResetGameOver();
 
-        if (!UnitaleUtil.IsOverworld) {
-            ArenaManager.instance.ResizeImmediate(ArenaManager.UIWidth, ArenaManager.UIHeight);
-            UIController.instance.SwitchState("ACTIONSELECT");
-            gameOverContainer.SetActive(false);
-        } else
-            gameOverContainerOw.SetActive(false);
+        ArenaManager.instance.ResizeImmediate(ArenaManager.UIWidth, ArenaManager.UIHeight);
+        UIController.instance.SwitchState("ACTIONSELECT");
+        gameOverContainer.SetActive(false);
     }
 }
