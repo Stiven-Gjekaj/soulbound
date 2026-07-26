@@ -170,13 +170,10 @@ public class Title : MonoBehaviour {
 
     private IEnumerator LoadGame() {
         DontDestroyOnLoad(gameObject);
-        UnitaleUtil.ResetOW();
-        SceneManager.LoadScene("TransitionOverworld");
-        DiscordControls.StartOW();
+        GlobalControls.modDev = true;
+        SceneManager.LoadScene("ModSelect");
+        DiscordControls.StartModSelect();
         yield return 0;
-        //yield return Application.isLoadingLevel;
-        //GameObject.Find("Player").transform.position = new Vector3(;
-        StaticInits.InitAll(LuaScriptBinder.GetSessionGlobal("ModFolder").String, true);
         if (GameObject.Find("Main Camera"))
             Destroy(GameObject.Find("Main Camera"));
         Destroy(gameObject);
@@ -201,12 +198,11 @@ public class Title : MonoBehaviour {
         GlobalControls.GameMapData.Clear();
         Inventory.inventory.Clear();
         DontDestroyOnLoad(gameObject);
-        UnitaleUtil.ResetOW();
-        SceneManager.LoadScene("TransitionOverworld");
-        DiscordControls.StartOW();
+        GlobalControls.modDev = true;
+        SceneManager.LoadScene("ModSelect");
+        DiscordControls.StartModSelect();
         yield return 0;
         GlobalControls.overworldTimestamp += (SaveLoad.savedGame != null ? SaveLoad.savedGame.playerTime : 0f);
-        //yield return Application.isLoadingLevel;
         if (GameObject.Find("Main Camera"))
             Destroy(GameObject.Find("Main Camera"));
         Destroy(gameObject);

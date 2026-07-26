@@ -244,9 +244,9 @@ public class EnterNameScript : MonoBehaviour {
                 }
                 while (GameObject.Find("Main Camera").GetComponent<AudioSource>().isPlaying)
                     yield return 0;
-                UnitaleUtil.ResetOW();
-                SceneManager.LoadScene("TransitionOverworld");
-                DiscordControls.StartOW();
+                GlobalControls.modDev = true;
+                SceneManager.LoadScene("ModSelect");
+                DiscordControls.StartModSelect();
             } else {
                 SaveLoad.Save();
                 SceneManager.LoadScene("TitleScreen");
