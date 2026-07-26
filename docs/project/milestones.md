@@ -66,15 +66,33 @@ Delete the feature. Keep the engine compiling and the battle path working.
 
 | Piece | Size |
 | ----- | ---- |
-| `Assets/Scripts/Overworld` | 18 files, 5580 lines |
+| `Assets/Scripts/Overworld` | 12 of its 18 files, 4534 lines |
 | `Assets/Scripts/Lua/CLRBindings/Overworld` | 6 files, 1088 lines |
 | `Assets/Tiled2Unity` | 53 files, 564 KB |
 | Overworld scenes | `TransitionOverworld`, `Shop`, `SpecialAnnouncement` |
-| Overworld prefabs | `Canvas OW`, `Main Camera OW`, `TextManager OW`, `Event1`, `ImageEvent`, `Save`, `TP On-the-fly`, `Maps/` |
+| Overworld prefabs | `Canvas OW`, `Main Camera OW`, `Player`, `Background 1`, `Event1`, `ImageEvent`, `Save`, `TP On-the-fly`, `Maps/` |
+| Overworld sprites | `FriskUT`, `AsrielOW`, `CharaOW`, `MonsterKidOW`, `BoosterOW`, `SavePoint` |
 | Overworld documentation | 11 of the 46 pages |
 
-Four battle-path references genuinely point at overworld types and must be
-rewired rather than left to a constant:
+`Assets/Scripts/Overworld` is a mixed folder, not an overworld folder. Six of its
+files are kept and moved out:
+
+| File | Lines | Why it stays |
+| ---- | ----- | ------------ |
+| `SaveLoad.cs` | 100 | The save system, and the AlMighty globals v0.4 builds on |
+| `PermanentGameState.cs` | 56 | The persistent globals format |
+| `GameState.cs` | 164 | The session save format. Gutted of its map fields in v0.2 |
+| `Title.cs` | 235 | Backs `TitleScreen` |
+| `IntroManager.cs` | 186 | Backs `Intro` |
+| `EnterNameScript.cs` | 305 | Backs `EnterName` |
+
+The first three move to `Assets/Scripts/Save`, the last three join the other menu
+screens in `Assets/Scripts/PregamePlaceholder`. For the same reason
+`TextManager OW.prefab` is kept: `EnterName` instantiates it, and it carries
+`EnterNameScript`. Its misleading name is a v0.2 rename.
+
+Six references genuinely point at overworld types and must be rewired rather
+than left to a constant:
 
 - `Battle/UIController.cs` returns the player to the overworld when a battle
   ends. It returns to the mod selector instead, until v0.3 gives it a boss
@@ -84,23 +102,20 @@ rewired rather than left to a constant:
 - `Battle/UIController.cs` and `Battle/EnemyEncounter.cs` carry music across the
   overworld boundary. That channel goes.
 - `Device/GlobalControls.cs` opens the overworld pause menu.
+- `Title.cs` and `EnterNameScript.cs` load the `TransitionOverworld` scene. Both
+  are kept scripts loading a deleted scene, so both go to the mod selector.
+- `SaveLoad.cs` asks the event manager to snapshot map state before saving.
 
-Indicative commits:
+Two rules order the work. Assets go before scripts, because deleting a scene
+never breaks compilation but a scene holding the GUID of a deleted script shows
+as a missing component. References go before definitions, because C# compiles
+all or nothing, so a type can only be deleted once nothing names it.
 
-```
-v0.1.1   removed the overworld Lua bindings
-v0.1.2   removed the overworld binding registrations from the script binder
-v0.1.3   returned to the mod selector when a battle ends
-v0.1.4   restarted without a save point on game over
-v0.1.5   removed the kept-audio path from the battle music
-v0.1.6   removed the overworld pause menu from global controls
-v0.1.7   removed the overworld references from text, inventory and players
-v0.1.8   reduced IsOverworld to a constant
-v0.1.9   removed the overworld scripts
-v0.1.10  removed the overworld scenes and prefabs
-v0.1.11  removed the Tiled2Unity importer
-v0.1.12  removed the overworld documentation
-```
+Inside the folder the scripts form a reference cycle: `PlayerOverworld`,
+`EventManager` and `TransitionOverworld` name each other, and `EventManager`
+holds instances of all six Lua bindings that call back into it. There is no
+leaves-first order, so the cycle is peeled with small commits that cut a group
+of edges before the next group of files is deleted.
 
 ## v0.2: clean up after the overworld
 
@@ -111,9 +126,10 @@ branch being deleted is already unreachable.
   (8), `Inventory` (6), `TextManager` (5), `Misc` (3), and eight others with one
   or two each.
 - `isInShop`, `audioKept`, `nonOWScenes`, `canTransOW`, and `IsOverworld` itself.
-- Overworld sprites still in `Assets/Default/Sprites`: `AsrielOW`, `BoosterOW`,
-  `CharaOW`, `MonsterKidOW`.
-- Orphaned `.meta` files, and the scene list in `EditorBuildSettings.asset`.
+- The map fields still on `GameState`: `mapInfos`, `tempMapInfos`, `lastScene`,
+  and the `MapData`, `TempMapData` and `EventInfos` structs behind them.
+- `TextManager OW.prefab` and the three places `TextManager.cs` matches on its
+  name. It is the name entry text box, and it should say so.
 - The scene flow from the title screen, which currently routes through name entry
   toward a transition that no longer exists.
 - Documentation: `engine-architecture.md` and `repository-layout.md` both
@@ -131,16 +147,17 @@ v0.2.5   collapsed the remaining overworld branches
 v0.2.6   removed the IsOverworld flag
 v0.2.7   removed the shop and kept-audio state
 v0.2.8   removed the non-overworld scene lists
-v0.2.9   removed the overworld sprites from the default resources
-v0.2.10  simplified the scene flow from the title screen
-v0.2.11  rewrote the engine architecture doc for a battle-only engine
-v0.2.12  rewrote the repository layout doc
-v0.2.13  reorganised the documentation index around the battle API
-v0.2.14  updated the README for the stripped engine
+v0.2.9   removed the map fields from the session save format
+v0.2.10  renamed the overworld text box to the name entry text box
+v0.2.11  simplified the scene flow from the title screen
+v0.2.12  rewrote the engine architecture doc for a battle-only engine
+v0.2.13  rewrote the repository layout doc
+v0.2.14  reorganised the documentation index around the battle API
+v0.2.15  updated the README for the stripped engine
 ```
 
-The commit lists in both milestones are indicative. The shape is what matters:
-many small commits, each one a change you could revert on its own.
+That commit list is indicative. The shape is what matters: many small commits,
+each one a change you could revert on its own.
 
 ## v0.3: the boss rush loop
 
