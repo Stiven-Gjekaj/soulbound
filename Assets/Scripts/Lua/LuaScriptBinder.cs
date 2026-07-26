@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MoonSharp.Interpreter;
 using MoonSharp.Interpreter.Loaders;
@@ -46,14 +46,6 @@ public static class LuaScriptBinder {
         UserData.RegisterType<LuaPlayerUI>();
         UserData.RegisterType<LifeBarController>();
         UserData.RegisterType<LuaCYFObject>();
-
-        // Overworld bindings
-        UserData.RegisterType<LuaEventOW>();
-        UserData.RegisterType<LuaPlayerOW>();
-        UserData.RegisterType<LuaGeneralOW>();
-        UserData.RegisterType<LuaInventoryOW>();
-        UserData.RegisterType<LuaScreenOW>();
-        UserData.RegisterType<LuaMapOW>();
     }
 
     /// <summary>
@@ -112,21 +104,6 @@ public static class LuaScriptBinder {
             script.Globals.Set("Arena", ArenaStatus);
             DynValue LuaUI = UserData.Create(new LuaPlayerUI());
             script.Globals.Set("UI", LuaUI);
-        } else if (!GlobalControls.isInShop) {
-            try {
-                DynValue PlayerOW = UserData.Create(EventManager.instance.luaPlayerOw);
-                script.Globals.Set("FPlayer", PlayerOW);
-                DynValue EventOW = UserData.Create(EventManager.instance.luaEventOw);
-                script.Globals.Set("FEvent", EventOW);
-                DynValue GeneralOW = UserData.Create(EventManager.instance.luaGeneralOw);
-                script.Globals.Set("FGeneral", GeneralOW);
-                DynValue InventoryOW = UserData.Create(EventManager.instance.luaInventoryOw);
-                script.Globals.Set("FInventory", InventoryOW);
-                DynValue ScreenOW = UserData.Create(EventManager.instance.luaScreenOw);
-                script.Globals.Set("FScreen", ScreenOW);
-                DynValue MapOW = UserData.Create(EventManager.instance.luaMapOw);
-                script.Globals.Set("FMap", MapOW);
-            } catch { /* ignored */ }
         }
         script.Globals["DEBUG"] = (Action<string>)UnitaleUtil.WriteInLogAndDebugger;
         script.Globals["EnableDebugger"] = (Action<bool>)EnableDebugger;
@@ -252,14 +229,6 @@ public static class LuaScriptBinder {
         UserData.RegisterType<LuaPlayerUI>();
         UserData.RegisterType<LifeBarController>();
         UserData.RegisterType<LuaCYFObject>();
-
-        // Overworld bindings
-        UserData.RegisterType<LuaEventOW>();
-        UserData.RegisterType<LuaPlayerOW>();
-        UserData.RegisterType<LuaGeneralOW>();
-        UserData.RegisterType<LuaInventoryOW>();
-        UserData.RegisterType<LuaScreenOW>();
-        UserData.RegisterType<LuaMapOW>();
     }
 
     /// <summary>
