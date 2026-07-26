@@ -142,12 +142,12 @@ Three things were deliberately left alone, and are worth knowing about:
 - The retro-mode flee lines in `UIController`, which joke about the overworld being
   missing. They are Unitale's original text and remain literally true here.
 - The boot chain. Trimming it would change what the player sees, and the menus want
-  designing properly in v0.3 alongside boss select.
+  designing properly alongside the art, in v0.7.
 
-The save path is also kept on purpose. `SaveLoad.Save()` has one caller, name entry,
-and may briefly have none after v0.3 replaces the menus. It is not dead code: a
-checkpoint feature, such as saving between phases of a multi-phase boss, would be
-built on `GameState` plus session or AlMighty globals rather than on anything new.
+The save path is also kept on purpose. `SaveLoad.Save()` has one caller, name entry.
+It is not dead code: a checkpoint feature, such as saving between phases of a
+multi-phase boss, or the mid-run saving the gauntlet needs, would be built on
+`GameState` plus session or AlMighty globals rather than on anything new.
 
 The counts below are recounted from the tree after v0.1, not estimated before it.
 v0.1 consumed 8 of the branches and all 17 `audioKept` uses on its way past.
@@ -212,9 +212,12 @@ each one a change you could revert on its own.
 
 ## v0.3: the boss rush loop
 
-Complete. The actual game loop, with programmer art, plus the release pipeline and
-the engine's own identity, because a first release should not go out labelled as
-somebody else's engine.
+Complete, and the first tagged pre-release. The actual game loop, with programmer art,
+plus the release pipeline and the engine's own identity, because a first release should
+not go out labelled as somebody else's engine. The engine is 112 C# files and 18,843
+lines, down from 19,283: v0.3 added the registry, the records and the profile, and
+removed more than that again in fork-era modes. See the
+[changelog](../../CHANGELOG.md).
 
 ### The loop
 
