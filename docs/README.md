@@ -25,6 +25,7 @@ because Create Your Frisk is.
 | [How to read this documentation](how-to-read.md) | notation used throughout these pages |
 | [Controls](basics/controls.md) | the keys the engine uses |
 | [Basic setup](basics/basic-setup.md) | mod folder structure and what the engine expects to find. Start here |
+| [Adding a boss](basics/adding-a-boss.md) | the boss registry, and how a boss reaches the select screen |
 | [Unity setup](basics/unity-setup.md) | setting up Unity, playing mods from the editor, exporting builds |
 | [Special variables](basics/special-variables.md) | the variables the engine reads out of your scripts |
 | [Terminology](basics/terminology.md) | what things are called, for example the "arena" |
