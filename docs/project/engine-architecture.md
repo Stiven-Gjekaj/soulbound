@@ -3,39 +3,34 @@
 Soulbound runs on Create Your Frisk v0.6.6 LTS 3, a fork of Unitale. This page describes how
 the engine is put together, so you know which parts to touch and which to leave alone.
 
-Unity 2018.4.36f1, C#, with MoonSharp as the Lua interpreter. 135 C# files under
+Unity 2018.4.36f1, C#, with MoonSharp as the Lua interpreter. 111 C# files under
 `Assets/Scripts`.
 
 ## Scene flow
 
-Twelve scenes ship in the build. Every one of them is loaded **by name** from C#, never by
+Nine scenes ship in the build. Every one of them is loaded **by name** from C#, never by
 build index, so reordering `EditorBuildSettings.asset` is safe but renaming a scene is not.
 
 ```
-Disclaimer -> Intro -> TitleScreen -> EnterName -> TransitionOverworld -> (your map)
-                            |
-                            +-> ModSelect -> Battle
-                                    |
-                                    +-> Options -> KeybindSettings
+Disclaimer -> Intro -> TitleScreen -> EnterName -> ModSelect -> Battle
+     |                                                 |
+     +---------------------------------> ModSelect     +-> Options -> KeybindSettings
 ```
 
 | Scene | Role | Loaded from |
 | --- | --- | --- |
 | `Disclaimer` | entry point, always start play mode here | `SelectOMatic`, `GlobalControls` |
 | `Intro` | the intro sequence | `DisclaimerScript` |
-| `TitleScreen` | title screen | `Title`, `EnterNameScript`, `LuaGeneralOW` |
+| `TitleScreen` | title screen | `Title`, `EnterNameScript` |
 | `EnterName` | name entry | `Title` |
-| `TransitionOverworld` | bridge into an overworld map | `Title`, `EnterNameScript` |
-| `ModSelect` | mod and encounter picker | `DisclaimerScript`, `OptionsScript`, `UIController`, `GameOverBehavior` |
+| `ModSelect` | mod and encounter picker | `DisclaimerScript`, `OptionsScript`, `UIController`, `GameOverBehavior`, `Title`, `EnterNameScript` |
 | `Options` | options menu | `SelectOMatic`, `KeybindSettings` |
 | `KeybindSettings` | key rebinding | `OptionsScript` |
-| `Battle` | the encounter | `SelectOMatic`, `PlayerOverworld` (additive) |
-| `Shop` | overworld shop, loaded additively | `EventManager` |
-| `SpecialAnnouncement` | announcement screen | `EventManager` |
+| `Battle` | the encounter | `SelectOMatic` |
 | `Error` | the Lua error screen | `UnitaleUtil` |
 
-`GlobalControls.nonOWScenes` lists the scenes that do not count as the overworld. Any scene
-not in that list is treated as a map.
+Both routes end at the mod selector. It stands in for the boss select screen that v0.3
+builds, so the title screen and name entry lead there rather than into a map.
 
 ## Mod loading
 
@@ -56,14 +51,13 @@ stops on the Lua error screen with "Your mod folder is empty!".
 
 ## The `@Title` dependency
 
-`Assets/Mods/@Title` is not optional and not example content. Six engine files reference the
+`Assets/Mods/@Title` is not optional and not example content. Five engine files reference the
 literal string `"@Title"`:
 
 - `Assets/Scripts/Util/StaticInits.cs`, `EDITOR_MODFOLDER`
 - `Assets/Scripts/Util/UnitaleUtil.cs`, `InitAll("@Title")`
-- `Assets/Scripts/Overworld/Title.cs`
-- `Assets/Scripts/Overworld/IntroManager.cs`
-- `Assets/Scripts/Overworld/Fading.cs`
+- `Assets/Scripts/PregamePlaceholder/Title.cs`
+- `Assets/Scripts/PregamePlaceholder/IntroManager.cs`
 - `Assets/Scripts/Device/GlobalControls.cs`
 
 It supplies the intro images, the title sprites and the menu music.
@@ -75,8 +69,7 @@ It supplies the intro images, the title sprites and the menu music.
 - `LuaScriptBinder.cs` builds a MoonSharp script instance and injects the globals every
   script gets
 - `CLRBindings/` holds one class per Lua object: `LuaPlayerStatus`, `LuaInputBinding`,
-  `LuaTextManager`, `LuaSpriteController`, `LuaProjectile`, `LuaArenaStatus`, and the
-  overworld set under `CLRBindings/Overworld/`
+  `LuaTextManager`, `LuaSpriteController`, `LuaProjectile`, `LuaArenaStatus`
 - `StaticRegistries/` caches loaded assets: `SpriteRegistry`, `AudioClipRegistry`,
   `ShaderRegistry`, `FontRegistry`
 
@@ -102,15 +95,12 @@ errors out if `enemies` is missing or if there are more enemies than positions.
 `EnemyController.cs` reads each monster's stats and dialogue. `UIController.cs` owns the
 state machine that `State()` and `EnteringState()` expose to Lua.
 
-## Overworld
+## Saving
 
-`Assets/Scripts/Overworld` handles maps. `PlayerOverworld` moves the player,
-`EventManager` runs event scripts from `<mod>/Lua/Events/`, `TPHandler` moves between maps,
-and `TransitionOverworld` is the entry point from the title screen.
-
-Maps are authored in [Tiled](http://www.mapeditor.org/) and imported through
-`Assets/Tiled2Unity`. That importer is kept in full; only the demo map data was removed. See
-[How to create a map](../overworld/how-to-create-a-map.md).
+`Assets/Scripts/Save` holds the three pieces of the save system. `SaveLoad` reads and writes
+`save.gd` and `AlMightySave.gd` under the platform's persistent data path. `GameState` is the
+session save format. `AlMightyGameState`, in `PermanentGameState.cs`, is the persistent
+globals format, and is what v0.4 will build its death counts on.
 
 ## Licensing
 
