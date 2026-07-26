@@ -30,7 +30,7 @@ public class GlobalControls : MonoBehaviour {
     public static bool allowWipeSave;   // Allows you to wipe your save in the Error scene if it couldn't load properly
     private bool screenShaking;         // True if a screenshake is occuring, false otherwise
 
-    public static string[] nonOWScenes = { "Battle", "Error", "ModSelect", "Options", "TitleScreen", "Disclaimer", "EnterName", "TransitionOverworld", "Intro", "KeybindSettings" };   // Scenes in which you're not considered to be in the overworld
+    public static string[] nonOWScenes = { "Battle", "Error", "ModSelect", "Options", "TitleScreen", "Disclaimer", "EnterName", "Intro", "KeybindSettings" };   // Scenes in which you're not considered to be in the overworld
     public static string[] canTransOW = { "Battle", "Error" };  // Scenes from which you can enter the overworld
 
     public static Dictionary<string, GameState.MapData> GameMapData = new Dictionary<string, GameState.MapData>();              // Main save data on each map the Player has visited before
@@ -169,11 +169,6 @@ public class GlobalControls : MonoBehaviour {
                 if (GameOverBehavior.gameOverContainer.activeInHierarchy) FindObjectOfType<GameOverBehavior>().EndGameOver();
                 else                                                      UIController.EndBattle();
             else                                                          UIController.EndBattle();
-        }
-        // Open the Menu in the Overworld
-        else if (input.Menu == ButtonState.PRESSED && !nonOWScenes.Contains(sceneName) && !isInFight && !isInShop && (!GameOverBehavior.gameOverContainerOw || !GameOverBehavior.gameOverContainerOw.activeInHierarchy)) {
-            if (!PlayerOverworld.instance.PlayerNoMove && EventManager.instance.script == null && !PlayerOverworld.instance.menuRunning[2] && !PlayerOverworld.instance.menuRunning[4] && (GameObject.Find("FadingBlack") == null || GameObject.Find("FadingBlack").GetComponent<Fading>().alpha <= 0))
-                StartCoroutine(PlayerOverworld.LaunchMenu());
         }
         // Wipe save and close CYF in the Error scene if save failed to load
         else if (sceneName == "Error" && allowWipeSave && Input.GetKeyDown(KeyCode.R)) {
