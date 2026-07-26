@@ -19,10 +19,10 @@ public class GameState {
     public List<string> inventory = new List<string>();
     public List<string> boxContents = new List<string>();
     public float playerTime;
-    public string CYFversion = "";
+    public int saveVersion;
 
     public void SaveGameVariables() {
-        CYFversion = GlobalControls.CYFversion;
+        saveVersion = GlobalControls.SaveVersion;
 
         soundDictionary = MusicManager.hiddenDictionary;
         controlpanel = ControlPanel.instance;

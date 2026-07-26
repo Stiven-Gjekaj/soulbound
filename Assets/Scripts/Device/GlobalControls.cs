@@ -10,7 +10,7 @@ using MoonSharp.Interpreter;
 /// </summary>
 public class GlobalControls : MonoBehaviour {
     public static string CYFversion       = "0.6.6";    // Current version of CYF displayed in the main menu and usable in scripts
-    public static string OverworldVersion = "0.6.6";    // Last version in which the overworld was changed, notifying any user with an old save to delete it
+    public static int    SaveVersion      = 1;          // Format version of save.gd. Bump this whenever GameState's fields change, so old saves are rejected with a readable message instead of a deserialization error
     public static int    LTSversion       = 4;          // LTS version, mainly used for CYF 0.6.6
     public static int    BetaVersion      = 0;          // Only used for beta versions
 
