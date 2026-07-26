@@ -2,7 +2,7 @@
 
 # Soulbound
 
-### A boss rush, built on Create Your Frisk
+### A boss rush on a purpose-built Undertale-style engine
 
 _A Lua-moddable battle engine, running on Unity_
 
@@ -32,13 +32,14 @@ _A Lua-moddable battle engine, running on Unity_
 
 ## Overview
 
-**Soulbound** is a boss rush based on Soultale, built on
-[Create Your Frisk](https://github.com/RhenaudTheLukark/CreateYourFrisk), a
-Lua-moddable Undertale engine forked from
-[Unitale](https://github.com/lvk/Unitale/). You pick a boss from a menu and fight
-it. There is no overworld, so the engine's has been taken out. What is left
-handles battles, shaders, and a scripting API; the game itself is written as Lua
-and art inside a mod folder.
+**Soulbound** is a boss rush based on Soultale. You pick a boss from a menu and
+fight it.
+
+It runs on its own engine: a Lua-moddable, Undertale-style battle engine that
+started life as [Create Your Frisk](https://github.com/RhenaudTheLukark/CreateYourFrisk)
+and has since had its overworld, its map importer and its fork-era baggage removed.
+What is left handles battles, shaders, and a scripting API. The game itself is
+written as Lua and art inside a mod folder.
 
 This repository is the Unity project. The engine lives in `Assets/`, the game
 lives in `Assets/Mods/Soulbound/`, and every page of engine documentation is
@@ -158,7 +159,7 @@ mod folder, because that is where the engine loads it from at runtime.
 | **Util** | `Assets/Scripts/Util` | 1455 | Shared helpers, error reporting, static init |
 | **Save** | `Assets/Scripts/Save` | 245 | Session saves and the persistent AlMighty globals |
 | **Other** | inventory, rendering, projectiles, players, animation | 2705 | Supporting systems |
-| **Total** | **111 files** | **19283** | Create Your Frisk v0.6.6 LTS 3, with the overworld removed |
+| **Total** | **111 files** | **19283** | Battle engine, no overworld and no map importer |
 
 ```
 Assets/Scripts/     the engine
@@ -205,10 +206,7 @@ directly, are covered in
 </tr>
 </table>
 
-Two markers appear throughout the reference: `<CYF>` marks something added by
-Create Your Frisk rather than original Unitale, and `<0.2.1a>` marks something
-specific to Unitale 0.2.1a. Start with
-[how to read the documentation](docs/how-to-read.md).
+Start with [how to read the documentation](docs/how-to-read.md).
 
 ---
 
@@ -270,5 +268,5 @@ is a derivative work and carries the same copyleft license. MoonSharp is
 separately licensed under BSD, see [MOONSHARP_LICENSE](MOONSHARP_LICENSE).
 
 <div align="center">
-<sub>Built on Create Your Frisk. Start with the <a href="docs/README.md">documentation</a>.</sub>
+<sub>Start with the <a href="docs/README.md">documentation</a>.</sub>
 </div>
