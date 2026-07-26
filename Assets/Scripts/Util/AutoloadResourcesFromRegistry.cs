@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -18,12 +18,10 @@ class AutoloadResourcesFromRegistry : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (UnitaleUtil.IsOverworld) Fading.StartFade += LateStart;
         StaticInits.Loaded += LateStart;
     }
 
     private void OnDisable() {
-        if (UnitaleUtil.IsOverworld) Fading.StartFade -= LateStart;
         StaticInits.Loaded -= LateStart;
     }
 
@@ -32,7 +30,7 @@ class AutoloadResourcesFromRegistry : MonoBehaviour {
         loadRequested = true;
         if (string.IsNullOrEmpty(SpritePath))
             Destroy(this);
-        else if (GlobalControls.isInFight || StaticInits.MODFOLDER == FindObjectOfType<MapInfos>().modToLoad) {
+        else {
             Sprite spr = null;
             try { spr = SpriteRegistry.Get(SpritePath); }
             catch (MoonSharp.Interpreter.ScriptRuntimeException ex) {
