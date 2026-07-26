@@ -1,4 +1,4 @@
-﻿using MoonSharp.Interpreter;
+using MoonSharp.Interpreter;
 using UnityEngine.UI;
 
 public class LuaProjectile : Projectile {
@@ -16,7 +16,7 @@ public class LuaProjectile : Projectile {
         if (newSprite == null)
             throw new CYFException("You can't set a projectile's sprite to nil!");
         SpriteUtil.SwapSpriteFromFile(this, newSprite);
-        if (!UnitaleUtil.IsOverworld) name = newSprite;
+        name = newSprite;
     }
 
     public override void OnProjectileHit() {

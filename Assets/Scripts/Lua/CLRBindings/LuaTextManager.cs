@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -88,7 +88,7 @@ public class LuaTextManager : TextManager {
     protected override void Awake() {
         container = transform.parent.gameObject;
         base.Awake();
-        if (!UnitaleUtil.IsOverworld && autoSetLayer)
+        if (autoSetLayer)
             transform.parent.SetParent(GameObject.Find("TopLayer").transform);
 
         Transform bubbleTransform = UnitaleUtil.GetChildPerName(container.transform, "BubbleContainer", true);

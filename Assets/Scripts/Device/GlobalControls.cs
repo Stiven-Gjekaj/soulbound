@@ -134,7 +134,7 @@ public class GlobalControls : MonoBehaviour {
         #endif
 
         // Frame counter used for logging purposes
-        if (isInFight || UnitaleUtil.IsOverworld)
+        if (isInFight)
             frame ++;
 
         luaInput.Update();
