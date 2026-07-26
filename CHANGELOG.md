@@ -12,6 +12,63 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
+## 0.1 (2026-07-26)
+
+Removes the overworld. Soulbound is a boss rush: you pick a boss from a menu and
+fight it, and there are no maps, events, cutscenes or shops. Roughly a third of
+Create Your Frisk existed to support them.
+
+This is the first of two milestones on the overworld. v0.1 deletes the feature and
+leaves `UnitaleUtil.IsOverworld` as a shim returning `false`, so every branch that
+consults it collapses to the battle path on its own. v0.2 walks those 48 branches
+and deletes the dead half of each. Splitting it that way keeps the destructive work
+and the subtle logic changes in separate diffs.
+
+### Changed
+
+- A battle now always returns to the mod selector. It used to return the player to
+  the map they came from unless the battle was started from the mod selector. The
+  mod selector stands in for the boss select screen that v0.3 builds.
+- Death restarts instead of respawning. The game over sequence used to reload the
+  save, instantiate a teleport prefab, and drop the player back at their last save
+  point on the map they died on.
+- The title screen and name entry lead to the mod selector, not into a map.
+- `Assets/Scripts/Overworld` is now `Assets/Scripts/Save`. Six of its 18 files were
+  never overworld code. `SaveLoad`, `GameState` and `PermanentGameState` stayed
+  where they were under the folder's new name; `Title`, `IntroManager` and
+  `EnterNameScript` moved to `Assets/Scripts/PregamePlaceholder` with the other
+  menu screens.
+- `UnitaleUtil.IsOverworld` is a constant `false`.
+- `UnitaleUtil.ExitOverworld` kept only its non-overworld teardown: music channels,
+  session globals, the inventory, and the player character.
+- The engine is 111 C# files and 19,504 lines, down from 129 and 25,334.
+
+### Removed
+
+- `Assets/Scripts/Overworld`: `PlayerOverworld`, `EventManager`, `ShopScript`,
+  `TransitionOverworld`, `ItemBoxUI`, `CYFAnimator`, `TPHandler`, `Fading`,
+  `EventOW`, `MapInfos`, `MapLoader` and `SpecialAnnouncementScript`. 12 files,
+  4,534 lines.
+- `Assets/Scripts/Lua/CLRBindings/Overworld`: the `Event`, `General`, `Player`,
+  `Screen`, `Map` and `Inventory` overworld Lua objects, their registrations in
+  `LuaScriptBinder`, and the `FPlayer`, `FEvent`, `FGeneral`, `FInventory`,
+  `FScreen` and `FMap` globals. 6 files, 1,088 lines.
+- The `TransitionOverworld`, `Shop` and `SpecialAnnouncement` scenes, and their
+  entries in `EditorBuildSettings.asset`. Nine scenes remain.
+- Eight prefabs: `Canvas OW`, `Main Camera OW`, `Player`, `Background 1`, `Event1`,
+  `ImageEvent`, `Save`, `TP On-the-fly`, and the empty `Prefabs/Maps` folder.
+  `TextManager OW.prefab` was kept: `EnterName` instantiates it.
+- Six sprite folders from `Assets/Default/Sprites`: `FriskUT`, `AsrielOW`,
+  `CharaOW`, `MonsterKidOW`, `BoosterOW` and `SavePoint`. About 1.2 MB.
+- `Assets/Tiled2Unity`, the Tiled map importer. 53 files, 564 KB. v0.0 kept it on
+  the reasoning that it would be needed to author future maps; a boss rush has no
+  maps.
+- The overworld pause menu, the overworld camera shift, the overworld rich
+  presence, the kept-audio channel that carried music across the overworld
+  boundary, and `UnitaleUtil.MapCorrespondanceList`.
+- The 11 overworld documentation pages and the two images only they used. 35 pages
+  remain.
+
 ## 0.0 (2026-07-26)
 
 The first version. Turns an unmodified Create Your Frisk v0.6.6 LTS 3 snapshot
