@@ -121,9 +121,6 @@ public static class UnitaleUtil {
         return matches.Cast<Match>().Aggregate(source, (current, match) => current.Replace(match.Value, "line " + match.Groups[1].Value + ", char " + match.Groups[2].Value));
     }
 
-    public static Vector3 VectToVector(GameState.Vect v)    { return new Vector3(v.x, v.y, v.z); }
-    public static GameState.Vect VectorToVect(Vector3 vect) { return new GameState.Vect() { x = vect.x, y = vect.y, z = vect.z }; }
-
     public static Array ListToArray<T>(List<T> lst) {
         T[] arr = new T[lst.Count];
         for (int i = 0; i < lst.Count; i++)

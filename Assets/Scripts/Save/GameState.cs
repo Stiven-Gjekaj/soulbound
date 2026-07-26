@@ -21,45 +21,6 @@ public class GameState {
     public float playerTime;
     public string CYFversion = "";
 
-    [System.Serializable]
-    public struct EventInfos {
-        public int CurrPage;
-        public bool NoCollision;
-        public string CurrSpriteNameOrCYFAnim;
-        public Vect Anchor;
-        public Vect Pivot;
-    }
-
-    [System.Serializable]
-    public struct MapData {
-        public string Name;
-        public string Music;
-        public string ModToLoad;
-        public bool MusicKept;
-        public bool NoRandomEncounter;
-        public Dictionary<string, EventInfos> EventInfo;
-    }
-
-    [System.Serializable]
-    public struct TempMapData {
-        public string Name;
-        public string Music;
-        public bool MusicChanged;
-        public string ModToLoad;
-        public bool ModToLoadChanged;
-        public bool MusicKept;
-        public bool MusicKeptChanged;
-        public bool NoRandomEncounter;
-        public bool NoRandomEncounterChanged;
-    }
-
-    [System.Serializable]
-    public struct Vect {
-        public float x;
-        public float y;
-        public float z;
-    }
-
     public void SaveGameVariables() {
         CYFversion = GlobalControls.CYFversion;
 
