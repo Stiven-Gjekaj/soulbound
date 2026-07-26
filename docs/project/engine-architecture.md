@@ -134,21 +134,36 @@ state machine that `State()` and `EnteringState()` expose to Lua.
 
 ## Saving
 
-`Assets/Scripts/Save` holds the three pieces of the save system. `SaveLoad` reads and writes
+`Assets/Scripts/Save` holds four pieces of the save system. `SaveLoad` reads and writes
 `save.gd` and `AlMightySave.gd` under the platform's persistent data path. `GameState` is the
 session save format, holding the player character, the inventory, the item box, elapsed play
 time and every session global. `AlMightyGameState`, in `PermanentGameState.cs`, is the
-persistent globals format, written the moment a value is set, and is what v0.4 will build its
-death counts on.
+persistent globals format, written the moment a value is set. `BossRecords` and
+`PlayerProfile` are the two things built on it so far, and v0.4's death counts will be the
+third.
+
+Unity builds the persistent data path from `companyName` and `productName` in
+`ProjectSettings`, which are `PaperTrail` and `Soulbound`:
+
+| Platform | Path |
+| --- | --- |
+| Windows | `%USERPROFILE%\AppData\LocalLow\PaperTrail\Soulbound\` |
+| macOS | `~/Library/Application Support/PaperTrail/Soulbound/` |
+| Linux | `~/.config/unity3d/PaperTrail/Soulbound/` |
+
+Changing either field moves that folder and orphans whatever is in the old one, which is
+why v0.3 renamed both once, immediately before the first tag.
 
 `GameState` is serialized with a `BinaryFormatter`, so its field list *is* the file format.
 Changing those fields breaks existing saves, which is why `GlobalControls.SaveVersion` exists:
 bump it in the same commit as any field change, and `SaveLoad.Start()` rejects older saves
-with a readable message instead of a deserialization error. It is at `1` as of v0.2.
+with a readable message instead of a deserialization error. It is at `2` as of v0.3, bumped
+because the rename moved the save folder.
 
 The save path is kept deliberately even though nothing calls `SaveLoad.Save()` except name
-entry. A later checkpoint feature, such as saving between phases of a multi-phase boss, would
-be built on `GameState` plus session or AlMighty globals rather than on anything new.
+entry. A later checkpoint feature, such as saving between phases of a multi-phase boss or the
+mid-run saving a full gauntlet needs, would be built on `GameState` plus session or AlMighty
+globals rather than on anything new.
 
 ## Licensing
 

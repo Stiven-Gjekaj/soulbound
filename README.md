@@ -4,17 +4,17 @@
 
 ### A boss rush on a purpose-built Undertale-style engine
 
-_A Lua-moddable battle engine, running on Unity_
+_A Lua-moddable battle engine, running on Unity. Made by PaperTrail._
 
 <p align="center">
   <img src="https://img.shields.io/badge/Unity-2018.4.36f1-000000?style=for-the-badge&logo=unity&logoColor=white" alt="Unity 2018.4.36f1"/>
-  <img src="https://img.shields.io/badge/engine-111_C%23_files,_19.3k_lines-239120?style=for-the-badge" alt="The engine is 111 C# files and about 19,300 lines"/>
-  <img src="https://img.shields.io/badge/docs-35_pages-007ec6?style=for-the-badge" alt="35 documentation pages"/>
+  <img src="https://img.shields.io/badge/engine-112_C%23_files,_18.8k_lines-239120?style=for-the-badge" alt="The engine is 112 C# files and about 18,800 lines"/>
+  <img src="https://img.shields.io/badge/docs-37_pages-007ec6?style=for-the-badge" alt="37 documentation pages"/>
 </p>
 
 <p align="center">
   <a href="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml"><img src="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml/badge.svg" alt="Build"/></a>
-  <img src="https://img.shields.io/badge/version-0.2-blue?style=flat-square" alt="Version 0.2"/>
+  <img src="https://img.shields.io/badge/version-0.3-blue?style=flat-square" alt="Version 0.3"/>
   <img src="https://img.shields.io/badge/license-GPL--3.0-green?style=flat-square" alt="GPL-3.0 License"/>
 </p>
 
@@ -147,9 +147,22 @@ To produce standalone builds, run the build script from the repository root:
 Build.py [--single <target>] [--nozip]
 ```
 
-Builds land in `bin/`, each with `Default`, `Mods`, and `docs` copied alongside
-the executable. Full setup, build, and CI notes are in
+Builds land in `bin/`, each with `Default`, `Mods` and `docs` copied alongside
+the executable. `Build.py` is the developer build; a tagged release ships without
+the documentation. Full setup, build, and CI notes are in
 [docs/project/building.md](docs/project/building.md).
+
+Save data and settings live under the company and product names Unity is
+configured with, `PaperTrail` and `Soulbound`:
+
+| | |
+| --- | --- |
+| Windows | `%USERPROFILE%\AppData\LocalLow\PaperTrail\Soulbound\` |
+| macOS | `~/Library/Application Support/PaperTrail/Soulbound/` |
+| Linux | `~/.config/unity3d/PaperTrail/Soulbound/` |
+
+That folder holds `save.gd`, `AlMightySave.gd` (your name, boss records and
+options) and `output_log.txt`.
 
 ---
 
@@ -252,6 +265,8 @@ If you find Soulbound useful, you can support its development here.
 ---
 
 ## Credits
+
+Soulbound is made by **PaperTrail**.
 
 Built on [Create Your Frisk](https://github.com/RhenaudTheLukark/CreateYourFrisk)
 by RhenaudTheLukark and contributors, itself a fork of

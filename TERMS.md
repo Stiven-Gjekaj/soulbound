@@ -64,11 +64,12 @@ assets you do not have the right to distribute.
 Content shipped in this repository is limited to the engine, its default
 resources inherited from Create Your Frisk, and the project's own material.
 
-## 7. Project name
+## 7. Project and team name
 
-"Soulbound" identifies this project. You may refer to the project by name, but
-please do not use the name in a way that implies endorsement of, or affiliation
-with, a modified or unofficial version without permission.
+"Soulbound" identifies this project, and "PaperTrail" identifies the team that
+makes it. You may refer to either by name, but please do not use either in a way
+that implies endorsement of, or affiliation with, a modified or unofficial
+version without permission.
 
 ## 8. Changes to these terms
 
