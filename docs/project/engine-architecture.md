@@ -12,9 +12,11 @@ Nine scenes ship in the build. Every one of them is loaded **by name** from C#, 
 build index, so reordering `EditorBuildSettings.asset` is safe but renaming a scene is not.
 
 ```
-Disclaimer -> Intro -> TitleScreen -> EnterName -> ModSelect -> Battle
-     |                                                 |
-     +---------------------------------> ModSelect     +-> Options -> KeybindSettings
+Disclaimer --[Menu]----> Intro -> TitleScreen -> EnterName --+
+     |                                                       |
+     +--[Confirm]-----------------------------------------> ModSelect -> Battle
+                                                             |
+                                                             +-> Options -> KeybindSettings
 ```
 
 | Scene | Role | Loaded from |
@@ -29,8 +31,13 @@ Disclaimer -> Intro -> TitleScreen -> EnterName -> ModSelect -> Battle
 | `Battle` | the encounter | `SelectOMatic` |
 | `Error` | the Lua error screen | `UnitaleUtil` |
 
-Both routes end at the mod selector. It stands in for the boss select screen that v0.3
-builds, so the title screen and name entry lead there rather than into a map.
+Both routes end at the mod selector, and every battle returns to it. It stands in for the
+boss select screen that v0.3 builds, so the title screen and name entry lead there rather
+than into a map.
+
+There is no longer a mode flag. Up to v0.1 the engine asked `UnitaleUtil.IsOverworld` in 40
+places to decide whether it was in a battle or on a map; v0.2 removed the flag and every
+branch that consulted it. Battle is the only mode.
 
 ## Mod loading
 
@@ -99,8 +106,19 @@ state machine that `State()` and `EnteringState()` expose to Lua.
 
 `Assets/Scripts/Save` holds the three pieces of the save system. `SaveLoad` reads and writes
 `save.gd` and `AlMightySave.gd` under the platform's persistent data path. `GameState` is the
-session save format. `AlMightyGameState`, in `PermanentGameState.cs`, is the persistent
-globals format, and is what v0.4 will build its death counts on.
+session save format, holding the player character, the inventory, the item box, elapsed play
+time and every session global. `AlMightyGameState`, in `PermanentGameState.cs`, is the
+persistent globals format, written the moment a value is set, and is what v0.4 will build its
+death counts on.
+
+`GameState` is serialized with a `BinaryFormatter`, so its field list *is* the file format.
+Changing those fields breaks existing saves, which is why `GlobalControls.SaveVersion` exists:
+bump it in the same commit as any field change, and `SaveLoad.Start()` rejects older saves
+with a readable message instead of a deserialization error. It is at `1` as of v0.2.
+
+The save path is kept deliberately even though nothing calls `SaveLoad.Save()` except name
+entry. A later checkpoint feature, such as saving between phases of a multi-phase boss, would
+be built on `GameState` plus session or AlMighty globals rather than on anything new.
 
 ## Licensing
 
