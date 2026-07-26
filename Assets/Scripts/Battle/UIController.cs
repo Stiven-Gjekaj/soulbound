@@ -157,20 +157,15 @@ public class UIController : MonoBehaviour {
         GlobalControls.stopScreenShake = true;
         Cursor.visible = true;
         MusicManager.hiddenDictionary.Clear();
-        if (GlobalControls.modDev) {
-            List<string> toDelete = NewMusicManager.audioname.Keys.Where(str => str != "src").ToList();
-            foreach (string str in toDelete)
-                NewMusicManager.DestroyChannel(str);
-            PlayerCharacter.instance.Reset();
-            // Discord Rich Presence
-            DiscordControls.StartModSelect();
-            SceneManager.LoadScene("ModSelect");
-        } else {
-            foreach (string str in NewMusicManager.audioname.Keys.Where(str => str != "StaticKeptAudio"))
-                NewMusicManager.Stop(str);
-            SceneManager.UnloadSceneAsync("Battle");
-            PlayerOverworld.ShowOverworld("Battle");
-        }
+        // A battle always returns to the mod selector, which stands in for the boss
+        // select screen until v0.3 builds one.
+        List<string> toDelete = NewMusicManager.audioname.Keys.Where(str => str != "src").ToList();
+        foreach (string str in toDelete)
+            NewMusicManager.DestroyChannel(str);
+        PlayerCharacter.instance.Reset();
+        // Discord Rich Presence
+        DiscordControls.StartModSelect();
+        SceneManager.LoadScene("ModSelect");
 
         //Reset to 4:3
         ScreenResolution.ResetAfterBattle();
