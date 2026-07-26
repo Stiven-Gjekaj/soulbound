@@ -71,6 +71,20 @@ v0.1 removed the overworld itself, because this game does not have one:
 - `Assets/Tiled2Unity`, the map importer v0.0 kept on the assumption that maps were coming
 - The 11 overworld documentation pages
 
+v0.2 removed what the strip left behind. Nothing there changed behaviour, because every
+branch it deleted was already unreachable:
+
+- The 40 `UnitaleUtil.IsOverworld` branches and the flag itself, plus `isInShop`,
+  `nonOWScenes`, `GlobalControls.realName` and the three map-data dictionaries
+- The map fields and structs on `GameState`, which shrank the save format. The old
+  `OverworldVersion` string became an integer `SaveVersion`, so a save written by an older
+  build is now refused with a readable message
+- `TextManager OW.prefab`, renamed to `TextManager Name.prefab`, and the two code branches
+  that matched on the old name. Every scene instance overrode that name, so neither branch
+  could ever run
+- The disclaimer screen's "Press Menu to go to the Overworld" prompt, which had been
+  pointing at a feature that no longer existed since v0.1
+
 `Assets/Scripts/Why` was kept: `DogGyrator.cs` is used by `Error.unity` and `Temmify.cs` by
 five engine files.
 

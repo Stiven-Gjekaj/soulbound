@@ -6,7 +6,8 @@ Lua API your scripts call.
 
 This started as a Markdown conversion of the CYF v0.6.6 LTS 3 documentation that upstream
 shipped as an HTML site. The overworld pages were removed in v0.1, when the feature itself
-was taken out. The rest is preserved.
+was taken out, and v0.2 corrected the pages that still described overworld behaviour. The
+rest is preserved.
 
 Note: the pages carry casual Undertale spoilers throughout.
 
