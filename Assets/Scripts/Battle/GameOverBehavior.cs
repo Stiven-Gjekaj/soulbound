@@ -351,7 +351,7 @@ public class GameOverBehavior : MonoBehaviour {
         UIController.EndBattle(true);
         Destroy(gameObject);
         // Discord Rich Presence
-        DiscordControls.StartModSelect();
+        DiscordControls.StartBossSelect();
         SceneManager.LoadScene("ModSelect");
     }
 

@@ -246,7 +246,7 @@ public class EnterNameScript : MonoBehaviour {
                     yield return 0;
                 GlobalControls.modDev = true;
                 SceneManager.LoadScene("ModSelect");
-                DiscordControls.StartModSelect();
+                DiscordControls.StartBossSelect();
             } else {
                 SaveLoad.Save();
                 SceneManager.LoadScene("TitleScreen");

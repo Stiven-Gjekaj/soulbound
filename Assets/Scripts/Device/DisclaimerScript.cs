@@ -93,15 +93,14 @@ public class DisclaimerScript : MonoBehaviour {
         creditsCameraSpeed = 8;
     }
 
-    // The mod select screen can take some extra time to load,
-    // because it now searches for encounter files on top of mods.
-    // To compensate, this function will add "Loading" text to the Disclaimer screen
-    // whenever it's time to go to the mod select menu.
+    // The boss select screen reads the registry and every boss's portrait before it can
+    // show anything, so it can take a moment. To compensate, this function puts "Loading"
+    // text on the Disclaimer screen while that happens.
     private IEnumerator ModSelect() {
-        LuaKnowledgeDisclaimer.GetComponent<Text>().text = GlobalControls.crate ? "LAODING MODS!!!!!" : "Loading mods...";
+        LuaKnowledgeDisclaimer.GetComponent<Text>().text = GlobalControls.crate ? "LAODING BSSOES!!!!!" : "Loading bosses...";
         yield return new WaitForEndOfFrame();
         GlobalControls.modDev = true;
-        DiscordControls.StartModSelect(false);
+        DiscordControls.StartBossSelect(false);
         SceneManager.LoadScene("ModSelect");
     }
 }

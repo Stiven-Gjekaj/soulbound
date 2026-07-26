@@ -77,7 +77,7 @@ public static class DiscordControls {
         if (isActive)
             switch (curr_setting) {
                 case 0:
-                    StartModSelect(false);
+                    StartBossSelect(false);
                     break;
                 case 1:
                     activity.Details          = "";
@@ -105,11 +105,11 @@ public static class DiscordControls {
     }
 
     /// <summary>
-    /// Sets the status when you're choosing a mod, erasing details and timer
+    /// Sets the status when you're choosing a boss, erasing details and timer
     /// </summary>
-    /// <param name="reset">Whether to reset the timer when loading the mod select scene.</param>
-    public static void StartModSelect(bool reset = true) {
-        activity.Details = "Selecting a Mod";
+    /// <param name="reset">Whether to reset the timer when loading the boss select scene.</param>
+    public static void StartBossSelect(bool reset = true) {
+        activity.Details = "Choosing a boss";
         activity.State = "";
         if (reset)
             oldTime = GetCurrentTime();
@@ -119,13 +119,12 @@ public static class DiscordControls {
     }
 
     /// <summary>
-    /// Sets the initial status when you play a mod, erasing details and starting the timer
+    /// Sets the initial status when you start a boss fight, erasing details and starting the timer
     /// </summary>
-    /// <param name="modName">The name of the mod.</param>
-    /// <param name="encounterName">The name of the encounter.</param>
-    public static void StartBattle(string modName, string encounterName) {
-        activity.Details = "Playing Mod: " + modName;
-        activity.State = encounterName;
+    /// <param name="bossName">The name of the boss.</param>
+    public static void StartBattle(string bossName) {
+        activity.Details = "Fighting " + bossName;
+        activity.State = "";
         oldTime = GetCurrentTime();
         ClearTime(true);
 

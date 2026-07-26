@@ -88,7 +88,7 @@ public class UIController : MonoBehaviour {
         MERCYMENU,      // Open up the mercy menu
         ENEMYDIALOGUE,  // The Player is visible and the arena is resizing, but the enemy still has own dialogue
         DIALOGRESULT,   // Transition state leading to either UIState.ENEMYDIALOGUE or UIState.DEFENDING
-        DONE,           // Finished state of battle. Returns the Player to the mod selection screen
+        DONE,           // Finished state of battle. Returns the Player to the boss select screen
         UNUSED,         // Used for OnDeath(). Keep this state secret, please
         PAUSE           // Used exclusively for State("PAUSE"). Not a real state, but it needs to be listed to allow users to call State("PAUSE")
     }*/
@@ -156,14 +156,13 @@ public class UIController : MonoBehaviour {
         GlobalControls.stopScreenShake = true;
         Cursor.visible = true;
         MusicManager.hiddenDictionary.Clear();
-        // A battle always returns to the mod selector, which stands in for the boss
-        // select screen until v0.3 builds one.
         List<string> toDelete = NewMusicManager.audioname.Keys.Where(str => str != "src").ToList();
         foreach (string str in toDelete)
             NewMusicManager.DestroyChannel(str);
         PlayerCharacter.instance.Reset();
         // Discord Rich Presence
-        DiscordControls.StartModSelect();
+        DiscordControls.StartBossSelect();
+        // A battle always returns to the boss select, win or lose.
         SceneManager.LoadScene("ModSelect");
 
         //Reset to 4:3

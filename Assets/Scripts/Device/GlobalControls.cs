@@ -20,7 +20,7 @@ public class GlobalControls : MonoBehaviour {
     public static IUndertaleInput input = new KeyboardInput();              // KeyboardInput singleton, registering any key press the Player does and handling them
     public static LuaInputBinding luaInput = new LuaInputBinding(input);    // Input Lua object, usable on the Lua side
 
-    public static bool modDev;          // True if we reached a battle through the mod selection screen
+    public static bool modDev;          // True if we reached a battle through the boss select screen
     public static bool crate;           // True if CrateYourFrisk mode is active, false otherwise
     public static bool retroMode;       // True if the Unitale 0.2.1a retrocompatibility mode is active, false otherwise
     public static bool stopScreenShake; // Used to stop any screenshake currently ongoing
@@ -145,7 +145,7 @@ public class GlobalControls : MonoBehaviour {
         // Exit a battle or the Error scene
         else if (Input.GetKeyDown(KeyCode.Escape) && (escapableScenes.Contains(sceneName) || isInFight)) {
             if (isInFight && EnemyEncounter.script.GetVar("unescape").Boolean && sceneName != "Error") return;
-            // The Error scene can only be exited if we entered the mod through the mod selection screen
+            // The Error scene can only be exited if we entered the fight through the boss select screen
             if (sceneName == "Error" && !modDev) {
                 ScreenResolution.ResetAfterBattle();
                 UnitaleUtil.ResetSession();

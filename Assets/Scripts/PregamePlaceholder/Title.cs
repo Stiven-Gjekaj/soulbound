@@ -169,7 +169,7 @@ public class Title : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
         GlobalControls.modDev = true;
         SceneManager.LoadScene("ModSelect");
-        DiscordControls.StartModSelect();
+        DiscordControls.StartBossSelect();
         yield return 0;
         if (GameObject.Find("Main Camera"))
             Destroy(GameObject.Find("Main Camera"));
@@ -196,7 +196,7 @@ public class Title : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
         GlobalControls.modDev = true;
         SceneManager.LoadScene("ModSelect");
-        DiscordControls.StartModSelect();
+        DiscordControls.StartBossSelect();
         yield return 0;
         GlobalControls.sessionTimestamp += (SaveLoad.savedGame != null ? SaveLoad.savedGame.playerTime : 0f);
         if (GameObject.Find("Main Camera"))
