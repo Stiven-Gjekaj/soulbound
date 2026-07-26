@@ -145,15 +145,15 @@ mod folder, because that is where the engine loads it from at runtime.
 
 | Area | Files | Lines | Responsibility |
 | ---- | ----- | ----- | -------------- |
-| **Lua bindings** | `Assets/Scripts/Lua` | 6267 | The scripting API: object bindings, file loading, asset registries |
-| **Overworld** | `Assets/Scripts/Overworld` | 5580 | Maps, events, cutscenes, shops, teleports |
-| **Battle** | `Assets/Scripts/Battle` | 4144 | The encounter state machine, enemies, the arena |
-| **Text** | `Assets/Scripts/Text` | 1772 | Text objects, typing, commands, dialogue bubbles |
-| **Device** | `Assets/Scripts/Device` | 1658 | Input, screen resolution, global controls, Discord |
-| **Menus** | `Assets/Scripts/PregamePlaceholder` | 1688 | Mod selector, options, keybinding screens |
-| **Util** | `Assets/Scripts/Util` | 1509 | Shared helpers, error reporting, static init |
-| **Other** | inventory, rendering, projectiles, players, animation | 2716 | Supporting systems |
-| **Total** | **129 files** | **25334** | Inherited from Create Your Frisk v0.6.6 LTS 3 |
+| **Lua bindings** | `Assets/Scripts/Lua` | 5143 | The scripting API: object bindings, file loading, asset registries |
+| **Battle** | `Assets/Scripts/Battle` | 4098 | The encounter state machine, enemies, the arena |
+| **Menus** | `Assets/Scripts/PregamePlaceholder` | 2408 | Title, intro, name entry, mod selector, options, keybinding |
+| **Text** | `Assets/Scripts/Text` | 1754 | Text objects, typing, commands, dialogue bubbles |
+| **Device** | `Assets/Scripts/Device` | 1612 | Input, screen resolution, global controls, Discord |
+| **Util** | `Assets/Scripts/Util` | 1469 | Shared helpers, error reporting, static init |
+| **Save** | `Assets/Scripts/Save` | 313 | Session saves and the persistent AlMighty globals |
+| **Other** | inventory, rendering, projectiles, players, animation | 2707 | Supporting systems |
+| **Total** | **111 files** | **19504** | Create Your Frisk v0.6.6 LTS 3, with the overworld removed |
 
 ```
 Assets/Scripts/     the engine
@@ -161,14 +161,13 @@ Assets/Mods/        game content, loaded at runtime
   Soulbound/          the game
   @Title/             engine title screen, a hard dependency
 Assets/Default/     engine sprites, sounds, music, and shaders
-Assets/Scenes/      the twelve engine scenes
+Assets/Scenes/      the nine engine scenes
 Assets/Editor/      editor tooling, shaders, the CI build script
-Assets/Tiled2Unity/ the Tiled map importer
 docs/               all documentation
 tools/              build and content tooling
 ```
 
-Where each piece goes, and the four places in the engine that name content
+Where each piece goes, and the one place in the engine that names content
 directly, are covered in
 [docs/project/repository-layout.md](docs/project/repository-layout.md).
 
