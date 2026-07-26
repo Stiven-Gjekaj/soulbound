@@ -12,6 +12,65 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
+## 0.2 (2026-07-26)
+
+Removes what the overworld strip left behind. Nothing here changes what the game
+does, because every branch deleted was already unreachable: v0.1 left
+`UnitaleUtil.IsOverworld` as a shim returning `false`, and this milestone walks the
+branches that consulted it and deletes the dead half of each.
+
+### Changed
+
+- `GlobalControls.OverworldVersion`, a version string, became `GlobalControls.SaveVersion`,
+  an integer. The old check compared version strings ordinally, which would have accepted a
+  pre-v0.2 save and then failed to read it. `SaveLoad` now refuses any save written to an
+  older format with a readable message.
+- `UnitaleUtil.ExitOverworld` became `ResetSession`. Since v0.1 it only cleared music
+  channels, session globals, the inventory and the player character.
+- `GlobalControls.canTransOW` became `escapableScenes`, and
+  `GlobalControls.overworldTimestamp` became `sessionTimestamp`.
+- `TextManager OW.prefab` became `TextManager Name.prefab`, keeping its GUID so the three
+  scenes that use it are unaffected.
+- The disclaimer screen said "Press Menu to go to the Overworld". It now says "Title
+  Screen", which is where that key has actually led since v0.1.
+- The options screen described the save file as "the save file used for CYF's Overworld".
+  It now describes what the file holds.
+- The engine is 111 C# files and 19,283 lines, down from 19,505.
+
+### Removed
+
+- All 40 remaining `UnitaleUtil.IsOverworld` branches and the flag itself:
+  `GameOverBehavior` (18), `SpriteUtil` (8), `Inventory` (5), `TextManager` (3),
+  `LuaScriptBinder` (2), and one each in `LuaProjectile`, `LuaTextManager` and
+  `GlobalControls`.
+- `GlobalControls.isInShop`, `nonOWScenes`, `realName`, and the `GameMapData`, `EventData`
+  and `TempGameMapData` dictionaries. `EventData` was never read or written at all.
+- The map fields on `GameState`: `lastScene`, `mapInfos`, `tempMapInfos`, and the
+  `MapData`, `TempMapData`, `EventInfos` and `Vect` structs. This changes the save format,
+  which is why `SaveVersion` exists.
+- `UnitaleUtil.VectToVector` and `VectorToVect`, which had no callers.
+- The `PlayerPosX`, `PlayerPosY`, `PlayerPosZ` and `PlayerMap` session globals. These held
+  overworld coordinates. They were readable from Lua with `GetRealGlobal`, so this is a
+  small API change.
+- The four `GameOverBehavior` fields that fell dead with the branches:
+  `gameOverContainerOw`, `canvasOW`, `canvasTwo` and `utHeart`.
+- The two `TextManager` branches matching on the name `"TextManager OW"`. All ten scene
+  instances of that prefab override the object name, so neither branch could ever run.
+- The title screen's last-map line, which had been showing a value nothing set since v0.1.
+- Dead `Canvas OW` and `Canvas Two` lookups in `ErrorDisplay` and `SelectOMatic`.
+
+### Documentation
+
+- 35 overworld references corrected across eight API pages, heaviest in
+  `misc-functions.md` (11), `sprites-and-animation.md` (9) and `discord.md` (6). Several
+  described behaviour that genuinely changed in v0.1, such as `Misc.ResetCamera` and the
+  Discord presence states.
+- `sprite.z` and `sprite.absz` were documented as working "in the Overworld only". They are
+  plain transform Z accessors and still work; the pages now say battle rendering orders by
+  layer, so they rarely change what you see.
+- The engine architecture and repository layout pages record the v0.2 state, including why
+  the save path is kept even though only name entry calls `SaveLoad.Save()`.
+
 ## 0.1 (2026-07-26)
 
 Removes the overworld. Soulbound is a boss rush: you pick a boss from a menu and
