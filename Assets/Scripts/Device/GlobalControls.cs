@@ -15,7 +15,7 @@ public class GlobalControls : MonoBehaviour {
     public static int    BetaVersion      = 0;          // Only used for beta versions
 
     public static int frame;                        // Frame counter used for logging purposes
-    public static float overworldTimestamp = 0f;    // Timestamp of the creation of the save file, mostly used to know the time spent in this save in the save and load screen
+    public static float sessionTimestamp = 0f;    // Timestamp of the creation of the save file, mostly used to know the time spent in this save in the save and load screen
 
     public static IUndertaleInput input = new KeyboardInput();              // KeyboardInput singleton, registering any key press the Player does and handling them
     public static LuaInputBinding luaInput = new LuaInputBinding(input);    // Input Lua object, usable on the Lua side

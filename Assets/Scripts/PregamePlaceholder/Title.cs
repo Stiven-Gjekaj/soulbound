@@ -198,7 +198,7 @@ public class Title : MonoBehaviour {
         SceneManager.LoadScene("ModSelect");
         DiscordControls.StartModSelect();
         yield return 0;
-        GlobalControls.overworldTimestamp += (SaveLoad.savedGame != null ? SaveLoad.savedGame.playerTime : 0f);
+        GlobalControls.sessionTimestamp += (SaveLoad.savedGame != null ? SaveLoad.savedGame.playerTime : 0f);
         if (GameObject.Find("Main Camera"))
             Destroy(GameObject.Find("Main Camera"));
         Destroy(gameObject);

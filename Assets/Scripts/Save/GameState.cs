@@ -36,7 +36,7 @@ public class GameState {
         foreach (UnderItem item in ItemBox.items)
             boxContents.Add(item.Name);
 
-        playerTime = Time.time - GlobalControls.overworldTimestamp;
+        playerTime = Time.time - GlobalControls.sessionTimestamp;
 
         try {
             foreach (string key in LuaScriptBinder.GetAllSessionGlobals().Keys) {
