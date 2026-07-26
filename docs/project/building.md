@@ -94,3 +94,38 @@ There is deliberately no activation workflow in this repository. GameCI's
 `.ulf` procedure above replaces it. Do not add one back.
 
 The upstream reference is [GameCI's activation docs](https://game.ci/docs/github/activation).
+
+## Releasing
+
+Releases are cut by pushing a version tag. The tag is the source of truth for the version:
+nothing else needs editing to change what a build reports.
+
+```
+git tag v0.3.0
+git push origin v0.3.0
+```
+
+That fires [`.github/workflows/release.yml`](../../.github/workflows/release.yml), which
+builds all three platforms, assembles the same payload `build.yml` produces, zips each one
+as `Soulbound-<version>-<platform>.zip`, and publishes a GitHub release with those three
+archives attached.
+
+Three things worth knowing:
+
+- **Releases are marked pre-release.** The workflow always passes `--prerelease`. There is
+  no finished game to ship yet, and the flag keeps that clear on the releases page. Remove
+  the flag when that stops being true.
+- **The notes come from the changelog.** The workflow pulls the section matching the tag's
+  version out of [`CHANGELOG.md`](../../CHANGELOG.md). Write that section before tagging.
+  If no section matches, the release still publishes, with a pointer to the changelog
+  instead of notes.
+- **`build.yml` is unchanged.** It still runs on every push and pull request and uploads
+  unzipped artifacts. That is the per-commit check; `release.yml` is the distribution path.
+  Tagging does not skip the normal build.
+
+The version reaches the executable through `versioning: Custom`, which passes the tag to
+`unity-builder`, which passes it to `BuildScript.Build` as `buildVersion`, which sets
+`PlayerSettings.bundleVersion`.
+
+`Build.py` at the repository root is the local equivalent for producing builds by hand. It
+does not tag or publish anything.
