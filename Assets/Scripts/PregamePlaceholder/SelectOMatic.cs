@@ -9,21 +9,20 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class SelectOMatic : MonoBehaviour {
-    private static int currentPageID;
-    private static List<DirectoryInfo> mods, folders;
-    private static List<ModPage> modPages;
-    private Dictionary<string, Sprite> bgs = new Dictionary<string, Sprite>();
+    private static int currentBoss;
+    private static List<BossEntry> bosses;
+    private Dictionary<string, Sprite> portraits = new Dictionary<string, Sprite>();
     private bool animationDone = true;
     private float animationTimer;
     public EventSystem eventSystem;
 
-    private static float modListScroll;         // Used to keep track of the position of the mod list specifically. Resets if you press escape
+    private static float bossListScroll;        // Used to keep track of the position of the boss list. Resets if you press escape
     private static float encounterListScroll;   // Used to keep track of the position of the encounter list. Resets if you press escape
 
     private float ExitButtonAlpha = 5f;         // Used to fade the "Exit" button in and out
     private float OptionsButtonAlpha = 5f;      // Used to fade the "Options" button in and out
 
-    private static int selectedItem;            // Used to let users navigate the mod and encounter menus with the arrow keys!
+    private static int selectedItem;            // Used to let users navigate the boss and encounter menus with the arrow keys!
 
     public GameObject encounterBox, devMod, content, retromodeWarning;
     public GameObject btnList,              btnBack,              btnNext,              btnExit,              btnOptions;
@@ -36,60 +35,43 @@ public class SelectOMatic : MonoBehaviour {
         Destroy(GameObject.Find("Player"));
         UnitaleUtil.firstErrorShown = false;
 
-        // Load directory info
-        DirectoryInfo modsFolder = new DirectoryInfo(Path.Combine(FileLoader.DataRoot, "Mods"));
+        // There is one mod, and it is the game.
+        StaticInits.MODFOLDER = StaticInits.GAME_MODFOLDER;
 
-        // Deep mod detection in CYF's Mods folder
-        List<DirectoryInfo>[] deepSearch = DeepModSearch(modsFolder);
-        mods = deepSearch[0];
-        folders = deepSearch[1];
+        // Re-read the registry every time, so editing bosses.lua does not need a restart.
+        BossRegistry.Reload();
+        bosses = BossRegistry.Entries;
 
-        // Add mods and folders together, sort them by name, then by ownership
-        List<DirectoryInfo> modsAndFolders = new List<DirectoryInfo>(mods);
-        modsAndFolders.AddRange(folders);
-        modsAndFolders.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
-
-        modPages = modsAndFolders.Select(d => new ModPage(d, mods.Contains(d))).ToList();
-
-        BuildModPagesHierarchy();
-
-        // Sort folders, then mods attached to them
-        SortModsAndFolders(modsAndFolders, true);
-        SortModsAndFolders(modsAndFolders, false);
-
-        // Close all folders!
-        CloseAllFolders();
-
-        // Make sure that there is at least one playable mod present
-        if (modPages.Count == 0) {
-            GlobalControls.modDev = false;
-            UnitaleUtil.DisplayLuaError("loading", "<b>Your mod folder is empty!</b>\nYou need at least 1 playable mod to use the Mod Selector.\n\n"
-                + "Remember:\n1. Mods whose names start with \"@\" do not count\n2. Folders without encounter files or with only encounters whose names start with \"@\" do not count");
+        // BossRegistry has already sent the player to the error screen saying why.
+        if (bosses.Count == 0)
             return;
-        }
+
+        // Keep the stored selection in range, in case the registry shrank since last time.
+        if (currentBoss >= bosses.Count)
+            currentBoss = 0;
 
         // Bind button functions
         btnBack.GetComponent<Button>().onClick.RemoveAllListeners();
         btnBack.GetComponent<Button>().onClick.AddListener(() => {
             eventSystem.SetSelectedGameObject(null);
             if (!animationDone) return;
-            modFolderSelection();
-            ScrollMods(-1);
+            bossSelection();
+            ScrollBosses(-1);
         });
         btnNext.GetComponent<Button>().onClick.RemoveAllListeners();
         btnNext.GetComponent<Button>().onClick.AddListener(() => {
             eventSystem.SetSelectedGameObject(null);
             if (!animationDone) return;
-            modFolderSelection();
-            ScrollMods( 1);
+            bossSelection();
+            ScrollBosses( 1);
         });
 
-        // Give the mod list button a function
+        // Give the boss list button a function
         btnList.GetComponent<Button>().onClick.RemoveAllListeners();
         btnList.GetComponent<Button>().onClick.AddListener(() => {
             eventSystem.SetSelectedGameObject(null);
             if (animationDone)
-                modFolderMiniMenu();
+                bossListMenu();
         });
         // Grab the exit button, and give it some functions
         btnExit.GetComponent<Button>().onClick.RemoveAllListeners();
@@ -121,26 +103,15 @@ public class SelectOMatic : MonoBehaviour {
             //Back button within scrolling list
             content.transform.Find("Back/Text").GetComponent<Text>().text = "← BCAK";
 
-            //Mod list button
-            ListText.gameObject.GetComponent<Text>().text   = "MDO LITS";
-            ListShadow.gameObject.GetComponent<Text>().text = "MDO LITS";
+            //Boss list button
+            ListText.gameObject.GetComponent<Text>().text   = "BSSO LITS";
+            ListShadow.gameObject.GetComponent<Text>().text = "BSSO LITS";
         }
 
         if (retromodeWarning)
             retromodeWarning.SetActive(GlobalControls.retroMode);
 
-        modFolderSelection();
-
-        // Check if the encounter still exists
-        ModPage modPage = modPages[currentPageID];
-        if (modPage != null) {
-            // Open all folders containing the mod
-            while (modPage.parent != null) {
-                modPage = modPage.parent;
-                if (!modPage.isOpen)
-                    OpenOrCloseFolder(modPages.FindIndex(p => p == modPage));
-            }
-        }
+        bossSelection();
 
         // This check will be true if we just exited out of an encounter
         // If that's the case, we want to open the encounter list so the user only has to click once to re enter
@@ -150,7 +121,7 @@ public class SelectOMatic : MonoBehaviour {
             DirectoryInfo encounterFiles = new DirectoryInfo(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters"));
             string[] encounterNames = encounterFiles.GetFiles("*.lua").Select(f => Path.GetFileNameWithoutExtension(f.Name)).Where(f => !f.StartsWith("@")).ToArray();
 
-            // Highlight the chosen encounter whenever the user exits the mod menu
+            // Highlight the chosen encounter whenever the user exits the boss menu
             if (encounterNames.Length > 1) {
                 int temp = selectedItem;
                 encounterSelection();
@@ -174,7 +145,7 @@ public class SelectOMatic : MonoBehaviour {
         // Player is coming here from the Disclaimer scene
         } else {
             // When the player enters from the Disclaimer screen, reset stored scroll positions
-            modListScroll       = 0.0f;
+            bossListScroll      = 0.0f;
             encounterListScroll = 0.0f;
         }
 
@@ -182,85 +153,10 @@ public class SelectOMatic : MonoBehaviour {
         StaticInits.ENCOUNTER = "";
     }
 
-    /// <summary>
-    /// This function performs a deep search for mods in the selected folder.
-    /// Note that the function is recursive: it calls itself on subfolders if it finds any.
-    /// A mod must satisfy a few conditions to be detected:
-    /// - It must contain the folders Sprites and Lua/Encounters.
-    /// - Its Lua/Encounters folder must contain at least one sprite.
-    /// - Its root folder must not be CYF's Mods folder.
-    /// - Its root folder must not be hidden nor start with the character @.
-    /// </summary>
-    /// <param name="dir">Directory to start the deep search from (usually the Mods folder)</param>
-    /// <param name="currentDepth">Current depth of the search</param>
-    /// <param name="maxDepth">Maximum depth of the search</param>
-    /// <returns>The mods and notable folders found during the deep search</returns>
-    private List<DirectoryInfo>[] DeepModSearch(DirectoryInfo dir, int currentDepth = 0, int maxDepth = 4) {
-        List<DirectoryInfo> mods = new List<DirectoryInfo>();
-        List<DirectoryInfo> folders = new List<DirectoryInfo>();
-        DirectoryInfo modsDirectory = new DirectoryInfo(Path.Combine(FileLoader.DataRoot, "Mods"));
-
-        foreach (DirectoryInfo modFolder in dir.GetDirectories()) {
-            // Ignore folders whose name start with @.
-            if (modFolder.Name.StartsWith("@"))
-                continue;
-
-            // The mod folder should not be hidden.
-            if ((modFolder.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
-                continue;
-
-            // Do not explore junctions!
-            if ((modFolder.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
-                continue;
-
-            // Check if the current folder is a valid mod.
-            try {
-                // The mod folder should contain a Lua folder.
-                DirectoryInfo luaFolder = modFolder.GetDirectories().First(d => d.Name == "Lua");
-                // The mod's Lua folder should contain an Encounters folder.
-                DirectoryInfo encountersFolder = luaFolder.GetDirectories().First(d => d.Name == "Encounters");
-                // The mod's Encounters folder should contain at least one selectable Encounter.
-                if (!encountersFolder.GetFiles().Any(p => !p.Name.StartsWith("@")))
-                    throw new InvalidOperationException();
-                // The mod folder should contain a Sprites folder.
-                DirectoryInfo spritesFolder = modFolder.GetDirectories().First(d => d.Name == "Sprites");
-
-                // If all conditions are satisfied, add the current folder as a mod.
-                mods.Add(modFolder);
-                DirectoryInfo modParentFolder = modFolder.Parent;
-                if (!folders.Where(d => UnitaleUtil.DirectoryPathsEqual(d, modParentFolder)).Any() && !UnitaleUtil.DirectoryPathsEqual(modParentFolder, modsDirectory))
-                    folders.Add(modParentFolder);
-                continue;
-            } catch { }
-
-            // Recursive call
-            if (currentDepth < maxDepth && modFolder.GetDirectories().Length > 0) {
-                List<DirectoryInfo>[] childData = DeepModSearch(modFolder, currentDepth + 1, maxDepth);
-                mods.AddRange(childData[0]);
-                folders.AddRange(childData[1]);
-            }
-        }
-
-        // Prevent folder duplicates
-        folders = folders.Where((d, index) => folders.FindIndex(d2 => UnitaleUtil.DirectoryPathsEqual(d2, d)) == index).ToList();
-        return new List<DirectoryInfo>[] { mods, folders };
-    }
-
-    // A special function used specifically for error handling
-    // It re-generates the mod list, and selects the first mod
-    // Used for cases where the player selects a mod or encounter that no longer exists
-    private void HandleErrors() {
-        Debug.LogWarning("Mod or Encounter not found! Resetting mod list...");
-        currentPageID = 0;
-        bgs = new Dictionary<string, Sprite>();
-        Start();
-    }
-
     private IEnumerator LaunchMod() {
-        // First: make sure the mod is still here and can be opened
-        if (!new DirectoryInfo(modPages[currentPageID].path.FullName + "/Lua/Encounters/").Exists
-         || !File.Exists(modPages[currentPageID].path.FullName + "/Lua/Encounters/" + StaticInits.ENCOUNTER + ".lua")) {
-            HandleErrors();
+        // First: make sure the encounter is still here and can be opened
+        if (!File.Exists(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters/" + StaticInits.ENCOUNTER + ".lua"))) {
+            UnitaleUtil.DisplayLuaError(BossRegistry.FileName, "The encounter script \"" + StaticInits.ENCOUNTER + ".lua\" was there when the boss list loaded, but it is gone now.");
             yield break;
         }
 
@@ -277,138 +173,50 @@ public class SelectOMatic : MonoBehaviour {
                 throw new Exception();
             Debug.Log("Loading " + StaticInits.ENCOUNTER);
             GlobalControls.isInFight = true;
-            DiscordControls.StartBattle(modPages[currentPageID].path.Name, StaticInits.ENCOUNTER);
+            DiscordControls.StartBattle(StaticInits.GAME_MODFOLDER, StaticInits.ENCOUNTER);
             SceneManager.LoadScene("Battle");
         } catch (Exception e) {
             ModBackground.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.25f);
-            Debug.LogError("An error occured while loading a mod:\n" + e.Message + "\n\n" + e.StackTrace);
+            Debug.LogError("An error occured while loading a boss:\n" + e.Message + "\n\n" + e.StackTrace);
         }
     }
 
-    // Shows a mod's "page".
-    private void ShowMod(int id) {
-        DirectoryInfo modsDirectory = new DirectoryInfo(Path.Combine(FileLoader.DataRoot, "Mods"));
-        // Error handler
-        // If current index is now out of range
-        if (id < 0 || id >= modPages.Count) {
-            HandleErrors();
-            return;
-        }
+    // Shows one boss.
+    private void ShowBoss(int id) {
+        BossEntry boss = bosses[id];
 
-        ModPage modPage = modPages[id];
-
-        // If currently selected mod is not a folder and doesn't exist anymore, throw an error
-        if (modPage.isMod
-            && (!new DirectoryInfo(modPage.path.FullName + "/Lua/Encounters").Exists
-            || new DirectoryInfo(modPage.path.FullName + "/Lua/Encounters").GetFiles("*.lua").Length == 0)) {
-            HandleErrors();
-            return;
-        }
-
-        string relativePath = UnitaleUtil.MakeRelativePath(Path.Combine(FileLoader.DataRoot, "Mods/"), modPage.path.FullName);
-        if (modPage.isMod) {
-            // Update currently selected mod folder
-            StaticInits.MODFOLDER = relativePath;
-
-            // Make clicking the background go to the encounter select screen
-            ModBackground.GetComponent<Button>().onClick.RemoveAllListeners();
-            ModBackground.GetComponent<Button>().onClick.AddListener(() => {
-                eventSystem.SetSelectedGameObject(null);
-                if (animationDone) {
-                    encounterSelection();
-                    content.transform.GetChild(selectedItem).GetComponent<MenuButton>().StartAnimation(1);
-                }
-            });
-
-            // Update the background
-            var ImgComp = ModBackground.GetComponent<Image>();
-            FileLoader.absoluteSanitizationDictionary.Clear();
-            FileLoader.relativeSanitizationDictionary.Clear();
-            // First, check if we already have this mod's background loaded in memory
-            if (bgs.ContainsKey(modPage.path.Name)) {
-                ImgComp.sprite = bgs[modPage.path.Name];
-            } else {
-                // if not, find it and store it
-                try {
-                    Sprite thumbnail = SpriteUtil.FromFile("preview.png");
-                    ImgComp.sprite = thumbnail;
-                } catch {
-                    try {
-                        Sprite bg = SpriteUtil.FromFile("bg.png");
-                        ImgComp.sprite = bg;
-                    } catch { ImgComp.sprite = SpriteUtil.FromFile("black.png"); }
-                }
-                bgs.Add(modPage.path.Name, ImgComp.sprite);
+        // Make clicking the background go to the encounter select screen
+        ModBackground.GetComponent<Button>().onClick.RemoveAllListeners();
+        ModBackground.GetComponent<Button>().onClick.AddListener(() => {
+            eventSystem.SetSelectedGameObject(null);
+            if (animationDone) {
+                encounterSelection();
+                content.transform.GetChild(selectedItem).GetComponent<MenuButton>().StartAnimation(1);
             }
+        });
 
-            // Get all encounters in the mod's Encounters folder
-            DirectoryInfo encountersFolder = new DirectoryInfo(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters"));
-            string[] encounters = encountersFolder.GetFiles("*.lua").Select(f => Path.GetFileNameWithoutExtension(f.Name)).Where(f => !f.StartsWith("@")).ToArray();
-
-            // List # of encounters, or name of encounter if there is only one
-            if (encounters.Length == 1) {
-                EncounterCount.GetComponent<Text>().text = encounters[0];
-                // Crate Your Frisk version
-                if (GlobalControls.crate)
-                    EncounterCount.GetComponent<Text>().text = Temmify.Convert(encounters[0],  true);
-
-                // Make clicking the bg directly open the encounter
-                ModBackground.GetComponent<Button>().onClick.RemoveAllListeners();
-                ModBackground.GetComponent<Button>().onClick.AddListener(() => {
-                    eventSystem.SetSelectedGameObject(null);
-                    if (!animationDone) return;
-                    StaticInits.ENCOUNTER = encounters[0];
-                    StartCoroutine(LaunchMod());
-                });
-            } else {
-                EncounterCount.GetComponent<Text>().text = "Has " + encounters.Length + " encounters";
-                // Crate Your Frisk version
-                if (GlobalControls.crate)
-                    EncounterCount.GetComponent<Text>().text = "HSA " + encounters.Length + " ENCUOTNERS";
-            }
-            EncounterCountShadow.GetComponent<Text>().text = EncounterCount.GetComponent<Text>().text;
-        } else {
-            // Make clicking the background open or close the folder
-            ModBackground.GetComponent<Button>().onClick.RemoveAllListeners();
-            ModBackground.GetComponent<Button>().onClick.AddListener(() => {
-                eventSystem.SetSelectedGameObject(null);
-                if (animationDone) {
-                    OpenOrCloseFolder(id);
-                    ShowMod(id);
-                }
-            });
-
-            // Update the background
-            var imgComp = ModBackground.GetComponent<Image>();
-            imgComp.sprite = Resources.Load<Sprite>("Sprites/Folder" + (modPage.isOpen ? "Open" : "Closed"));
-
-            // List # of mods
-            EncounterCount.GetComponent<Text>().text = "Has " + modPage.deepLinkedMods + " mods";
-            // Crate Your Frisk version
-            if (GlobalControls.crate)
-                EncounterCount.GetComponent<Text>().text = "HSA " + modPage.deepLinkedMods + " MDOS";
-            EncounterCountShadow.GetComponent<Text>().text = EncounterCount.GetComponent<Text>().text;
-        }
+        // Update the portrait
+        ModBackground.GetComponent<Image>().sprite = Portrait(boss);
 
         // Update the text
-        ModTitle.GetComponent<Text>().text = modPage.path.Name;
+        ModTitle.GetComponent<Text>().text = boss.name;
         // Crate Your Frisk version
         if (GlobalControls.crate)
-            ModTitle.GetComponent<Text>().text = Temmify.Convert(modPage.path.Name, true);
+            ModTitle.GetComponent<Text>().text = Temmify.Convert(boss.name, true);
         ModTitleShadow.GetComponent<Text>().text = ModTitle.GetComponent<Text>().text;
 
-        // Give the parent folder if the mod is nested
-        if (!UnitaleUtil.DirectoryPathsEqual(modPage.path.Parent, modsDirectory)) {
-            List<string> folders = relativePath.Split(Path.DirectorySeparatorChar).ToList();
-            folders.RemoveAt(folders.Count - 1);
-            FolderText.GetComponent<Text>().text = "Belongs to the folder " + string.Join(Path.DirectorySeparatorChar + "", folders.ToArray());
-        } else {
-            FolderText.GetComponent<Text>().text = "";
-        }
+        EncounterCount.GetComponent<Text>().text = boss.subtitle;
+        // Crate Your Frisk version
+        if (GlobalControls.crate)
+            EncounterCount.GetComponent<Text>().text = Temmify.Convert(boss.subtitle, true);
+        EncounterCountShadow.GetComponent<Text>().text = EncounterCount.GetComponent<Text>().text;
+
+        // Reserved for the cleared marker
+        FolderText.GetComponent<Text>().text       = "";
         FolderTextShadow.GetComponent<Text>().text = FolderText.GetComponent<Text>().text;
 
         // Update the color of the arrows
-        if (modPages.Count == 1) {
+        if (bosses.Count == 1) {
             BackText.color = new Color(0.25f, 0.25f, 0.25f, 1f);
             NextText.color = new Color(0.25f, 0.25f, 0.25f, 1f);
         } else {
@@ -417,14 +225,33 @@ public class SelectOMatic : MonoBehaviour {
         }
     }
 
-    // Goes to the next or previous mod with a little scrolling animation.
-    // -1 for left, 1 for right
-    private void ScrollMods(int dir) {
-        // First, determine if the next mod should be shown
-        bool animate = modPages.Where(p => !p.isHidden).Count() > 1;
+    /// <summary>
+    /// The image behind a boss's name. Bosses have no art yet, so this almost always
+    /// falls through to the engine's black background. An artist only has to drop
+    /// Sprites/Bosses/&lt;id&gt;.png into the mod for it to be picked up.
+    /// </summary>
+    private Sprite Portrait(BossEntry boss) {
+        if (portraits.ContainsKey(boss.id))
+            return portraits[boss.id];
 
-        // If the new mod is being shown, start the animation!
-        if (!animate) return;
+        FileLoader.absoluteSanitizationDictionary.Clear();
+        FileLoader.relativeSanitizationDictionary.Clear();
+
+        Sprite portrait;
+        try { portrait = SpriteUtil.FromFile("Bosses/" + boss.id + ".png"); }
+        catch { portrait = SpriteUtil.FromFile("black.png"); }
+
+        portraits.Add(boss.id, portrait);
+        return portrait;
+    }
+
+    // Goes to the next or previous boss with a little scrolling animation.
+    // -1 for left, 1 for right
+    private void ScrollBosses(int dir) {
+        // First, determine if the next boss should be shown
+        if (bosses.Count <= 1) return;
+
+        // If the new boss is being shown, start the animation!
         animationTimer = dir / 10f;
         animationDone  = false;
 
@@ -448,15 +275,18 @@ public class SelectOMatic : MonoBehaviour {
         FolderTextShadow.transform.Translate(640     * dir, 0, 0);
         FolderText.transform.Translate(640           * dir, 0, 0);
 
-        // Actually choose the next visible mod
-        do { currentPageID = Math.Mod(currentPageID + dir, modPages.Count); }
-        while (modPages[currentPageID].isHidden);
+        // Actually choose the next boss
+        currentBoss = Math.Mod(currentBoss + dir, bosses.Count);
 
-        ShowMod(currentPageID);
+        ShowBoss(currentBoss);
     }
 
     // Used to animate scrolling left or right.
     private void Update() {
+        // Nothing to drive: BossRegistry sent the player to the error screen instead.
+        if (bosses == null || bosses.Count == 0)
+            return;
+
         // Animation updating section
         if (AnimContainer.activeSelf) {
             animationTimer = animationTimer > 0 ? Mathf.Floor(animationTimer + 1) : Mathf.Ceil (animationTimer - 1);
@@ -512,31 +342,30 @@ public class SelectOMatic : MonoBehaviour {
         // Controls:
 
         ////////////////// Main: ////////////////////////////////////
-        //        Confirm: Start encounter (if mod has only one    //
-        //                 encounter), or open encounter list      //
-        //         Cancel: Return to Disclaimer screen             //
-        //             Up: Open the mod list                       //
-        //           Menu: Open the options menu                   //
-        //           Left: Scroll left                             //
-        //          Right: Scroll right                            //
-        ////////////////// Encounter or Mod list: ///////////////////
-        //        Confirm: Start an encounter, or select a mod     //
-        //         Cancel: Exit                                    //
-        //             Up: Move up                                 //
-        //           Down: Move down                               //
-        //           Menu: Open/Close the folder                   //
+        //        Confirm: Start the fight (if the boss has only    //
+        //                 one encounter), or open encounter list   //
+        //         Cancel: Return to Disclaimer screen              //
+        //             Up: Open the boss list                       //
+        //           Menu: Open the options menu                    //
+        //           Left: Scroll left                              //
+        //          Right: Scroll right                             //
+        ////////////////// Encounter or boss list: //////////////////
+        //        Confirm: Start an encounter, or select a boss     //
+        //         Cancel: Exit                                     //
+        //             Up: Move up                                  //
+        //           Down: Move down                                //
         /////////////////////////////////////////////////////////////
 
         if (!encounterBox.activeSelf) {
             // Main controls
             if (animationDone) {
                 // Move left
-                if (GlobalControls.input.Left == ButtonState.PRESSED)       ScrollMods(-1);
+                if (GlobalControls.input.Left == ButtonState.PRESSED)       ScrollBosses(-1);
                 // Move right
-                else if (GlobalControls.input.Right == ButtonState.PRESSED) ScrollMods(1);
-                // Open the mod list
+                else if (GlobalControls.input.Right == ButtonState.PRESSED) ScrollBosses(1);
+                // Open the boss list
                 else if (GlobalControls.input.Up == ButtonState.PRESSED) {
-                    modFolderMiniMenu();
+                    bossListMenu();
                     content.transform.GetChild(selectedItem).GetComponent<MenuButton>().StartAnimation(1);
                 // Open the encounter list or start the encounter (if there is only one encounter)
                 } else if (GlobalControls.input.Confirm == ButtonState.PRESSED)
@@ -550,7 +379,7 @@ public class SelectOMatic : MonoBehaviour {
             if (GlobalControls.input.Cancel == ButtonState.PRESSED)
                 btnExit.GetComponent<Button>().onClick.Invoke();
         } else {
-            // Encounter or Mod List controls
+            // Encounter or boss list controls
             if (GlobalControls.input.Up == ButtonState.PRESSED || GlobalControls.input.Down == ButtonState.PRESSED) {
                 // Store previous value of selectedItem
                 int previousSelectedItem = selectedItem;
@@ -588,31 +417,26 @@ public class SelectOMatic : MonoBehaviour {
             // Exit
             if (GlobalControls.input.Cancel == ButtonState.PRESSED)
                 ModBackground.GetComponent<Button>().onClick.Invoke();
-            // Select the mod or encounter
+            // Select the boss or encounter
             else if (GlobalControls.input.Confirm == ButtonState.PRESSED)
                 content.transform.GetChild(selectedItem).GetComponent<Button>().onClick.Invoke();
-
-            // Open/Close the current folder
-            if (GlobalControls.input.Menu == ButtonState.PRESSED)
-                if (content.transform.GetChild(selectedItem).Find("QuickFolderButton").gameObject.activeSelf)
-                    content.transform.GetChild(selectedItem).Find("QuickFolderButton").GetComponent<Button>().onClick.Invoke();
         }
     }
 
-    // Shows the "mod page" screen.
-    private void modFolderSelection() {
+    // Shows the "boss page" screen.
+    private void bossSelection() {
         eventSystem.SetSelectedGameObject(null);
         UnitaleUtil.printDebuggerBeforeInit = "";
-        ShowMod(currentPageID);
+        ShowBoss(currentBoss);
 
         // Hide the 4 buttons if needed
         if (!GlobalControls.modDev)
             devMod.SetActive(false);
 
-        // Show the mod list button
+        // Show the boss list button
         btnList.SetActive(true);
 
-        // If the encounter box is visible, remove all encounter buttons before hiding
+        // If the encounter box is visible, remove all its buttons before hiding
         if (encounterBox.activeSelf) {
             foreach (Transform b in content.transform) {
                 if (b.gameObject.name != "Back")
@@ -621,13 +445,13 @@ public class SelectOMatic : MonoBehaviour {
                     b.GetComponent<MenuButton>().Reset();
             }
         }
-        // Hide the encounter selection box
+        // Hide the selection box
         encounterBox.SetActive(false);
     }
 
     // Shows the list of available encounters in a mod.
     private void encounterSelection() {
-        // Hide the mod list button
+        // Hide the boss list button
         btnList.SetActive(false);
 
         // Automatically choose "back"
@@ -638,7 +462,7 @@ public class SelectOMatic : MonoBehaviour {
         ModBackground.GetComponent<Button>().onClick.AddListener(() => {
             eventSystem.SetSelectedGameObject(null);
             if (animationDone)
-                modFolderSelection();
+                bossSelection();
         });
         // Show the encounter selection box
         encounterBox.SetActive(true);
@@ -648,9 +472,9 @@ public class SelectOMatic : MonoBehaviour {
         // Give the back button its function
         GameObject back = content.transform.Find("Back").gameObject;
         back.GetComponent<Button>().onClick.RemoveAllListeners();
-        back.GetComponent<Button>().onClick.AddListener(modFolderSelection);
+        back.GetComponent<Button>().onClick.AddListener(bossSelection);
 
-        DirectoryInfo di = new DirectoryInfo(Path.Combine(FileLoader.DataRoot, "Mods/" + StaticInits.MODFOLDER + "/Lua/Encounters"));
+        DirectoryInfo di = new DirectoryInfo(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters"));
         if (!di.Exists || di.GetFiles().Length <= 0) return;
         string[] encounters = di.GetFiles("*.lua").Select(f => Path.GetFileNameWithoutExtension(f.Name)).Where(f => !f.StartsWith("@")).ToArray();
 
@@ -694,22 +518,22 @@ public class SelectOMatic : MonoBehaviour {
         }
     }
 
-    // Opens the scrolling interface and lets the user browse their mods.
-    private void modFolderMiniMenu() {
-        // Hide the mod list button
+    // Opens the scrolling interface and lets the user jump straight to any boss.
+    private void bossListMenu() {
+        // Hide the boss list button
         btnList.SetActive(false);
 
-        // Automatically select the current mod when the mod list appears
-        selectedItem = FindPageIndex(currentPageID) + 1;
+        // Automatically select the current boss when the list appears
+        selectedItem = currentBoss + 1;
 
         // Give the back button its function
         GameObject back = content.transform.Find("Back").gameObject;
         back.GetComponent<Button>().onClick.RemoveAllListeners();
         back.GetComponent<Button>().onClick.AddListener(() => {
             eventSystem.SetSelectedGameObject(null);
-            // Reset the encounter box's position
-            modListScroll = 0.0f;
-            modFolderSelection();
+            // Reset the list's position
+            bossListScroll = 0.0f;
+            bossSelection();
         });
 
         // Make clicking the background exit this menu
@@ -717,34 +541,29 @@ public class SelectOMatic : MonoBehaviour {
         ModBackground.GetComponent<Button>().onClick.AddListener(() => {
             eventSystem.SetSelectedGameObject(null);
             if (!animationDone) return;
-            // Store the encounter box's position so it can be remembered upon exiting a mod
-            modListScroll = content.GetComponent<RectTransform>().anchoredPosition.y;
-            modFolderSelection();
+            // Store the list's position so it can be remembered
+            bossListScroll = content.GetComponent<RectTransform>().anchoredPosition.y;
+            bossSelection();
         });
-        // Show the encounter selection box
+        // Show the selection box
         encounterBox.SetActive(true);
-        // Move the encounter box to the stored position, for easier mod browsing
-        content.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, modListScroll);
+        // Move the box to the stored position, for easier browsing
+        content.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, bossListScroll);
 
-        int count = -1;
-        for (int i = 0; i < modPages.Count; i++) {
-            ModPage modPage = modPages[i];
-            if (modPage.isHidden)
-                continue;
+        for (int i = 0; i < bosses.Count; i++) {
+            BossEntry boss = bosses[i];
 
-            count++;
-
-            // Create a button for each mod
+            // Create a button for each boss
             GameObject button = Instantiate(back);
 
             // Set parent and name
             button.transform.SetParent(content.transform);
-            button.name = "ModButton";
+            button.name = "BossButton";
 
             // Set position
-            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 100 - (count + 1) * 30);
-            button.GetComponent<RectTransform>().sizeDelta = new Vector2(430 - 20 * modPage.nestLevel, 30);
-            button.transform.Find("Fill").GetComponent<RectTransform>().sizeDelta = new Vector2(420 - 20 * modPage.nestLevel, 20);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 100 - (i + 1) * 30);
+            button.GetComponent<RectTransform>().sizeDelta = new Vector2(430, 30);
+            button.transform.Find("Fill").GetComponent<RectTransform>().sizeDelta = new Vector2(420, 20);
 
             // Set color
             button.GetComponent<Image>().color = new Color(0.75f, 0.75f, 0.75f, 0.5f);
@@ -753,149 +572,22 @@ public class SelectOMatic : MonoBehaviour {
             button.transform.Find("Fill").GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 
             // Set text
-            button.transform.Find("Text").GetComponent<Text>().text = modPage.path.Name;
+            button.transform.Find("Text").GetComponent<Text>().text = boss.name;
             if (GlobalControls.crate)
-                button.transform.Find("Text").GetComponent<Text>().text = Temmify.Convert(modPage.path.Name, true);
-
-            // Set extra nesting elements
-            if (modPage.nestLevel > 0)
-                button.transform.Find("ChildLink").gameObject.SetActive(true);
-            if (modPage.children.Count > 0 && modPage.isNestedOpen) {
-                button.transform.Find("ParentLink").gameObject.SetActive(true);
-                button.transform.Find("ParentLink").GetComponent<RectTransform>().sizeDelta = new Vector2(2, -15 + 30 * (modPage.shownChildrenAndSelf - 1));
-            }
+                button.transform.Find("Text").GetComponent<Text>().text = Temmify.Convert(boss.name, true);
 
             int tempCount = i;
-
-            // Set the quick folder opening/closing icon for folders
-            if (!modPage.isMod) {
-                button.transform.Find("QuickFolderButton").gameObject.SetActive(true);
-                button.transform.Find("QuickFolderButton").Find("QuickFolderButtonImage").GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/QuickFolder" + (modPage.isOpen ? "Open" : "Closed"));
-                button.transform.Find("QuickFolderButton").GetComponent<Button>().onClick.RemoveAllListeners();
-                button.transform.Find("QuickFolderButton").GetComponent<Button>().onClick.AddListener(() => {
-                    eventSystem.SetSelectedGameObject(null);
-                    // Store the encounter box's position so it can be remembered upon exiting a mod
-                    modListScroll = content.GetComponent<RectTransform>().anchoredPosition.y;
-                    int buttonsInModList = content.transform.childCount;
-
-                    currentPageID = tempCount;
-                    OpenOrCloseFolder(currentPageID);
-                    modFolderSelection();
-                    while (modPages[currentPageID].isHidden)
-                        currentPageID--;
-                    ShowMod(currentPageID);
-                    modFolderMiniMenu();
-                    content.transform.GetChild(buttonsInModList + selectedItem - 1).GetComponent<MenuButton>().StartAnimation(1);
-                });
-            }
 
             // Finally, set function!
             button.GetComponent<Button>().onClick.RemoveAllListeners();
             button.GetComponent<Button>().onClick.AddListener(() => {
                 eventSystem.SetSelectedGameObject(null);
-                // Store the encounter box's position so it can be remembered upon exiting a mod
-                modListScroll = content.GetComponent<RectTransform>().anchoredPosition.y;
+                // Store the list's position so it can be remembered
+                bossListScroll = content.GetComponent<RectTransform>().anchoredPosition.y;
 
-                currentPageID = tempCount;
-                modFolderSelection();
-                ShowMod(currentPageID);
+                currentBoss = tempCount;
+                bossSelection();
             });
-        }
-    }
-
-    // Links mods and folders together through a parent/child system
-    private void BuildModPagesHierarchy() {
-        DirectoryInfo modsDirectory = new DirectoryInfo(Path.Combine(FileLoader.DataRoot, "Mods"));
-
-        foreach (ModPage modPage in modPages) {
-            DirectoryInfo directory = modPage.path;
-
-            do { directory = directory.Parent; }
-            while (!UnitaleUtil.DirectoryPathsEqual(directory, modsDirectory) && !folders.Any(d => UnitaleUtil.DirectoryPathsEqual(d, directory)));
-
-            if (!UnitaleUtil.DirectoryPathsEqual(directory, modsDirectory) && folders.Any(d => UnitaleUtil.DirectoryPathsEqual(d, directory))) {
-                ModPage parentPage = modPages.Find(p => UnitaleUtil.DirectoryPathsEqual(p.path, directory));
-                parentPage.children.Add(modPage);
-                modPage.parent = parentPage;
-            }
-        }
-    }
-
-    private int FindPageIndex(int id) {
-        ModPage page = modPages[id];
-        if (page == null)
-            return -1;
-
-        int resultId = 0;
-        for (int i = 0; i < id; i++)
-            if (!modPages[i].isHidden)
-                resultId++;
-
-        return resultId;
-    }
-
-    // Closes or opens a given folder
-    private void OpenOrCloseFolder(int id) {
-        ModPage page = modPages[id];
-        if (page == null)
-            return;
-        page.isOpen = !page.isOpen;
-    }
-
-    // Closes all folders
-    private void CloseAllFolders() {
-        for (int i = 0; i < modPages.Count; i++) {
-            ModPage modPage = modPages[i];
-            if (modPage.isOpen)
-                OpenOrCloseFolder(i);
-        }
-    }
-
-    // Sorts mods and folders so that anything that belongs to a folder is right under it alphabetically
-    // If a folder contains folders and mods, folders will be first alphabetically, then mods will be sorted alphabetically
-    private void SortModsAndFolders(List<DirectoryInfo> modsAndFolders, bool sortingFolders) {
-        DirectoryInfo modsDirectory = new DirectoryInfo(Path.Combine(FileLoader.DataRoot, "Mods"));
-
-        // For each folder, link it to its parent, and put it at the end of its child list
-        for (int i = 0; i < modsAndFolders.Count; i++) {
-            DirectoryInfo directory = modsAndFolders[i];
-            if (folders.Where(d => UnitaleUtil.DirectoryPathsEqual(d, directory)).Any() && !sortingFolders)
-                continue;
-            if (mods.Where(d => UnitaleUtil.DirectoryPathsEqual(d, directory)).Any() && sortingFolders)
-                continue;
-
-            DirectoryInfo currentDirectory = directory;
-            while (!UnitaleUtil.DirectoryPathsEqual(currentDirectory.Parent, modsDirectory)) {
-                currentDirectory = currentDirectory.Parent;
-                // If the parent folder is recognized, move the current directory and its children under it
-                if (modsAndFolders.Where(d => UnitaleUtil.DirectoryPathsEqual(d, currentDirectory)).Any()) {
-                    ModPage currentPage = modPages.Find(p => UnitaleUtil.DirectoryPathsEqual(p.path, directory));
-                    ModPage parentPage = modPages.Find(p => UnitaleUtil.DirectoryPathsEqual(p.path, currentDirectory));
-
-                    // Move the current folder to the right place
-                    int oldPageIndex = modPages.FindIndex(p => p == currentPage);
-                    int newPageIndex = modPages.FindIndex(p => p == parentPage);
-                    newPageIndex += parentPage.deepLinkedChildren + (oldPageIndex > newPageIndex ? 1 : 0);
-                    modPages.Remove(currentPage);
-                    modPages.Insert(newPageIndex, currentPage);
-
-                    // Move all rightfully sorted children as well
-                    for (int j = 0; j < currentPage.deepLinkedChildren; j++) {
-                        if (newPageIndex > oldPageIndex) {
-                            oldPageIndex--;
-                            newPageIndex--;
-                        }
-                        ModPage childPage = modPages[oldPageIndex];
-                        modPages.Remove(childPage);
-                        modPages.Insert(newPageIndex, childPage);
-                    }
-
-                    if (sortingFolders) parentPage.linkedFolders++;
-                    else                parentPage.linkedMods++;
-
-                    break;
-                }
-            }
         }
     }
 }
