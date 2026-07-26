@@ -86,17 +86,13 @@ public class Misc {
     public static float cameraX {
         get { return Camera.main.transform.position.x - 320 - cameraXWindowSizeShift; }
         set {
-            if (UnitaleUtil.IsOverworld && !GlobalControls.isInShop)
-                PlayerOverworld.instance.cameraShift.x += value - (Camera.main.transform.position.x - 320);
-            else {
-                float oldDebuggerX = 0;
-                if (UserDebugger.instance && isDebuggerAttachedToCamera)
-                    oldDebuggerX = UserDebugger.x;
-                Camera.main.transform.position = new Vector3(value + 320 + cameraXWindowSizeShift, Camera.main.transform.position.y, Camera.main.transform.position.z);
-                // Updates the Debugger's position using the new camera position
-                if (UserDebugger.instance && isDebuggerAttachedToCamera)
-                    UserDebugger.x = oldDebuggerX;
-            }
+            float oldDebuggerX = 0;
+            if (UserDebugger.instance && isDebuggerAttachedToCamera)
+                oldDebuggerX = UserDebugger.x;
+            Camera.main.transform.position = new Vector3(value + 320 + cameraXWindowSizeShift, Camera.main.transform.position.y, Camera.main.transform.position.z);
+            // Updates the Debugger's position using the new camera position
+            if (UserDebugger.instance && isDebuggerAttachedToCamera)
+                UserDebugger.x = oldDebuggerX;
         }
     }
 
@@ -116,17 +112,13 @@ public class Misc {
     public static float cameraY {
         get { return Camera.main.transform.position.y - 240 - cameraYWindowSizeShift; }
         set {
-            if (UnitaleUtil.IsOverworld && !GlobalControls.isInShop)
-                PlayerOverworld.instance.cameraShift.y += value - (Camera.main.transform.position.y - 240);
-            else {
-                float oldDebuggerY = 0;
-                if (UserDebugger.instance && isDebuggerAttachedToCamera)
-                    oldDebuggerY = UserDebugger.y - cameraYWindowSizeShift;
-                Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, value + 240 + cameraYWindowSizeShift, Camera.main.transform.position.z);
-                // Updates the Debugger's position using the new camera position
-                if (UserDebugger.instance && isDebuggerAttachedToCamera)
-                    UserDebugger.y = oldDebuggerY + cameraYWindowSizeShift;
-            }
+            float oldDebuggerY = 0;
+            if (UserDebugger.instance && isDebuggerAttachedToCamera)
+                oldDebuggerY = UserDebugger.y - cameraYWindowSizeShift;
+            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, value + 240 + cameraYWindowSizeShift, Camera.main.transform.position.z);
+            // Updates the Debugger's position using the new camera position
+            if (UserDebugger.instance && isDebuggerAttachedToCamera)
+                UserDebugger.y = oldDebuggerY + cameraYWindowSizeShift;
         }
     }
 
@@ -141,10 +133,7 @@ public class Misc {
     }
 
     public static void ResetCamera() {
-        if (UnitaleUtil.IsOverworld && !GlobalControls.isInShop)
-            PlayerOverworld.instance.cameraShift = Vector2.zero;
-        else
-            MoveCameraTo(0f, 0f);
+        MoveCameraTo(0f, 0f);
     }
 
     public LuaSpriteShader ScreenShader {
