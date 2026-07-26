@@ -41,11 +41,11 @@ Gets a Global Variable that you previously set using `SetGlobal()`.
 
 ### `<CYF>` `SetRealGlobal(string your_variable_name, value)` [E/M/W]
 
-Sets a Global variable that is accessible even in the overworld. After setting it, you can
-retrieve it from all of your scripts at any time with `GetRealGlobal(variable_name)`.
+Sets a Global variable that any script can read. After setting it, you can retrieve it
+from all of your scripts at any time with `GetRealGlobal(variable_name)`.
 
-Persists through battles, but not between sessions. These variables can be saved using the
-overworld save system.
+Persists through battles, but not between sessions. These variables are written to the save
+file when the game saves.
 
 Note: "Complex" variables such as tables, functions and userdata can not be saved as Real
 or AlMighty globals.
@@ -53,13 +53,9 @@ or AlMighty globals.
 Also note: as Real and AlMighty Globals persist across mods, it is possible for mods to
 read each others' globals. Be careful when choosing global names.
 
-Can be used in the overworld.
-
 ### `<CYF>` `GetRealGlobal(string your_variable_name)` returns variable [E/M/W]
 
 Gets a Global that you previously set using `SetRealGlobal()`.
-
-Can be used in the overworld.
 
 ### `<CYF>` `SetAlMightyGlobal(string your_variable_name, value)` [E/M/W]
 
@@ -74,12 +70,9 @@ or AlMighty globals.
 Also note: as Real and AlMighty Globals persist across mods, it is possible for mods to
 read each others' globals. Be careful when choosing global names.
 
-Can be used in the overworld.
-
 ### `<CYF>` `GetAlMightyGlobal(string your_variable_name)` returns variable [E/M/W]
 
-Gets an AlMighty Global that you previously set using `SetAlMightyGlobal()`. Can be used in
-the overworld.
+Gets an AlMighty Global that you previously set using `SetAlMightyGlobal()`.
 
 ### `<CYF>` `SetFrameBasedMovement(boolean bool)` [E/M/W]
 
@@ -156,7 +149,7 @@ you to load it from your folder again.
 Usually, CYF keeps all sprites it loads in an encounter in memory so the engine does not
 have to load it again, which may create a lag spike. However, if the sprite is changed
 during the mod, the file will not be reloaded, and only its first version will be kept
-until the encounter is over, or the mod is unloaded in the overworld.
+until the encounter is over.
 
 ### `State(string state_to_go_to)` [E/M/W]
 
@@ -209,9 +202,6 @@ at your own risk:
   will spare that enemy. Otherwise, if the option is not yellow, then choosing "Spare" will
   activate the encounter function `HandleSpare`. Also, choosing "Flee" prompts some silly
   messages.
-
-  `<CYF>` If the encounter was entered from the overworld, choosing "Flee" allows the
-  player to flee the battle and return to the overworld.
 - `DIALOGRESULT` - This is the state that is entered whenever `BattleDialog` is called,
   when the victory message displays, when the player fails to flee, or when an item is
   used. When all text is done and the player presses "Z", the state `ENEMYDIALOGUE` is
@@ -219,12 +209,8 @@ at your own risk:
 
 Finally, there are two "special" states that evoke behavior in the engine itself:
 
-- `DONE` - Changing state to `DONE` will instantly end the current battle. Normally, this
-  will force the player to the mod selection screen.
-
-  `<CYF>` If the encounter was entered from the overworld, the battle will end and the
-  player will return to the overworld, in the same way as if the player had ended the
-  battle normally, such as by sparing all the enemies or running away.
+- `DONE` - Changing state to `DONE` will instantly end the current battle. This returns the
+  player to the mod selection screen.
 - `NONE` - This state does nothing. It is entered for the first frame of the encounter, but
   entering it manually will completely freeze your encounter. It might be useful if you
   want to disable all of Unitale/CYF's basic functionality.
