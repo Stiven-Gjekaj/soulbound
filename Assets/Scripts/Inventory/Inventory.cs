@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -25,7 +25,7 @@ public static class Inventory {
             string outString;
             int outInt;
             if (!addedItems.Contains(item) && !NametoDesc.TryGetValue(item, out outString) && !NametoShortName.TryGetValue(item, out outString) && !NametoType.TryGetValue(item, out outInt) && !NametoPrice.TryGetValue(item, out outInt))
-                throw new CYFException("Inventory.SetInventory: The item \"" + item + "\" was not found." + (UnitaleUtil.IsOverworld ? "" : "\n\nAre you sure you called Inventory.AddCustomItems first?"));
+                throw new CYFException("Inventory.SetInventory: The item \"" + item + "\" was not found.\n\nAre you sure you called Inventory.AddCustomItems first?");
         }
 
         inventory = new List<UnderItem>(new UnderItem[] { });
@@ -52,7 +52,7 @@ public static class Inventory {
         int outInt;
         if (!addedItems.Contains(Name) && !NametoDesc.TryGetValue(Name, out outString) && !NametoShortName.TryGetValue(Name, out outString) &&
             !NametoType.TryGetValue(Name, out outInt) && !NametoPrice.TryGetValue(Name, out outInt))
-            throw new CYFException("Inventory.AddItem: The item \"" + Name + "\" was not found." + (UnitaleUtil.IsOverworld ? "" : "\n\nAre you sure you called Inventory.AddCustomItems first?"));
+            throw new CYFException("Inventory.AddItem: The item \"" + Name + "\" was not found.\n\nAre you sure you called Inventory.AddCustomItems first?");
         inventory.Add(new UnderItem(Name));
         return true;
     }
@@ -68,7 +68,7 @@ public static class Inventory {
     }
 
     public static bool TryCall(string func, DynValue[] param = null) {
-        return !UnitaleUtil.IsOverworld && UnitaleUtil.TryCall(EnemyEncounter.script, func, param);
+        return UnitaleUtil.TryCall(EnemyEncounter.script, func, param);
     }
 
     public static void UseItem(int ID, bool silent = false) {
@@ -81,7 +81,7 @@ public static class Inventory {
 
         // Check if the current item has been added to the list of custom items
         bool foundCustomItem = false;
-        if (addedItems.Count != 0 && !UnitaleUtil.IsOverworld)
+        if (addedItems.Count != 0)
             if (addedItems.Any(t => string.Equals(t, Name, StringComparison.CurrentCultureIgnoreCase)))
                 foundCustomItem = true;
 
@@ -105,9 +105,8 @@ public static class Inventory {
         if (silent)
             return;
 
-        if (!UnitaleUtil.IsOverworld)
-            if (!UIController.instance.battleDialogueStarted && mess != null)
-                UIController.instance.ActionDialogResult(mess);
+        if (!UIController.instance.battleDialogueStarted && mess != null)
+            UIController.instance.ActionDialogResult(mess);
     }
 
     public static void AddItemsToDictionaries() {
