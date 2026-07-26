@@ -14,6 +14,8 @@ public static class StaticInits {
 
     public static string ENCOUNTER = "";
     public static string EDITOR_MODFOLDER = "@Title";
+    /// <summary>The folder under Mods that holds the game. There is only ever one.</summary>
+    public const string GAME_MODFOLDER = "Soulbound";
     private static bool firstInit;
 
     public static bool Initialized { get; set; }
