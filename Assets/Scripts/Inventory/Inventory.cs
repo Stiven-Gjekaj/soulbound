@@ -105,13 +105,9 @@ public static class Inventory {
         if (silent)
             return;
 
-        if (!UnitaleUtil.IsOverworld) {
+        if (!UnitaleUtil.IsOverworld)
             if (!UIController.instance.battleDialogueStarted && mess != null)
                 UIController.instance.ActionDialogResult(mess);
-        } else if (mess != null) {
-            GameObject.Find("TextManager OW").GetComponent<TextManager>().SetTextQueue(mess);
-            GameObject.Find("TextManager OW").transform.parent.parent.SetAsLastSibling();
-        }
     }
 
     public static void AddItemsToDictionaries() {
@@ -453,8 +449,7 @@ public static class Inventory {
                         break;
                 }
                 if (amount != 0)
-                    if (UnitaleUtil.IsOverworld) EventManager.instance.luaPlayerOw.setHP(PlayerCharacter.instance.HP + amount);
-                    else                         PlayerController.instance.Hurt(-amount, 0);
+                    PlayerController.instance.Hurt(-amount, 0);
                 break;
             case 1:
                 switch (name) {
