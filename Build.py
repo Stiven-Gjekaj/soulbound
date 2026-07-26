@@ -1,10 +1,10 @@
 import sys, os, subprocess, shutil, math
 
 '''
-Welcome to the CYF build script!
+Welcome to the Soulbound build script.
 
-This is a specialized script to build CYF releases completely automatically.
-The only requirements are Unity 2018.2.13f1, and 7-Zip if you wish to auto-package the builds too.
+This builds Soulbound locally for every target, automatically.
+The only requirements are Unity 2018.4.36f1, and 7-Zip if you wish to auto-package the builds too.
 Just set up the options below in "Script Vars" to your liking and run the script!
 
 Alternatively, you may run this script from the command line:
@@ -16,13 +16,13 @@ If not provided, the script will build for every possible build target defined i
 
 You may also type `--nozip` either before or after `--single <target>`, or by itself, to prevent the script
 from automatically zipping up your build(s) with 7-Zip.
-If not provided, the script will automatically use 7-Zip to package all of your CYF builds into .zip files.
+If not provided, the script will automatically use 7-Zip to package all of your builds into .zip files.
 '''
 
 ### Script Vars ###
 
-# This is the version of CYF to name the executables and the docs folder
-CYFversion = "0.6.6 LTS 3"
+# This names the build folders and the executables
+version = "0.3.0"
 
 # This is the path we will build to
 buildPath = os.getcwd() + "\\bin"
@@ -58,29 +58,17 @@ if not os.path.exists(sevenZPath):
 # Define a list of pairs of folder names, command line arguments for Unity, and target names respectively
 # * Mac is not in this list, see below
 buildTargets = [
-    ("CYF v" + CYFversion + " - Windows (32-bit)", "-buildWindowsPlayer",        "Create Your Frisk " + CYFversion + ".exe"),
-    ("CYF v" + CYFversion + " - Windows (64-bit)", "-buildWindows64Player",      "Create Your Frisk " + CYFversion + ".exe"),
-    ("CYF v" + CYFversion + " - Linux (32-bit)",   "-buildLinux32Player",        "Create Your Frisk " + CYFversion + ".x86"),
-    ("CYF v" + CYFversion + " - Linux (64-bit)",   "-buildLinux64Player",        "Create Your Frisk " + CYFversion + ".x86_64")
+    ("Soulbound v" + version + " - Windows (32-bit)", "-buildWindowsPlayer",     "Soulbound.exe"),
+    ("Soulbound v" + version + " - Windows (64-bit)", "-buildWindows64Player",   "Soulbound.exe"),
+    ("Soulbound v" + version + " - Linux (32-bit)",   "-buildLinux32Player",     "Soulbound.x86"),
+    ("Soulbound v" + version + " - Linux (64-bit)",   "-buildLinux64Player",     "Soulbound.x86_64")
 ]
-macTarget = ("CYF v" + CYFversion + " - Mac",      "-buildOSXUniversalPlayer",   "Create Your Frisk " + CYFversion + ".app")
+macTarget = ("Soulbound v" + version + " - Mac",      "-buildOSXUniversalPlayer", "Soulbound.app")
 
-hidePaths = [
-    "Default\\Sprites\\AsrielOW\\Huggu",
-    "Default\\Sprites\\FriskUT\\Fall",
-    "Default\\Sprites\\FriskUT\\Glitch",
-    "Default\\Sprites\\UI\\Buttons\\catbt_0.png",
-    "Default\\Sprites\\UI\\Buttons\\catbt_1.png",
-    "Default\\Sprites\\UI\\Buttons\\gifhtbt_0.png",
-    "Default\\Sprites\\UI\\Buttons\\gifhtbt_1.png",
-    "Default\\Sprites\\UI\\Buttons\\mecrybt_0.png",
-    "Default\\Sprites\\UI\\Buttons\\mecrybt_1.png",
-    "Default\\Sprites\\UI\\Buttons\\tembt_0.png",
-    "Default\\Sprites\\UI\\Buttons\\tembt_1.png",
-    "Default\\Sprites\\UI\\Buttons\\tiembt_0.png"
-]
-for i in range(8):
-    hidePaths.append("Default\\Sounds\\meow" + str(i + 1) + ".wav")
+# Files marked hidden in a build so players do not stumble over them. The joke
+# button sprites that used to be listed here went with Crate Your Frisk in v0.3,
+# and the overworld sprite folders went in v0.1.
+hidePaths = []
 
 def buildWithUnity(folder, argument, target):
     print("")
@@ -171,9 +159,9 @@ for path,dirs,files in os.walk(buildPath + "\\Mods"):
         if file.endswith(".meta"):
             os.remove(path + "\\" + file)
 print("Done.")
-print("Adding \"Mods starting with @ won't appear in CYF\"...", end="")
+print("Adding \"Mods starting with @ won't appear in the boss list\"...", end="")
 sys.stdout.flush()
-open(buildPath + "\\Mods\\Mods starting with @ won't appear in CYF", "w").close()
+open(buildPath + "\\Mods\\Mods starting with @ won't appear in the boss list", "w").close()
 print("Done.\n")
 
 # Hide secret paths
@@ -194,7 +182,7 @@ ps.write(settings)
 ps.close()
 print("Done.\n")
 
-### Time to actually build CYF! ###
+### Time to actually build the game ###
 
 def buildForMac():
     # Now, the special behavior for Mac
@@ -332,6 +320,6 @@ if doPackage:
 
 # Congratulations :)
 print("\n\n\nAll done!")
-print("Now, you must test all Create Your Frisk builds before release and clean up their Mods folders if applicable!")
+print("Test every build before release, and clean up their Mods folders if applicable.")
 print("Have fun mooving boolet.\n")
 os.system("pause")
