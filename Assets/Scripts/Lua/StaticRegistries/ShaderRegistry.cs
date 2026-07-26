@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ public static class ShaderRegistry {
     private static readonly string OSType = Misc.OSType.ToLower();
 
     // Load all default AssetBundles into memory one time, and never unload them
-    // (except when the overworld gets restarted or whatnot)
     public static void Start() {
         UI_DEFAULT_MATERIAL = new Material(Shader.Find("UI/Default"));
         LoadAllFrom(FileLoader.PathToDefaultFile("Shaders"), false);

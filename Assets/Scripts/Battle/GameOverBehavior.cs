@@ -44,7 +44,6 @@ public class GameOverBehavior : MonoBehaviour {
     private Vector3 heartPos;
     private Color heartColor;
 
-    //private bool overworld = false;
     private string deathMusic;
     private string[] deathText;
 

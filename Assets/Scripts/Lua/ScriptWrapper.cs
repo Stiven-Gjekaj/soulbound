@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
@@ -14,8 +14,8 @@ public class ScriptWrapper {
         set { SetVar(key, value); }
     }
 
-    public ScriptWrapper(/*bool overworld = false*/) {
-        script = LuaScriptBinder.BindScript(/*overworld*/);
+    public ScriptWrapper() {
+        script = LuaScriptBinder.BindScript();
         Bind("_getv", (Func<Script, string, DynValue>)GetVar);
         DoString(toDoString);
         instances.Add(this);

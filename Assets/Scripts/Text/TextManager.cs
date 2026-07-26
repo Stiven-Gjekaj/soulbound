@@ -111,7 +111,6 @@ public class TextManager : MonoBehaviour {
 
     [MoonSharpHidden] public TextMessage[] textQueue { get; protected set; }
     //public string[] mugshotsPath;
-    //public bool overworld;
     [MoonSharpHidden] public bool skipNowIfBlocked = false;
 
     [MoonSharpHidden] public bool lateStartWaiting = false; // Lua text objects will use a late start

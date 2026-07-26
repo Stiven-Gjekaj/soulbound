@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 /// <summary>
 /// The class responsible for making some people lose faith in the project. In very dire need of refactoring,
-/// but hard to do until functionality can be split into battle and overworld functions.
 ///
 /// As it stands this class is a messy finite state machine that takes care of controlling not only the battle,
 /// but also a lot of things it shouldn't (text manager, enemy dialogue, keyboard controls etc.)
@@ -89,7 +88,7 @@ public class UIController : MonoBehaviour {
         MERCYMENU,      // Open up the mercy menu
         ENEMYDIALOGUE,  // The Player is visible and the arena is resizing, but the enemy still has own dialogue
         DIALOGRESULT,   // Transition state leading to either UIState.ENEMYDIALOGUE or UIState.DEFENDING
-        DONE,           // Finished state of battle. Returns the Player to the mod selection screen or the overworld
+        DONE,           // Finished state of battle. Returns the Player to the mod selection screen
         UNUSED,         // Used for OnDeath(). Keep this state secret, please
         PAUSE           // Used exclusively for State("PAUSE"). Not a real state, but it needs to be listed to allow users to call State("PAUSE")
     }*/
@@ -121,7 +120,7 @@ public class UIController : MonoBehaviour {
         if (GameObject.Find("TopLayer"))
             spr.layer = "Top";
         spr.Scale(640, 480);
-        if (GlobalControls.modDev) //Empty the inventory if not in the overworld
+        if (GlobalControls.modDev) //Empty the inventory when the mod was picked from the selection screen
             Inventory.inventory.Clear();
         Inventory.RemoveAddedItems();
         KeyboardInput.ResetEncounterInputs();
@@ -1236,7 +1235,6 @@ public class UIController : MonoBehaviour {
 
         StaticInits.SendLoaded();
         psContainer = new GameObject("psContainer");
-        // The following is a trick to make psContainer spawn within the battle scene, rather than the overworld scene, if in the overworld
         psContainer.transform.SetParent(mainTextManager.transform);
         psContainer.transform.SetParent(null);
         psContainer.transform.SetAsFirstSibling();

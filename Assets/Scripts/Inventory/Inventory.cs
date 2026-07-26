@@ -16,7 +16,6 @@ public static class Inventory {
     public static Dictionary<string, string> NametoDesc = new Dictionary<string, string>(), NametoShortName = new Dictionary<string, string>();
     public static Dictionary<string, int> NametoType = new Dictionary<string, int>(), NametoPrice = new Dictionary<string, int>();
     public static bool usedItemNoDelete;
-    //public static bool overworld = false;
     public static List<UnderItem> inventory = new List<UnderItem>();
 
     public static void SetItemList(string[] items) {
