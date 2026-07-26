@@ -41,7 +41,7 @@ and the subtle logic changes in separate diffs.
 - `UnitaleUtil.IsOverworld` is a constant `false`.
 - `UnitaleUtil.ExitOverworld` kept only its non-overworld teardown: music channels,
   session globals, the inventory, and the player character.
-- The engine is 111 C# files and 19,504 lines, down from 129 and 25,334.
+- The engine is 111 C# files and 19,505 lines, down from 129 and 25,334.
 
 ### Removed
 

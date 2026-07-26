@@ -63,7 +63,7 @@ which now builds all three platforms in about three minutes.
 ## v0.1: strip the overworld
 
 Complete. The feature is gone and the battle path still works. The engine is 111 C#
-files and 19,504 lines, down from 129 and 25,334. See the
+files and 19,505 lines, down from 129 and 25,334. See the
 [changelog](../../CHANGELOG.md).
 
 | Piece | Size |

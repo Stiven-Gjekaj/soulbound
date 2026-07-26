@@ -151,9 +151,9 @@ mod folder, because that is where the engine loads it from at runtime.
 | **Text** | `Assets/Scripts/Text` | 1754 | Text objects, typing, commands, dialogue bubbles |
 | **Device** | `Assets/Scripts/Device` | 1612 | Input, screen resolution, global controls, Discord |
 | **Util** | `Assets/Scripts/Util` | 1469 | Shared helpers, error reporting, static init |
-| **Save** | `Assets/Scripts/Save` | 313 | Session saves and the persistent AlMighty globals |
+| **Save** | `Assets/Scripts/Save` | 314 | Session saves and the persistent AlMighty globals |
 | **Other** | inventory, rendering, projectiles, players, animation | 2707 | Supporting systems |
-| **Total** | **111 files** | **19504** | Create Your Frisk v0.6.6 LTS 3, with the overworld removed |
+| **Total** | **111 files** | **19505** | Create Your Frisk v0.6.6 LTS 3, with the overworld removed |
 
 ```
 Assets/Scripts/     the engine
