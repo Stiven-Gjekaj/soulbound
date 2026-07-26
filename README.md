@@ -60,8 +60,9 @@ enemypositions = { { 0, 0 } }
 
 ## Status
 
-**v0.2.** The engine now fits the game. There is no gameplay yet, only a
-placeholder encounter so it boots into a playable state.
+**v0.3.** The loop exists. You pick a boss from a list, you fight it, you come
+back to the list, and beating one marks it cleared. The bosses are placeholders,
+but the game is a game.
 
 v0.0 turned an unmodified Create Your Frisk snapshot into a documented base: about
 37 MB of example content removed, the 644 KB documentation website converted by
@@ -76,7 +77,13 @@ importer, and 11 documentation pages: 5,800 lines of C# and about 1.5 MB.
 v0.2 removed what that left behind: the 40 places the engine still asked itself
 whether it was in a map, the flag they consulted, the map data in the save format,
 and the last identifiers named after a feature that no longer exists. Nothing
-observable changed, because every branch it deleted was already unreachable. The
+observable changed, because every branch it deleted was already unreachable.
+
+v0.3 built the boss rush loop. A boss registry designers can edit without touching
+C#, a select screen that reads it, a fight that starts from it and returns to it,
+and a per-boss record of attempts, clears and best times. It also finished leaving
+the fork behind: a tag-driven release pipeline, safe mode and Crate Your Frisk gone,
+the player naming their own character, and the product renamed to Soulbound. The
 [changelog](CHANGELOG.md) has the full account, and
 [milestones](docs/project/milestones.md) covers what comes next.
 
@@ -90,12 +97,13 @@ observable changed, because every branch it deleted was already unreachable. The
 
 ### Engine
 
+- A boss rush loop: pick, fight, return, repeat
 - Turn-based battles with the FIGHT/ACT/ITEM/MERCY loop
 - Bullet patterns, with rectangular or pixel-perfect collision
 - Sprites, animation, text objects, and dialogue bubbles
 - Shaders, applied to a sprite or the whole screen
 - An inventory, with consumables, weapons, and armor
-- Save and load, plus session and persistent globals
+- Every fight timed, with per-boss attempts, clears and best times
 - Every fight scripted in Lua, hot-swappable from a mod folder
 
 </td>
@@ -105,10 +113,11 @@ observable changed, because every branch it deleted was already unreachable. The
 
 - Unity 2018.4.36f1, C#, with MoonSharp as the Lua interpreter
 - Game content isolated in one mod folder the engine loads at runtime
-- 35 pages of engine documentation, converted from the upstream site
-- Multi-target builds through `Build.py`, or GitHub Actions
+- Bosses listed in one Lua data file, no C# change needed to add one
+- 37 pages of engine documentation, converted from the upstream site
 - CI building Windows, macOS, and Linux on every push
-- No overworld, no demo content, no dead workflows
+- Tagged releases, built and published on all three by GitHub Actions
+- No overworld, no demo content, no fork-era mode toggles
 
 </td>
 </tr>

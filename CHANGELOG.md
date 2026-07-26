@@ -12,13 +12,43 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
-## 0.3 (unreleased)
+## 0.3 (2026-07-26)
 
-The boss rush loop, plus the two things that had to happen before a first release:
-a way to cut one, and an engine that does not call itself somebody else's name.
+The boss rush loop: pick a boss, fight it, come back to the list. That is the loop
+the whole game hangs off, so it lands before anything decorative. Alongside it, the
+three things that had to happen before a first release: a way to cut one, an engine
+that does not call itself somebody else's name, and a product that does not either.
 
 ### Added
 
+- The boss registry, `Assets/Mods/Soulbound/Lua/bosses.lua`. An ordered list of
+  bosses, one entry per row of the select screen, each naming an encounter script by
+  `id`. Adding a boss needs no C# change. Unrecognised keys are ignored, so a portrait
+  or a music field can be written before the menu is ready to read it.
+- `Assets/Scripts/Menus/BossRegistry.cs` reads it. Because the file is data rather
+  than gameplay it runs in a bare MoonSharp sandbox instead of through `ScriptWrapper`,
+  which binds a battle API that does not exist outside the Battle scene. A missing
+  file, invalid Lua, a missing or duplicate `id`, an `id` with no matching encounter
+  script, or an empty list all reach the error screen naming the problem.
+- `Assets/Scripts/Save/BossRecords.cs`. Three AlMighty globals per boss:
+  `boss_<id>_cleared`, `boss_<id>_attempts` and `boss_<id>_best`. v0.3 shows only the
+  cleared marker; v0.4 gives the other two somewhere to appear.
+- Every fight is timed, unconditionally. The clock is `Time.realtimeSinceStartup`, so
+  `Time.timeScale` cannot distort it from Lua, and it starts after the encounter script
+  has run so loading is not counted against the player. There is no toggle: two sets of
+  times that cannot be compared, and a way to lose a personal best by forgetting a
+  setting, are worse than always measuring.
+- `Assets/Scripts/Save/PlayerProfile.cs`. The player's name, stored as the AlMighty
+  global `player_name` beside the boss records, so one file holds the whole profile and
+  wiping `save.gd` cannot clear the name while leaving the records.
+- The boss select sends anyone with no stored name through the existing `EnterName`
+  scene first. Both routes off the disclaimer screen end at the boss select, so that one
+  check catches every player exactly once. Before this, the default route never asked.
+- A "Change name..." row on the options screen.
+- Two more placeholder bosses, so the list, paging and selection are exercised by more
+  than one row.
+- [docs/basics/adding-a-boss.md](docs/basics/adding-a-boss.md) and
+  [docs/project/boss-rush-loop.md](docs/project/boss-rush-loop.md).
 - `.github/workflows/release.yml`. Pushing a `v*` tag builds Windows, macOS and Linux,
   zips each as `Soulbound-<version>-<platform>.zip`, and publishes a GitHub release with
   the three archives attached. The tag is the only place the version is written: it
@@ -30,6 +60,30 @@ a way to cut one, and an engine that does not call itself somebody else's name.
 
 ### Changed
 
+- `productName` is `Soulbound` and `companyName` is `PaperTrail`. Both feed
+  `Application.persistentDataPath`, so this moves `save.gd`, `AlMightySave.gd` and the
+  output log. Done once, immediately before the first tag: doing it after a release
+  would orphan real save files. `GlobalControls.SaveVersion` goes to 2 so a save copied
+  across from the old path gets a readable message.
+- The mod selector is the boss select. It paged through mod folders found by scanning
+  the disk; it pages through the registry. The title is the boss name, the line under it
+  the subtitle, the scrolling list jumps straight to a boss, and Confirm starts the
+  fight. `ModSelect.unity` is untouched: `SelectOMatic` binds to it through inspector
+  fields, so changing what it lists needed no scene edit.
+- Portraits come from `Sprites/Bosses/<id>.png`, falling through to the engine's black
+  background until art exists.
+- `DiscordControls.StartModSelect` became `StartBossSelect`, and the two presence
+  strings a player sees went from "Selecting a Mod" and "Playing Mod: X" to "Choosing a
+  boss" and "Fighting X".
+- The options list is stacked and hover-tested from the buttons' real positions rather
+  than from fixed scene coordinates and a ladder of hardcoded bands, so an option can be
+  retired without leaving a hole.
+- `ControlPanel.BasisName` was `Rhenao`, upstream's joke default, visible in the battle
+  stats bar and in every `[name]` substitution. It is `Soul`, and since the boss select
+  asks for a name it should never be seen.
+- `build.yml` and its three jobs were named after the fork, and its artifacts and
+  staging folder were `CreateYourFrisk`. `release.yml` already produced `Soulbound`
+  zips, so the two disagreed.
 - The documentation describes the Soulbound engine rather than Create Your Frisk. Gone
   are 273 `<CYF>` markers, 5 `<0.2.1a>` markers and roughly 150 prose references across
   35 pages. Attribution, the origin note, and the passages where Unitale genuinely is the
@@ -44,11 +98,36 @@ a way to cut one, and an engine that does not call itself somebody else's name.
 - `CONTRIBUTING.md` listed four engine files that name content directly. Three of them
   were deleted in v0.1 and v0.2. It lists the one that remains.
 
+### Removed
+
+- **Safe mode**, a swear filter: a `ControlPanel` field, two call sites, fifteen lines
+  of options UI, and a commented-out block of flee texts that was the only place it
+  filtered anything. The `safe` Lua global goes with it, which is an API break for a mod
+  reading it. There are no such mods, and it never gets cheaper.
+- **Crate Your Frisk**, a joke reskin, across 21 files: the options toggle, the garbled
+  alternative for every string on the disclaimer, title, name entry, boss select,
+  options and keybinding screens, the crate logos, the meowing ACT, the Temmie item
+  message, the 24-line MERCY monologue, the negative damage on a hit, `Temmify.cs`, and
+  nine sprites including `tiembt_0.png`, which nothing referenced at all. It was in this
+  milestone specifically because the options screen offered a toggle labelled Crate Your
+  Frisk, which is the branding the rest of v0.3 spent eleven commits removing.
+- Mod browsing from the selection screen: the four-level deep search, the folder
+  hierarchy it built, the two passes that sorted it, the `ModPage` model behind them, and
+  the encounter sub-list. There is one mod and the registry is the list.
+
 ### Not done yet
 
-- `productName` and `companyName` still say Create Your Frisk. They determine
-  `Application.persistentDataPath`, so changing them relocates save files. That has to
-  land before the first tag, and it needs a company name.
+- **Retro mode.** 54 lines across 18 files, and unlike safe and crate modes it changes
+  gameplay semantics: enemy HP clamping, wave argument parsing, state transition rules,
+  projectile positioning and rotation, sprite active semantics, and script
+  call-existence checks. It is the same shape of problem `IsOverworld` was and gets the
+  same treatment in its own milestone. Doing it alongside cosmetic work is how a working
+  battle path gets broken quietly.
+- **The timing display.** v0.3 records best times and attempts and shows neither.
+- **A purpose-built boss select.** The screen is the repurposed mod selector, which is
+  why its objects are still named `ModTitle`, `EncounterCount` and `encounterBox`.
+  Renaming them means editing the scene, which is v0.7 work alongside the art. The
+  retired options rows are hidden at runtime for the same reason.
 
 ## 0.2 (2026-07-26)
 
