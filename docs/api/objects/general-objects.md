@@ -51,9 +51,6 @@ You can parent any `sprite`, `bullet`, `CYFObject` or `text object` to `sprites`
 `bullets` and `CYFObjects`, although `text objects` cannot be the parent of another
 object.
 
-`<CYF>` Note: If you are in the *Overworld*, you can NOT use this to parent sprites to
-Event objects' sprites, or vice versa.
-
 Text object letter sprites can *only* be parented to other Text object letter sprites.
 
 ### `object.GetChild(number childIndex)` returns **object**

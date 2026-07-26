@@ -28,7 +28,7 @@ parameters are needed. Here is what you need to set:
   40. Example: `150`.
 - `layer` - The sprite layer of the Text Object. If it doesn't exist, it returns an error.
   This argument is optional. If it's not provided, the Text Object will be in the layer
-  `BelowPlayer`, or `Default` in the Overworld. Example: `"BelowPlayer"`.
+  `BelowPlayer`. Example: `"BelowPlayer"`.
 - `bubbleHeight` - You can enter a static bubble height here if you want to. By default,
   this will be -1, which will auto compute the height of the bubble. However, bubbles have
   a minimum height of 40. Example: `150`.

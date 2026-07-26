@@ -307,8 +307,7 @@ Plays the sound given as an argument.
 
 ### `<CYF>` `[mugshot:face]`, `[mugshot:null]` or `[mugshot:{face1,face2,...,time}]`
 
-New in v0.6.6: Only usable with the Overworld's main text as well as the main text object
-in battles.
+New in v0.6.6: Only usable with the main text object in battles.
 
 Displays a set face sprite, or sequence of face sprites, next to your dialogue.
 
@@ -328,9 +327,8 @@ faces, such as with `sprite.SetAnimation`.
 If you do not provide a time, or the time you enter is lower than 0, a default value of
 `0.2` will be used.
 
-New in v0.6.6. Note: While the overworld's mugshots have a size of 140x140, in battles the
-mugshots are 130x130, so if bigger mugshots are applied in battles, 5 pixels around each
-edge are hidden.
+New in v0.6.6. Note: mugshots in battle are 130x130, so if bigger mugshots are applied,
+5 pixels around each edge are hidden.
 
 ### `<CYF>` `[health:x,y]`
 

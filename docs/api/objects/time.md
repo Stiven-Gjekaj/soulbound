@@ -22,7 +22,7 @@ frame-based timing method to ensure equal behaviour across all framerates.
   You can use `wavetimer - Time.wave` while in `DEFENDING` to see how much time is left in
   the defense round.
 - `<CYF>` **number** `Time.frameCount` (readonly) - The total number of frames since the
-  start of the encounter or overworld.
+  start of the encounter.
 - `<CYF>` **number** `Time.timeScale` - The scale at which time passes. When timeScale is
   1.0, time passes as fast as real time. When timeScale is 0.5 time passes 2x slower than
   realtime.

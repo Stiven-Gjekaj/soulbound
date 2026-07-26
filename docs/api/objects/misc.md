@@ -20,8 +20,7 @@ functions.
 - `Misc.MoveCameraTo(number x, number y)` - Moves the bottom-left of the camera directly to
   the point (`x`, `y`). `(0, 0)` is the starting position.
 - `Misc.ResetCamera()` - Resets the position of the camera. Same as calling
-  `MoveCameraTo(0, 0)` in battle. In the Overworld, this instead resets the camera to the
-  Player's position.
+  `MoveCameraTo(0, 0)`.
 - **number** `Misc.cameraX` - Gets or sets the current x position of the bottom-left corner
   of the camera.
 - **number** `Misc.cameraY` - Gets or sets the current y position of the bottom-left corner
@@ -94,15 +93,15 @@ functions.
 - **number** `Misc.debuggerY` - Change the debugger's y position relative to the camera's
   position.
 - **number** `Misc.debuggerAbsX` - Change the debugger's x position relative to the
-  encounter's bottom-left corner, or the map's bottom-left corner if used in the overworld.
+  encounter's bottom-left corner.
 - **number** `Misc.debuggerAbsY` - Change the debugger's y position relative to the
-  encounter's bottom-left corner, or the map's bottom-left corner if used in the overworld.
+  encounter's bottom-left corner.
 - `Misc.MoveDebugger(number x, number y)` - Move the debugger relative to its current
   position.
 - `Misc.MoveDebuggerTo(number x, number y)` - Move the debugger relative to the camera's
   current position.
 - `Misc.MoveDebuggerToAbs(number x, number y)` - Move the debugger relative to the
-  encounter's bottom-left corner, or the map's bottom-left corner if used in the overworld.
+  encounter's bottom-left corner.
 - **boolean** `Misc.isDebuggerAttachedToCamera` - Whether or not the camera should move the
   debugger along with it when it moves. True by default.
 
