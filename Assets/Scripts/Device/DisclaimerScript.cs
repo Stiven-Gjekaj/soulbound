@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -7,7 +7,7 @@ using System.Collections;
 /// Attached to the disclaimer screen so you can skip it.
 /// </summary>
 public class DisclaimerScript : MonoBehaviour {
-    public GameObject Logo, LogoCrate, RedditPlug, LegalStuff, ModSelection, Overworld, LuaKnowledgeDisclaimer, Version;
+    public GameObject Logo, LogoCrate, RedditPlug, LegalStuff, ModSelection, TitleScreenPrompt, LuaKnowledgeDisclaimer, Version;
     private bool inCredits = false;
     private int creditsCameraSpeed = 0;
 
@@ -18,7 +18,7 @@ public class DisclaimerScript : MonoBehaviour {
             RedditPlug.GetComponent<Text>().text = "GO TO /R/UNITLAE. FOR UPDTAES!!!!!";
             LegalStuff.GetComponent<Text>().text = "NO RELESLING HERE!!! IT'S RFEE!!! OR TUBY FEX WILL BE ANGER!!! U'LL HVAE A BED TMIE!!!";
             ModSelection.GetComponent<Text>().text = "YASS GO OR KLIK TO\n<color='#ff0000'>PALY MODS!!!!!</color>";
-            Overworld.GetComponent<Text>().text = "PRSES YUMMY 2\n<color='#ffff00'>OOVERWURL!!!!!</color>";
+            TitleScreenPrompt.GetComponent<Text>().text = "PRSES YUMMY 2\n<color='#ffff00'>TILTE SCREN!!!!!</color>";
             LuaKnowledgeDisclaimer.GetComponent<Text>().text = "<b><color='red'>KNOW YUOR CODE</color> R U'LL HVAE A BED TMIE!!!</b>";
             Version.GetComponent<Text>().text = "v" + Random.Range(0,9) + "." + Random.Range(0,9) + "." + Random.Range(0,9);
         } else if (Random.Range(0, 1000) == 021) {

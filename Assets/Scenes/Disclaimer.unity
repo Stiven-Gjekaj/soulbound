@@ -669,7 +669,7 @@ GameObject:
   - component: {fileID: 643272691}
   - component: {fileID: 643272690}
   m_Layer: 5
-  m_Name: Overworld
+  m_Name: TitleScreenPrompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -729,7 +729,7 @@ MonoBehaviour:
 
     to go to the
 
-    <color="#ff0">Overworld</color>'
+    <color="#ff0">Title Screen</color>'
 --- !u!222 &643272691
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1740,7 +1740,7 @@ MonoBehaviour:
   RedditPlug: {fileID: 890690844}
   LegalStuff: {fileID: 1450756121}
   ModSelection: {fileID: 1020003805}
-  Overworld: {fileID: 643272688}
+  TitleScreenPrompt: {fileID: 643272688}
   LuaKnowledgeDisclaimer: {fileID: 2007236152}
   Version: {fileID: 589038332}
 --- !u!1 &1967234328
