@@ -4,17 +4,24 @@
 
 # Milestones and roadmap
 
-Soulbound is a boss rush game based on Soultale, built on a heavily modified
-Create Your Frisk engine. You pick a boss from a menu and fight it. There is no
-overworld.
+Soulbound is a boss rush game based on Soultale. You pick a boss from a menu and
+fight it. There is no overworld.
 
-That last sentence drives most of this roadmap. Create Your Frisk is a general
-Undertale-fangame engine, and roughly a third of it exists to support a feature
-this game does not have. The near-term work is making the engine fit the game.
+v1.0 ships one playable boss and one teased boss. That target sets the shape of
+everything between here and there.
 
-Art is not the constraint right now. Menus and boss assets arrive later, so the
-early milestones are engine work with placeholder art, sequenced so that nothing
-blocks on a sprite that does not exist yet.
+The engine began as Create Your Frisk, a general Undertale-fangame engine, and
+roughly a third of it existed to support features this game does not have. v0.1
+through v0.3 made the engine fit the game. From v0.4 on, the work is the game.
+
+Art is not the constraint yet. Menus and boss assets arrive at v0.7, so the
+milestones before it are engine and content work with placeholder art, sequenced
+so that nothing blocks on a sprite that does not exist. Content and audio move
+together from v0.6 on, because a boss without its music is not a finished boss.
+
+The split from v0.5 onward is a proposal, not a promise. The boundaries are where
+they seem to belong today, and the content milestones are the ones most likely to
+want reshaping once a real boss is being built.
 
 ## v0.0: a clean foundation
 
@@ -205,72 +212,130 @@ each one a change you could revert on its own.
 
 ## v0.3: the boss rush loop
 
-The actual game loop, with programmer art. This milestone also carries the release
-pipeline and the engine's own identity, because the first release should not go out
-labelled as somebody else's engine.
+Complete. The actual game loop, with programmer art, plus the release pipeline and
+the engine's own identity, because a first release should not go out labelled as
+somebody else's engine.
+
+### The loop
+
+- The boss registry, `Assets/Mods/Soulbound/Lua/bosses.lua`. An ordered list, one
+  entry per row of the select screen, each naming an encounter script. Adding a boss
+  needs no C# change. See [adding a boss](../basics/adding-a-boss.md).
+- The boss select. The mod selector paged through folders it found by scanning the
+  disk; it pages through the registry instead. That removed the four-level deep
+  search, the folder hierarchy, the two sort passes and the encounter sub-list.
+  `ModSelect.unity` was not touched: `SelectOMatic` binds to it through inspector
+  fields, so changing what it lists needed no scene edit.
+- Fight, then back to select, win or lose. Every fight is timed, and beating a boss
+  marks it cleared. See [the boss rush loop](boss-rush-loop.md).
+- Per boss records as AlMighty globals: attempts, cleared, best time. v0.3 shows only
+  the cleared marker, which is what proves the mechanism v0.4 depends on.
+- The player names their own character, once before the first fight and afterwards
+  from the options screen. The name is an AlMighty global beside the records, so one
+  file holds the whole profile.
 
 ### Releases and identity
-
-Done, ahead of the loop:
 
 - `release.yml` cuts a release when a `v*` tag is pushed. The tag is the version, and
   it reaches the executable through `versioning: Custom`. Three platforms, zipped,
   attached to a GitHub release marked pre-release, with notes pulled from the changelog.
-  `build.yml` is untouched and stays the per-push check. See
-  [building](building.md#releasing).
+  `build.yml` stays the per-push check. See [building](building.md#releasing).
 - The documentation no longer presents this as Create Your Frisk. The 273 `<CYF>` and
   5 `<0.2.1a>` markers are gone, along with about 150 prose references. What remains is
   attribution, the origin note, and the places where Unitale genuinely is the subject,
   such as `isCYF` and retrocompatibility mode. Attribution stays because the project is
   GPLv3 by inheritance and the licence requires it.
-- The Unity editor menu is `Soulbound`, not `Create Your Frisk`, and the Mac
-  instructions that ship with a build were rewritten.
-
-Still pending, and blocking the first tag:
-
-- `productName` and `companyName` in `ProjectSettings`, plus `buildName` in both
-  workflows. The build still identifies itself as Create Your Frisk. This is deliberately
-  last: those two fields are what Unity uses to build `Application.persistentDataPath`,
-  so changing them moves `save.gd` and `AlMightySave.gd`. Free now, disruptive once
-  anyone has downloaded a build, so it must land before `v0.3.0` is tagged.
+- `productName` is `Soulbound` and `companyName` is `PaperTrail`. Both build
+  `Application.persistentDataPath`, so this moved the save files. It landed immediately
+  before the first tag on purpose: free now, disruptive once anyone has a build.
+- Safe mode and Crate Your Frisk are gone. Both were cosmetic, and the options screen
+  offered a toggle labelled Crate Your Frisk, which is the branding the rest of the
+  milestone removed.
 - The `cyfshaders` AssetBundle name is staying. It is baked into seven `.meta` files and
   a built binary bundle, and mods reference it by name, so renaming it is a breaking
   change for no real gain.
 
-### The loop
-
-- A boss registry: what bosses exist, and what each one needs to load.
-- A boss select menu. The existing mod selector (`PregamePlaceholder`, 6 files,
-  1688 lines) is the closest thing in the engine and the obvious starting point,
-  though selecting a boss is not the same as selecting a mod and it may end up
-  replaced rather than adapted.
-- Fight, then a result state, then back to select. This is the loop the whole
-  game hangs off, so it lands before anything decorative.
-
-Everything here uses placeholder visuals. The point is a loop that runs
-end to end, not a loop that looks finished.
-
 ## v0.4: persistence and quality of life
 
-- Death count, per boss and overall. The hook is the game-over path rewired in
-  v0.1.
-- Whatever per-boss records are worth keeping: attempts, best time, no-hit runs.
-- A save format for the above. The engine has AlMighty Globals, which
-  persist to disk across sessions and are the cheapest place to start, though a
-  purpose-built format may be worth it once there is more than a counter.
+The records v0.3 writes but does not show, plus the counters that belong beside them.
+
+- Death count, per boss and overall. The hook is the game-over path rewired in v0.1.
+- Best time and attempts on the boss select. v0.3 stores both and displays neither.
+- An options toggle for an in-fight timer. It controls display only: timing itself is
+  unconditional, which is why there is no speedrun mode. A mode would only gate
+  something already always on.
+- Whatever else is worth keeping per boss, no-hit runs among them.
+
+AlMighty globals are the store, proven by v0.3. A purpose-built format is worth
+revisiting only once there is more than a handful of values per boss.
 
 ## v0.5: engine work for bosses
 
-Boss fights push harder on the engine than ordinary encounters. This milestone is
-deliberately vague because its content comes from building v0.3 and finding out
-what hurts. Likely candidates: bullet pattern performance under load, better wave
-composition, and whatever the Lua API makes awkward when a fight gets long.
+Boss fights push harder on the engine than ordinary encounters. Three items are
+already known, and the rest comes from what v0.3 and v0.4 surface:
 
-## Later: art integration
+- Framerate drops change how many times per frame wave logic ticks. The 60 cap in
+  `ScreenResolution.Start` settles high-refresh displays but not slow machines.
+- `Time.timeScale` is settable from Lua, so a boss script can distort a fight against
+  a wall-clock timer. It needs locking during a timed fight.
+- Retro mode: 54 lines across 18 files that change gameplay semantics, including enemy
+  HP clamping, wave argument parsing, state transition rules, projectile positioning
+  and rotation, sprite active semantics and script call-existence checks. It is the last
+  inherited mode flag. Shim to false, collapse the branches, delete the flag, in that
+  order, exactly as v0.2 handled `IsOverworld`.
 
-When menu and boss assets arrive, replace the placeholder art. Kept separate on
-purpose: an art milestone that is blocked on a delivery should not also be
-blocking engine work.
+Likely additions once a real fight exists: bullet pattern performance under load, wave
+composition, and whatever the Lua API makes awkward when a fight runs long.
+
+## v0.6: the first boss
+
+The first Soultale boss, built as content rather than engine work: phases, patterns,
+dialogue, ACT options, balance. Placeholder art and audio throughout, because the point
+is a fight that plays well before it looks or sounds finished.
+
+This is the milestone that proves the engine. Anything it cannot express is v0.5 work
+that was missed, and should go back there rather than being worked around in Lua.
+
+## v0.7: art and audio
+
+The first boss gets its sprites, its music and its sound. The menus get theirs: boss
+select, the intro, the title screen and name entry, all of which are kept and reskinned
+rather than replaced.
+
+This is also when the boss select stops being the repurposed mod selector and becomes a
+purpose-built screen. That needs someone with the Unity editor open, so it should happen
+alongside the art it is being built for. Three things are waiting on it: the scene
+objects still named `ModTitle`, `EncounterCount` and `encounterBox`; the retired options
+rows currently hidden at runtime; and the "Change name" row, which took over the one
+safe mode left behind.
+
+Blocked on delivery, and deliberately separate from v0.6 so that engine and content work
+is never waiting on a sprite.
+
+## v0.8: the teased boss
+
+The second boss, present but not playable: visible in the select screen, locked,
+presented well enough to say what is coming. Its encounter script does not need to exist
+yet, but the registry, the select screen and the records all need to handle an entry that
+cannot be fought.
+
+## v0.9: release candidate
+
+Everything between feature complete and shippable. First-run experience, the packaging the
+release workflow produces, a pass over the options screen, and the bug list that only
+appears once people other than the team have played it.
+
+## v1.0: ship
+
+One playable boss, one teased boss, on Windows, macOS and Linux.
+
+## After v1.0: the gauntlet
+
+All bosses back to back without stopping. Naming needs care: this game is already a boss
+rush, so the mode wants a distinct name in code and docs, and the player-facing name is a
+separate decision. It is also the feature that makes mid-run saving matter, which is what
+`save.gd` and `SaveLoad.Save()` are being kept for. v0.3's records are keyed per boss and
+do not preclude a run-level record alongside them.
 
 ## How versions are cut
 
