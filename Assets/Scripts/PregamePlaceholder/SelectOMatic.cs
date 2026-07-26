@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -34,9 +34,6 @@ public class SelectOMatic : MonoBehaviour {
     // Use this for initialization
     private void Start() {
         Destroy(GameObject.Find("Player"));
-        Destroy(GameObject.Find("Main Camera OW"));
-        Destroy(GameObject.Find("Canvas OW"));
-        Destroy(GameObject.Find("Canvas Two"));
         UnitaleUtil.firstErrorShown = false;
 
         // Load directory info
