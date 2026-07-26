@@ -38,6 +38,15 @@ public class SelectOMatic : MonoBehaviour {
         // There is one mod, and it is the game.
         StaticInits.MODFOLDER = StaticInits.GAME_MODFOLDER;
 
+        // Name the character before the first fight. Both routes off the disclaimer end
+        // here, and only one of them passes through the title screen, so this is the one
+        // place that catches every player exactly once. Returning from a fight is not a
+        // first run, and checking that also means a failed name entry cannot loop.
+        if (StaticInits.ENCOUNTER == "" && !PlayerProfile.HasName) {
+            SceneManager.LoadScene("EnterName");
+            return;
+        }
+
         // Re-read the registry every time, so editing bosses.lua does not need a restart.
         BossRegistry.Reload();
         bosses = BossRegistry.Entries;
