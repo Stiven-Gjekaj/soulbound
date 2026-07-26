@@ -223,7 +223,7 @@ end to end, not a loop that looks finished.
 - Death count, per boss and overall. The hook is the game-over path rewired in
   v0.1.
 - Whatever per-boss records are worth keeping: attempts, best time, no-hit runs.
-- A save format for the above. Create Your Frisk has AlMighty Globals, which
+- A save format for the above. The engine has AlMighty Globals, which
   persist to disk across sessions and are the cheapest place to start, though a
   purpose-built format may be worth it once there is more than a counter.
 

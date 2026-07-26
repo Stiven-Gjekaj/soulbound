@@ -23,7 +23,7 @@ because Create Your Frisk is.
 | Page | What it covers |
 | --- | --- |
 | [How to read this documentation](how-to-read.md) | notation used throughout these pages |
-| [Controls](basics/controls.md) | the keys Unitale and CYF use |
+| [Controls](basics/controls.md) | the keys the engine uses |
 | [Basic setup](basics/basic-setup.md) | mod folder structure and what the engine expects to find. Start here |
 | [Unity setup](basics/unity-setup.md) | setting up Unity, playing mods from the editor, exporting builds |
 | [Special variables](basics/special-variables.md) | the variables the engine reads out of your scripts |
@@ -59,8 +59,6 @@ because Create Your Frisk is.
 | [The UI object](api/objects/ui.md) | the battle interface |
 
 ## Shaders
-
-Added in Create Your Frisk v0.6.5.
 
 | Page | What it covers |
 | --- | --- |

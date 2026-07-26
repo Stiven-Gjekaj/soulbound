@@ -3,7 +3,7 @@
 ## Requirements
 
 - **Unity 2018.4.36f1**, Unity 2018's Long Term Support release. This is the exact version
-  Create Your Frisk v0.6.6 was built with. Get it from the
+  the engine targets. Get it from the
   [Unity version archive](https://unity3d.com/get-unity/download/archive) or the Unity Hub.
   `ProjectSettings/ProjectVersion.txt` pins it.
 - **Python 3.7 or newer** for `Build.py`, only if you build locally.
@@ -12,7 +12,7 @@
 Opening the repository root as a Unity project is all the setup there is. The first import
 takes a while because Unity registers every asset; later opens are fast.
 
-For a walkthrough of the editor setup, including setting the Game view to CYF's native
+For a walkthrough of the editor setup, including setting the Game view to the engine's native
 640x480, see [Unity setup](../basics/unity-setup.md).
 
 ## Running from the editor

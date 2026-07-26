@@ -1,7 +1,8 @@
 # Engine architecture
 
-Soulbound runs on Create Your Frisk v0.6.6 LTS 3, a fork of Unitale. This page describes how
-the engine is put together, so you know which parts to touch and which to leave alone.
+This page describes how the Soulbound engine is put together, so you know which parts to
+touch and which to leave alone. It began as Create Your Frisk v0.6.6 LTS 3, itself a fork
+of Unitale, and has diverged since.
 
 Unity 2018.4.36f1, C#, with MoonSharp as the Lua interpreter. 111 C# files under
 `Assets/Scripts`.
