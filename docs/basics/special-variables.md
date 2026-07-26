@@ -8,17 +8,17 @@ examples' code or write your own. This section serves to explain the variables y
 
 ### **boolean** `isCYF` [E/M/W]
 
-A value, true by default, that indicates that you're on CYF. nil if not on CYF. Test it
-with `if not isCYF then` or `if isCYF then`.
+True on this engine, nil on original Unitale. Kept so that mods written to branch on it
+still work. Test it with `if not isCYF then` or `if isCYF then`.
 
 ### **boolean** `isRetro` [E/M/W]
 
-A value which is true whenever CYF's retrocompatibility mode is active and false when it
-isn't. Test it with `if not isRetro then` or `if isRetro then`.
+True whenever retrocompatibility mode is active, false when it isn't. Test it with
+`if not isRetro then` or `if isRetro then`.
 
 ### **boolean** `safe` [E/M/W]
 
-True if CYF's safe mode is enabled, false otherwise.
+True if the engine's safe mode is enabled, false otherwise.
 
 ### **boolean** `windows` [E/M/W]
 
@@ -26,12 +26,12 @@ Returns true if the user is on Windows, false otherwise.
 
 ### **string** `CYFversion` [E/M/W]
 
-Returns a different string based on the version of CYF you are using.
+Returns a different string based on the version of the engine you are using.
 
-- `Versions before v0.6`: Previous version's number. For example, in CYF v0.5.5, this
+- `Versions before v0.6`: Previous version's number. For example, in the engine v0.5.5, this
   will be "0.5.4".
 - `Versions between v0.6 and v0.6.1.2`: always "1.0".
-- `Versions after v0.6.1.2`: Current version's number. For example, in CYF v0.6.2, this
+- `Versions after v0.6.1.2`: Current version's number. For example, in the engine v0.6.2, this
   will be "0.6.2".
 
 Tip: Lua has a very useful built-in string comparing function. You can very easily check
@@ -40,12 +40,12 @@ combinations.
 
 ### **number** `LTSversion` [E/M/W]
 
-Returns a different number based on the LTS version of CYF you are using.
+Returns a different number based on the LTS version of the engine you are using.
 
-You can compare this number to your own values to make sure the right version of CYF is
+You can compare this number to your own values to make sure the right version of the engine is
 used to play your mod, if needed.
 
-You may also want to check if this value exists at all in case older versions of CYF are
+You may also want to check if this value exists at all in case older versions of the engine are
 used to play your mod.
 
 ## Encounter script variables
@@ -84,7 +84,7 @@ selection.
 You can use `\n` to create a new line **with a star** (\*), and `\r` to create a new line
 **without** a star.
 
-As of CYF v0.6.4, if you end up with 4 or more lines of encounter text displayed at once,
+if you end up with 4 or more lines of encounter text displayed at once,
 the text will move up (9 pixels, one time) to compensate and try to fit your text inside
 the box.
 
@@ -160,7 +160,7 @@ Returns a table with a length of 0 if not in the state DEFENDING.
 of any child sprite with a rotated parent will no longer be reset after either changing
 its sprite in any way or scaling it.
 
-New in v0.6.6. **boolean** `adjusttextdisplay` - False if not set. If set to true, CYF
+New in v0.6.6. **boolean** `adjusttextdisplay` - False if not set. If set to true, the engine
 will try to adjust the text's position and scale to prevent jagged lines appearing if the
 text's scale or position is slightly off. Can be overridden for each text object by
 setting their `adjustTextDisplay` value.

@@ -15,7 +15,7 @@ scripts are set up like this:
 From the mod selection screen, you may pick any mod, and play any encounter script
 within that mod.
 
-As of CYF v0.6.4, the only folder required within a mod is the
+the only folder required within a mod is the
 `YOUR MOD/Lua/Encounters/` folder. For all older versions, your encounter will break if
 the other folders are missing.
 
@@ -34,7 +34,7 @@ put together.
 
 You may also create a `YOUR MOD/Lua/Libraries/` folder. You can put libraries other
 people have made in here, or create your own, for use in your other scripts.
-Libraries and modules are more Lua functionality than they are Unitale functionality, so
+Libraries and modules are more Lua functionality than engine functionality, so
 please read up about them at the
 [Lua modules tutorial](http://lua-users.org/wiki/ModulesTutorial) instead.
 
@@ -65,12 +65,12 @@ the sprite to 2x its original resolution for an oldschool look.
 To *add a background* you can have one file titled `bg.png` in the sprites folder. This
 image will stretch over the entire background, so 640x480 resolution is recommended.
 Actually modifying and animating the background from the Lua side is not possible;
-however, in CYF, you may use sprite layers to create a sprite behind the built-in
+however, in the engine, you may use sprite layers to create a sprite behind the built-in
 background layer and animate *that* instead.
 
 ## The Default directory
 
-Unitale and Create Your Frisk both have a "Default" directory. This is where resources
+The engine has a "Default" directory. This is where resources
 from Undertale reside. It is not advised to modify files in this directory, as they are
 expected to be the same across all installations.
 

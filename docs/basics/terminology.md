@@ -18,22 +18,22 @@ monsters.
 
 `wave` - A single attack behaviour (or attack "wave", to say), measured from when you
 start defending until when it stops. Vegetoid's bouncing vegetables attack would count as
-a wave. Papyrus' special Cool Dude attack would also count as a wave. Unitale works with
+a wave. Papyrus' special Cool Dude attack would also count as a wave. The engine works with
 "wave scripts" for attacks; you can use multiple wave scripts at the same time for when
 you have various monsters.
 
-`modDev` - This is a feature exclusive to CYF. In CYF, you can access some extra
+`modDev` - This is a feature specific to this engine. In the engine, you can access some extra
 options from the Mod Selection screen. These mainly include the options to wipe
 `RealGlobals` and `AlMightyGlobals`, as well as toggle `safe mode` and
 `retrocompatibilty mode`.
 
-In CYF v0.6.2.1 and beyond, the modDev screen is located in an "options menu" accessible
+the modDev screen is located in an "options menu" accessible
 by clicking "Options" from within the Mod Selection screen.
 
-`retrocompatibilty mode` - This CYF feature is designed in such a way where, if
-it's enabled, functions from 0.2.1a that were changed in CYF will function exactly as
+`retrocompatibilty mode` - This feature is designed in such a way where, if
+it's enabled, functions from 0.2.1a that were changed in the engine will function exactly as
 they did in 0.2.1a.
 
-`safe mode` - This is a CYF-mode that removes swear words found in CYF. Mod
+`safe mode` - A mode that removes swear words from the engine's own text. Mod
 authors can also use this to do the same in their mods, maybe even also using this to
 remove blood or mature content.

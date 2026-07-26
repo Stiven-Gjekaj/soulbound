@@ -1,20 +1,18 @@
 # Unity setup (optional)
 
-This page covers how to set up Create Your Frisk in the Unity editor, which is necessary
+This page covers how to set up the project in the Unity editor, which is necessary
 for setting up shaders. It is also helpful for seeing the way encounters work from the
 Unity side, and in particular how sprite layers work.
 
 ## Get started
 
-Upstream, you would download the project from the
-[Create Your Frisk releases page](https://github.com/RhenaudTheLukark/CreateYourFrisk/releases)
-and extract `Source Code (zip)`. In this repository the Unity project is already checked
-out at the repository root, so you only need to open that root folder as a project in
-Unity.
+The Unity project is the repository root, so clone the repository and open that folder as
+a project in Unity.
 
-Create Your Frisk v0.6.6 was built using Unity Personal 2018.4.36f1, also known as Unity
-2018's Long Term Support version, which you can find in the
-[Unity version archive](https://unity3d.com/get-unity/download/archive).
+The engine targets Unity Personal 2018.4.36f1, also known as Unity 2018's Long Term
+Support version, which you can find in the
+[Unity version archive](https://unity3d.com/get-unity/download/archive). Use that exact
+version.
 
 Unity may take a lot of time to install and to load the project for the first time, due
 to a lot of resources being registered by Unity, but you won't have to do it again in the
@@ -24,7 +22,7 @@ future.
 
 Once you're in, you'll have to load the scene `Assets/Scenes/Disclaimer.unity` using the
 command `File` => `Open Scene` at the top left corner of Unity's window. You should
-always start play mode from this scene when using Create Your Frisk in Unity.
+always start play mode from this scene.
 
 In order to set up the viewport properly, first switch to the "Game" tab (`Window` =>
 `General` => `Game`, or click it in the editor). Within the Game tab, find the button
@@ -32,16 +30,14 @@ labelled `Display 1`. Next to it should be another button, most likely labelled
 `Free Aspect`. Click on it, click the "plus" sign at the bottom of the list that appears,
 and add an option with a fixed resolution of `640` x `480`.
 
-*This is Create Your Frisk's native resolution, and viewing it like this ensures that
-everything you see in the Unity editor will look exactly the same in the built version of
-Create Your Frisk.*
+*This is the engine's native resolution, and viewing it like this ensures that
+everything you see in the Unity editor will look exactly the same in a build.*
 
 ## Where is everything?
 
 Look in the folder `Assets`. In here, the folder named `Default` is the same as the
-folder named `Default` in the built executable versions of Create Your Frisk. Likewise,
-`Mods` is the same as the `Mods` folder in the built versions of CYF. Load all of your
-mods here if you want them playable in the editor.
+`Default` folder in a build. Likewise, `Mods` is the same as the `Mods` folder in a build.
+Load all of your mods here if you want them playable in the editor.
 
 Another folder here is `Scenes`. It holds the engine's scenes: the disclaimer, the
 intro, the title screen, name entry, the mod selector, the options and keybinding
@@ -52,12 +48,12 @@ Also within `Assets` the folder `Editor` is used for shaders. It contains a fold
 `Output`, which is where your shaders will be compiled into AssetBundles. Read
 [Shaders - Introduction](../shaders/introduction.md) for more information.
 
-## Building CYF
+## Building locally
 
-This is an optional step, for if you want or need to export Create Your Frisk to a built
+This is an optional step, for if you want or need to export the game to a built
 executable. At the repository root is a python script named `Build.py`. It uses
 [Python v3.7.4](https://www.python.org/downloads/release/python-374/). This is the script
-used to build CYF into executables. You can optionally install
+used to build executables locally. You can optionally install
 [7-zip](https://www.7-zip.org/) as well, if you want the script to automatically package
 your builds into archives.
 
@@ -67,8 +63,8 @@ created folders, or edit them yourself in `buildTargets` and `macTarget`. Next, 
 variable `unityPath`, you need to set it to the path of your machine's Unity
 installation, if it is not already set to it.
 
-Make sure Create Your Frisk is the last project opened in Unity. Then, close Unity before
-running the script.
+Make sure this project is the last one opened in Unity. Then, close Unity before running
+the script.
 
 Actually running the script also has some documentation at the top of the file itself.
 You can either run the script directly (double click it) or run it from the command line
@@ -87,5 +83,4 @@ process:
   4. Linux 64-bit
   5. Mac
 
-Your builds of Create Your Frisk will appear in a folder named `bin` within your CYF
-installation.
+Your builds will appear in a folder named `bin` at the repository root.
