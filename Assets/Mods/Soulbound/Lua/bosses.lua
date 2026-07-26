@@ -10,5 +10,7 @@
 -- music track can be added here before the menu is ready to read them.
 
 return {
-    { id = "placeholder", name = "Placeholder", subtitle = "Not built yet" },
+    { id = "placeholder",       name = "Placeholder",       subtitle = "Not built yet" },
+    { id = "placeholder_two",   name = "Second Placeholder", subtitle = "Also not built yet" },
+    { id = "placeholder_three", name = "Third Placeholder",  subtitle = "Here so the list has something to page through" },
 }
