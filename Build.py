@@ -251,9 +251,9 @@ def buildForMac():
     print("Done.")
 
     # Copy over the warning .txt file
-    print("Copying \"How to use CYF and add mods (Mac).txt\"...", end="")
+    print("Copying \"How to run Soulbound on Mac.txt\"...", end="")
     sys.stdout.flush()
-    shutil.copyfile("How to use CYF and add mods (Mac).txt", buildPath + "\\" + macTarget[0] + "\\How to use CYF and add mods (Mac).txt")
+    shutil.copyfile("How to run Soulbound on Mac.txt", buildPath + "\\" + macTarget[0] + "\\How to run Soulbound on Mac.txt")
     print("Done.")
 
     print("Disabling allowFullscreenSwitch...", end="")

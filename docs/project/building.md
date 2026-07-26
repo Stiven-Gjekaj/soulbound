@@ -44,7 +44,7 @@ Build.py [--single <target>] [--nozip]
 
 Output lands in `bin/`. For each target the script copies `Assets/Default`,
 `Assets/Mods` and `docs` next to the executable, strips the `.meta` files from the copies,
-and for Mac also copies `How to use CYF and add mods (Mac).txt`.
+and for Mac also copies `How to run Soulbound on Mac.txt`.
 
 That text file explains the `chmod +x` steps a Mac user needs before the app will run, and
 where to drop mods inside the .app bundle. It stays at the repository root because the build

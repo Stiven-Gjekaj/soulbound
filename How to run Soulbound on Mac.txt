@@ -1,0 +1,38 @@
+==========================
+HOW TO RUN SOULBOUND ON MAC
+==========================
+
+macOS will not run the application until it is marked executable. Two commands do that.
+
+1: Open a terminal in the folder containing the application file.
+
+2: Run:
+	   sudo chmod +x "<application file>"
+
+   "<application file>" is the name of the .app in the extracted folder.
+   For example: sudo chmod +x "Soulbound-macos64.app"
+
+   If the command fails because of administrator rights, drop the "sudo" and try again.
+
+3: Run:
+	   sudo chmod +x "<application file>/Contents/MacOS/<internal file>"
+
+   "<internal file>" is the executable nested inside the application file. To find its
+   name, right click the .app, choose "Show Package Contents", and open "Contents/MacOS".
+   The single file in there is the one to name.
+
+   For example: sudo chmod +x "Soulbound-macos64.app/Contents/MacOS/Soulbound-macos64"
+
+   Again, drop the "sudo" if it fails because of administrator rights.
+
+4: The app should now run.
+
+
+================================
+HOW TO ADD MODS TO SOULBOUND ON MAC
+================================
+
+1: Right click the application file, or select it and click the gear icon in Finder.
+2: Click "Show Package Contents".
+3: Open "Mods".
+4: Place downloaded mods here.
