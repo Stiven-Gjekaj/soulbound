@@ -8,13 +8,13 @@ _A Lua-moddable battle engine, running on Unity_
 
 <p align="center">
   <img src="https://img.shields.io/badge/Unity-2018.4.36f1-000000?style=for-the-badge&logo=unity&logoColor=white" alt="Unity 2018.4.36f1"/>
-  <img src="https://img.shields.io/badge/engine-111_C%23_files,_19.5k_lines-239120?style=for-the-badge" alt="The engine is 111 C# files and about 19,500 lines"/>
+  <img src="https://img.shields.io/badge/engine-111_C%23_files,_19.3k_lines-239120?style=for-the-badge" alt="The engine is 111 C# files and about 19,300 lines"/>
   <img src="https://img.shields.io/badge/docs-35_pages-007ec6?style=for-the-badge" alt="35 documentation pages"/>
 </p>
 
 <p align="center">
   <a href="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml"><img src="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml/badge.svg" alt="Build"/></a>
-  <img src="https://img.shields.io/badge/version-0.1-blue?style=flat-square" alt="Version 0.1"/>
+  <img src="https://img.shields.io/badge/version-0.2-blue?style=flat-square" alt="Version 0.2"/>
   <img src="https://img.shields.io/badge/license-GPL--3.0-green?style=flat-square" alt="GPL-3.0 License"/>
 </p>
 
@@ -59,7 +59,7 @@ enemypositions = { { 0, 0 } }
 
 ## Status
 
-**v0.1.** The engine now fits the game. There is no gameplay yet, only a
+**v0.2.** The engine now fits the game. There is no gameplay yet, only a
 placeholder encounter so it boots into a playable state.
 
 v0.0 turned an unmodified Create Your Frisk snapshot into a documented base: about
@@ -70,7 +70,12 @@ macOS, and Linux.
 v0.1 removed the overworld. A boss rush has no maps, events, cutscenes or shops,
 and roughly a third of the engine existed to support them. Out went 18 scripts and
 6 Lua bindings, three scenes, eight prefabs, six sprite folders, the Tiled map
-importer, and 11 documentation pages: 5,800 lines of C# and about 1.5 MB. The
+importer, and 11 documentation pages: 5,800 lines of C# and about 1.5 MB.
+
+v0.2 removed what that left behind: the 40 places the engine still asked itself
+whether it was in a map, the flag they consulted, the map data in the save format,
+and the last identifiers named after a feature that no longer exists. Nothing
+observable changed, because every branch it deleted was already unreachable. The
 [changelog](CHANGELOG.md) has the full account, and
 [milestones](docs/project/milestones.md) covers what comes next.
 
@@ -145,15 +150,15 @@ mod folder, because that is where the engine loads it from at runtime.
 
 | Area | Files | Lines | Responsibility |
 | ---- | ----- | ----- | -------------- |
-| **Lua bindings** | `Assets/Scripts/Lua` | 5143 | The scripting API: object bindings, file loading, asset registries |
-| **Battle** | `Assets/Scripts/Battle` | 4098 | The encounter state machine, enemies, the arena |
-| **Menus** | `Assets/Scripts/PregamePlaceholder` | 2408 | Title, intro, name entry, mod selector, options, keybinding |
-| **Text** | `Assets/Scripts/Text` | 1754 | Text objects, typing, commands, dialogue bubbles |
-| **Device** | `Assets/Scripts/Device` | 1612 | Input, screen resolution, global controls, Discord |
-| **Util** | `Assets/Scripts/Util` | 1469 | Shared helpers, error reporting, static init |
-| **Save** | `Assets/Scripts/Save` | 314 | Session saves and the persistent AlMighty globals |
-| **Other** | inventory, rendering, projectiles, players, animation | 2707 | Supporting systems |
-| **Total** | **111 files** | **19505** | Create Your Frisk v0.6.6 LTS 3, with the overworld removed |
+| **Lua bindings** | `Assets/Scripts/Lua` | 5130 | The scripting API: object bindings, file loading, asset registries |
+| **Battle** | `Assets/Scripts/Battle` | 4007 | The encounter state machine, enemies, the arena |
+| **Menus** | `Assets/Scripts/PregamePlaceholder` | 2402 | Title, intro, name entry, mod selector, options, keybinding |
+| **Text** | `Assets/Scripts/Text` | 1734 | Text objects, typing, commands, dialogue bubbles |
+| **Device** | `Assets/Scripts/Device` | 1605 | Input, screen resolution, global controls, Discord |
+| **Util** | `Assets/Scripts/Util` | 1455 | Shared helpers, error reporting, static init |
+| **Save** | `Assets/Scripts/Save` | 245 | Session saves and the persistent AlMighty globals |
+| **Other** | inventory, rendering, projectiles, players, animation | 2705 | Supporting systems |
+| **Total** | **111 files** | **19283** | Create Your Frisk v0.6.6 LTS 3, with the overworld removed |
 
 ```
 Assets/Scripts/     the engine
