@@ -234,9 +234,6 @@ public class TextManager : MonoBehaviour {
         if (newTextQueue == null)
             newTextQueue = new TextMessage[] { };
 
-        if (UnitaleUtil.IsOverworld && (gameObject.name == "TextManager OW"))
-            PlayerOverworld.AutoSetUIPos();
-
         ResetFont();
         if (mugshotList != null) {
             bool oldLineHasMugshot = lineHasMugshot;
@@ -396,17 +393,6 @@ public class TextManager : MonoBehaviour {
         if (ltm) ltm.SpawnText();
         else     SpawnText();
         rotation = rot;
-
-        if (UnitaleUtil.IsOverworld && this == PlayerOverworld.instance.textmgr) {
-            if (textQueue[line].ActualText) {
-                if (transform.parent.GetComponent<Image>().color.a == 0)
-                    SetTextFrameAlpha(1);
-            } else {
-                if (transform.parent.GetComponent<Image>().color.a == 1)
-                    SetTextFrameAlpha(0);
-                HideTextObject();
-            }
-        }
 
         // Move the text up a little if there are more than 3 lines so they can possibly fit in the arena
         if (!GlobalControls.retroMode && !UnitaleUtil.IsOverworld && UIController.instance && this == UIController.instance.mainTextManager) {
