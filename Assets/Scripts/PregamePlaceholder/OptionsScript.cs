@@ -187,7 +187,7 @@ public class OptionsScript : MonoBehaviour {
         ResetSG.GetComponentInChildren<Text>().text   = "RESTE SESSHUN GOLBALZ";
         ResetPG.GetComponentInChildren<Text>().text   = "RESTE PERMZ GOLBALZ";
         ClearSave.GetComponentInChildren<Text>().text = "WYPE SAV";
-        Exit.GetComponentInChildren<Text>().text      = "EXIT TOO MAD SELCT";
+        Exit.GetComponentInChildren<Text>().text      = "EXIT TOO BSSO SELCT";
     }
 
     // Gets the text the description should use based on what button is currently being hovered over
@@ -246,7 +246,7 @@ public class OptionsScript : MonoBehaviour {
                          + "The changes are applied when you leave the Options menu.";
                 return !LocalCrate ? response : Temmify.Convert(response);
             case "Exit":
-                response = "Returns to the Mod Select screen.";
+                response = "Returns to the boss select screen.";
                 return !LocalCrate ? response : Temmify.Convert(response);
             default:
                 return !LocalCrate ? "Hover over an option and its description will appear here!" : "HOVR OVR DA TING N GET TEXT HEAR!!";

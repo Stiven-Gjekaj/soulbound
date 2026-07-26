@@ -90,6 +90,10 @@ public class SelectOMatic : MonoBehaviour {
             });
         }
 
+        // ModSelect.unity still labels this button from when it listed mod folders.
+        ListText.text   = "Boss List";
+        ListShadow.text = ListText.text;
+
         // Crate Your Frisk initializer
         if (GlobalControls.crate) {
             //Exit button
