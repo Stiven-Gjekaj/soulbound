@@ -58,6 +58,7 @@ what is wrong rather than leaving an empty or broken menu. The checks are:
 
 ## Related
 
+- [The boss rush loop](../project/boss-rush-loop.md) for what happens after a boss is picked
 - [Basic setup](basic-setup.md) for the folder layout and what each script holds
 - [Special variables](special-variables.md) for the variables an encounter script sets
 - [Game events](../api/game-events.md) for the functions the engine calls in a fight

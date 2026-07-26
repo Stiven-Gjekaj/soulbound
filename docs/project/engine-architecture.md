@@ -83,6 +83,9 @@ DiscordControls.StartBattle(boss.name);
 SceneManager.LoadScene("Battle");
 ```
 
+Where the record and the clock hook into that, and what they store, is in
+[The boss rush loop](boss-rush-loop.md).
+
 ## The `@Title` dependency
 
 `Assets/Mods/@Title` is not optional and not example content. Five engine files reference the

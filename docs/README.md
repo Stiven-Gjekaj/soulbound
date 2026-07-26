@@ -80,6 +80,7 @@ because Create Your Frisk is.
 | Page | What it covers |
 | --- | --- |
 | [Milestones](project/milestones.md) | status and what comes next |
+| [The boss rush loop](project/boss-rush-loop.md) | pick a boss, fight it, come back: how that works |
 | [Repository layout](project/repository-layout.md) | what lives where and why |
 | [Building](project/building.md) | Unity version, build script, CI |
 | [Engine architecture](project/engine-architecture.md) | scene flow, Lua bindings, mod loading |
