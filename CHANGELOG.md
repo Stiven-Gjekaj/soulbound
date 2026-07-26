@@ -12,6 +12,35 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
+## 0.4 (unreleased)
+
+### Changed
+
+- Releases are marked pre-release by the shape of the tag rather than always. A plain
+  version tag such as `v0.4.0` publishes as a full release; a tag carrying a semver
+  pre-release identifier, `v0.9.0-rc1`, publishes with `--prerelease`.
+
+  v0.3.0 published correctly and then did not appear in the repository's Releases panel,
+  because GitHub excludes pre-releases from "latest" and that panel shows the latest
+  release. Marking every build before v1.0 a pre-release would have left it empty for
+  years. The 0.x version number and the warning at the top of each release's notes are
+  the honest signals about maturity.
+- The README's version badge was static and had to be edited every milestone. It reads
+  the latest release now, with a download counter beside it.
+
+### Added
+
+- A Download section in the README. The only instructions there were for building from
+  source in Unity, with no link to the builds.
+
+### Notes
+
+- The release notes extractor keys on the minor version: it takes the tag, drops the
+  patch component, and looks for that heading. So tagging `v0.4.1` pulls the `## 0.4`
+  section, not a `## 0.4.1` one. That is deliberate, patch releases share their minor's
+  notes, but it is surprising if you have not read
+  [`release.yml`](.github/workflows/release.yml).
+
 ## 0.3 (2026-07-26)
 
 **This is a technical pre-release. There is no game in it yet.**
