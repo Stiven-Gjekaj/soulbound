@@ -24,17 +24,6 @@ public class GameState {
     public void SaveGameVariables() {
         CYFversion = GlobalControls.CYFversion;
 
-        try {
-            GameObject Player = GameObject.Find("Player");
-            LuaScriptBinder.SetSessionGlobal("PlayerPosX", DynValue.NewNumber(Player.transform.position.x));
-            LuaScriptBinder.SetSessionGlobal("PlayerPosY", DynValue.NewNumber(Player.transform.position.y));
-            LuaScriptBinder.SetSessionGlobal("PlayerPosZ", DynValue.NewNumber(Player.transform.position.z));
-        } catch {
-            LuaScriptBinder.SetSessionGlobal("PlayerPosX", DynValue.NewNumber(SaveLoad.savedGame.playerVariablesNum["PlayerPosX"]));
-            LuaScriptBinder.SetSessionGlobal("PlayerPosY", DynValue.NewNumber(SaveLoad.savedGame.playerVariablesNum["PlayerPosY"]));
-            LuaScriptBinder.SetSessionGlobal("PlayerPosZ", DynValue.NewNumber(SaveLoad.savedGame.playerVariablesNum["PlayerPosZ"]));
-        }
-
         soundDictionary = MusicManager.hiddenDictionary;
         controlpanel = ControlPanel.instance;
         player = PlayerCharacter.instance;
@@ -68,13 +57,13 @@ public class GameState {
     }
 
     public void LoadGameVariables(bool loadGlobals = true) {
-        foreach (string key in playerVariablesNum.Keys) {
-            if (!loadGlobals && !key.Contains("PlayerPos")) continue;
-            double a;
-            playerVariablesNum.TryGetValue(key, out a);
-            LuaScriptBinder.SetSessionGlobal(key, DynValue.NewNumber(a));
-        }
         if (loadGlobals) {
+            foreach (string key in playerVariablesNum.Keys) {
+                double a;
+                playerVariablesNum.TryGetValue(key, out a);
+                LuaScriptBinder.SetSessionGlobal(key, DynValue.NewNumber(a));
+            }
+
             foreach (string key in playerVariablesStr.Keys) {
                 string a;
                 playerVariablesStr.TryGetValue(key, out a);
