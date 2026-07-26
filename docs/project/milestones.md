@@ -205,7 +205,39 @@ each one a change you could revert on its own.
 
 ## v0.3: the boss rush loop
 
-The actual game loop, with programmer art.
+The actual game loop, with programmer art. This milestone also carries the release
+pipeline and the engine's own identity, because the first release should not go out
+labelled as somebody else's engine.
+
+### Releases and identity
+
+Done, ahead of the loop:
+
+- `release.yml` cuts a release when a `v*` tag is pushed. The tag is the version, and
+  it reaches the executable through `versioning: Custom`. Three platforms, zipped,
+  attached to a GitHub release marked pre-release, with notes pulled from the changelog.
+  `build.yml` is untouched and stays the per-push check. See
+  [building](building.md#releasing).
+- The documentation no longer presents this as Create Your Frisk. The 273 `<CYF>` and
+  5 `<0.2.1a>` markers are gone, along with about 150 prose references. What remains is
+  attribution, the origin note, and the places where Unitale genuinely is the subject,
+  such as `isCYF` and retrocompatibility mode. Attribution stays because the project is
+  GPLv3 by inheritance and the licence requires it.
+- The Unity editor menu is `Soulbound`, not `Create Your Frisk`, and the Mac
+  instructions that ship with a build were rewritten.
+
+Still pending, and blocking the first tag:
+
+- `productName` and `companyName` in `ProjectSettings`, plus `buildName` in both
+  workflows. The build still identifies itself as Create Your Frisk. This is deliberately
+  last: those two fields are what Unity uses to build `Application.persistentDataPath`,
+  so changing them moves `save.gd` and `AlMightySave.gd`. Free now, disruptive once
+  anyone has downloaded a build, so it must land before `v0.3.0` is tagged.
+- The `cyfshaders` AssetBundle name is staying. It is baked into seven `.meta` files and
+  a built binary bundle, and mods reference it by name, so renaming it is a breaking
+  change for no real gain.
+
+### The loop
 
 - A boss registry: what bosses exist, and what each one needs to load.
 - A boss select menu. The existing mod selector (`PregamePlaceholder`, 6 files,

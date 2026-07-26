@@ -12,6 +12,44 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
+## 0.3 (unreleased)
+
+The boss rush loop, plus the two things that had to happen before a first release:
+a way to cut one, and an engine that does not call itself somebody else's name.
+
+### Added
+
+- `.github/workflows/release.yml`. Pushing a `v*` tag builds Windows, macOS and Linux,
+  zips each as `Soulbound-<version>-<platform>.zip`, and publishes a GitHub release with
+  the three archives attached. The tag is the only place the version is written: it
+  reaches the executable through `versioning: Custom`, `BuildScript.Build` and
+  `PlayerSettings.bundleVersion`.
+- Release notes are pulled from the section of this changelog matching the tag. If no
+  section matches, the release still publishes with a pointer here instead.
+- A releasing section in [docs/project/building.md](docs/project/building.md).
+
+### Changed
+
+- The documentation describes the Soulbound engine rather than Create Your Frisk. Gone
+  are 273 `<CYF>` markers, 5 `<0.2.1a>` markers and roughly 150 prose references across
+  35 pages. Attribution, the origin note, and the passages where Unitale genuinely is the
+  subject all stay. The project is GPLv3 by inheritance, and the licence requires the
+  attribution.
+- `docs/how-to-read.md` lost the version-marker section and its example was rebuilt: it
+  demonstrated `Screen.DispImg`, an overworld function deleted in v0.1.
+- The Unity editor menu for building shader AssetBundles is `Soulbound`, not
+  `Create Your Frisk`.
+- `How to use CYF and add mods (Mac).txt` became `How to run Soulbound on Mac.txt`,
+  rewritten so it no longer hardcodes an application name.
+- `CONTRIBUTING.md` listed four engine files that name content directly. Three of them
+  were deleted in v0.1 and v0.2. It lists the one that remains.
+
+### Not done yet
+
+- `productName` and `companyName` still say Create Your Frisk. They determine
+  `Application.persistentDataPath`, so changing them relocates save files. That has to
+  land before the first tag, and it needs a company name.
+
 ## 0.2 (2026-07-26)
 
 Removes what the overworld strip left behind. Nothing here changes what the game
