@@ -126,7 +126,22 @@ public class OptionsScript : MonoBehaviour {
             SceneManager.LoadScene("ModSelect");
         });
 
+        HideRetiredButtons();
         StackButtons();
+    }
+
+    /// <summary>
+    /// Options.unity still holds rows for options that have been retired, safe mode and
+    /// Crate Your Frisk among them. The list is whatever is in `buttons`; anything else
+    /// under the same parent is left over from a previous version and is hidden here.
+    ///
+    /// This is a stopgap. Those objects want deleting from the scene, which needs someone
+    /// with the Unity editor open, and is worth doing when the menus are rebuilt for art.
+    /// </summary>
+    private void HideRetiredButtons() {
+        foreach (Transform child in ResetSG.transform.parent)
+            if (child.GetComponent<MenuButton>() && !buttons.Exists(b => b.transform == child))
+                child.gameObject.SetActive(false);
     }
 
     /// <summary>
