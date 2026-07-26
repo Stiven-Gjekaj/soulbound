@@ -41,7 +41,7 @@ public static class DiscordControls {
 
         // Creates the activity objects that will be modified and used as needed
         activity = new Activity {
-            Name = GlobalControls.crate ? ControlPanel.instance.WinodwBsaisNmae : ControlPanel.instance.WindowBasisName,
+            Name = ControlPanel.instance.WindowBasisName,
             Details = "", // The top row
             State = "", // The second row
             Timestamps = { // The timer
@@ -91,7 +91,7 @@ public static class DiscordControls {
                     break;
             }
 
-        return GlobalControls.crate ? Temmify.Convert(settingNames[curr_setting]) : settingNames[curr_setting];
+        return settingNames[curr_setting];
     }
 
     /// <summary>

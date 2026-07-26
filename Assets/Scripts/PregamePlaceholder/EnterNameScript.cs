@@ -25,7 +25,7 @@ public class EnterNameScript : MonoBehaviour {
         isNewGame = SaveLoad.savedGame == null;
         try { GameObject.Find("textframe_border_outer").SetActive(false); }
         catch { /* ignored */ }
-        tmInstr.SetTextQueue(new[] { new TextMessage((GlobalControls.crate ? "GIV HMI A NAME!!!" : "Name the fallen human."), false, true) });
+        tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human."), false, true) });
         tmInstr.SetHorizontalSpacing(2);
         tmName.SetHorizontalSpacing(2);
         GameObject firstCamera = GameObject.Find("Main Camera");
@@ -191,7 +191,7 @@ public class EnterNameScript : MonoBehaviour {
 
     private IEnumerator waitConfirm(bool isForbidden = false) {
         yield return 0;
-        tmInstr.SetTextQueue(new[] { new TextMessage((confirmText ?? (GlobalControls.crate ? "LAL GUD???" : "Is this name correct?")), false, true) });
+        tmInstr.SetTextQueue(new[] { new TextMessage((confirmText ?? ("Is this name correct?")), false, true) });
         tmName.SetEffect(new ShakeEffect(tmName));
         GameObject.Find("Backspace").GetComponent<SpriteRenderer>().enabled = false;
         tmLettersMaj.gameObject.SetActive(false);
@@ -222,7 +222,7 @@ public class EnterNameScript : MonoBehaviour {
             tmName.SetEffect(null);
             tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
             tmName.MoveTo(-calcTotalLength(tmName)/2, 145);
-            tmInstr.SetTextQueue(new[] { new TextMessage((GlobalControls.crate ? "QWIK QWIK QWIK!!!" : "Name the fallen human."), false, true) });
+            tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human."), false, true) });
             tmLettersMaj.gameObject.SetActive(true);
             tmLettersMin.gameObject.SetActive(true);
             GameObject.Find("Backspace").GetComponent<SpriteRenderer>().enabled = true;

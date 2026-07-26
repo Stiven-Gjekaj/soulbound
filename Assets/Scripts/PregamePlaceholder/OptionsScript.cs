@@ -14,12 +14,8 @@ public class OptionsScript : MonoBehaviour {
     // used to update the Description periodically
     private int DescriptionTimer;
 
-    // used to store the state of CrateYourFrisk at the start of the scene
-    private bool LocalCrate;
-    private bool CrateUnlocked;
-
     // game objects
-    public GameObject ResetSG, ResetPG, ClearSave, Retro, Scale, Discord, Keys, Crate, Exit;
+    public GameObject ResetSG, ResetPG, ClearSave, Retro, Scale, Discord, Keys, Exit;
     public Text Description;
 
     // Used for controller selection
@@ -28,9 +24,6 @@ public class OptionsScript : MonoBehaviour {
 
     // Use this for initialization
     private void Start() {
-        LocalCrate = GlobalControls.crate;
-        CrateUnlocked = LuaScriptBinder.GetPermanentGlobal("CrateYourFrisk") != null;
-
         buttons.AddRange(new MenuButton[] {
             ResetSG.GetComponent<MenuButton>(),
             ResetPG.GetComponent<MenuButton>(),
@@ -41,8 +34,6 @@ public class OptionsScript : MonoBehaviour {
             Keys.GetComponent<MenuButton>(),
             Exit.GetComponent<MenuButton>()
         });
-        if (CrateUnlocked)
-            buttons.Insert(buttons.Count - 1, Crate.GetComponent<MenuButton>());
 
         // add button functions
 
@@ -51,10 +42,10 @@ public class OptionsScript : MonoBehaviour {
             if (SessionGlobalResetCooldown > 0) {
                 LuaScriptBinder.ClearVariables();
                 SessionGlobalResetCooldown = 60 * 2;
-                ResetSG.GetComponentInChildren<Text>().text = !LocalCrate ? "Session Globals Erased!" : "SEESHUN GOLBELZ DELEET!!!!!";
+                ResetSG.GetComponentInChildren<Text>().text = "Session Globals Erased!";
             } else {
                 SessionGlobalResetCooldown = 60 * 2;
-                ResetSG.GetComponentInChildren<Text>().text = !LocalCrate ? "Are you sure?" : "R U SUR???";
+                ResetSG.GetComponentInChildren<Text>().text = "Are you sure?";
             }
         });
 
@@ -63,17 +54,14 @@ public class OptionsScript : MonoBehaviour {
             if (PermanentGlobalResetCooldown > 0) {
                 LuaScriptBinder.ClearPermanentGlobals();
                 PermanentGlobalResetCooldown = 60 * 2;
-                ResetPG.GetComponentInChildren<Text>().text = !LocalCrate ? "Permanent Globals Erased!" : "PREMZ GOLBELZ DELEET!!!!!";
+                ResetPG.GetComponentInChildren<Text>().text = "Permanent Globals Erased!";
 
                 // Add useful permanent globals
                 LuaScriptBinder.SetPermanentGlobal("CYFRetroMode", DynValue.NewBoolean(GlobalControls.retroMode));
                 LuaScriptBinder.SetPermanentGlobal("CYFWindowScale", DynValue.NewNumber(ScreenResolution.windowScale));
-                if (CrateUnlocked)
-                    LuaScriptBinder.SetPermanentGlobal("CrateYourFrisk", DynValue.NewBoolean(GlobalControls.crate));
-
             } else {
                 PermanentGlobalResetCooldown = 60 * 2;
-                ResetPG.GetComponentInChildren<Text>().text = !LocalCrate ? "Are you sure?" : "R U SUR???";
+                ResetPG.GetComponentInChildren<Text>().text = "Are you sure?";
             }
         });
 
@@ -82,10 +70,10 @@ public class OptionsScript : MonoBehaviour {
             if (SaveCooldown > 0) {
                 File.Delete(Application.persistentDataPath + "/save.gd");
                 SaveCooldown = 60 * 2;
-                ClearSave.GetComponentInChildren<Text>().text = !LocalCrate ? "Save wiped!" : "RIP";
+                ClearSave.GetComponentInChildren<Text>().text = "Save wiped!";
             } else {
                 SaveCooldown = 60 * 2;
-                ClearSave.GetComponentInChildren<Text>().text = !LocalCrate ? "Are you sure?" : "R U SUR???";
+                ClearSave.GetComponentInChildren<Text>().text = "Are you sure?";
             }
         });
 
@@ -96,13 +84,9 @@ public class OptionsScript : MonoBehaviour {
             // save RetroMode preferences to permanent globals
             LuaScriptBinder.SetPermanentGlobal("CYFRetroMode", DynValue.NewBoolean(GlobalControls.retroMode));
 
-            Retro.GetComponentInChildren<Text>().text = !LocalCrate
-                ? ("Retrocompatibility Mode: " + (GlobalControls.retroMode ? "On" : "Off"))
-                : ( "RETORCMOAPTIILBIYT MOD: " + (GlobalControls.retroMode ? "ON" : "OFF"));
+            Retro.GetComponentInChildren<Text>().text = ("Retrocompatibility Mode: " + (GlobalControls.retroMode ? "On" : "Off"));
         });
-        Retro.GetComponentInChildren<Text>().text = !LocalCrate
-            ? ("Retrocompatibility Mode: " + (GlobalControls.retroMode ? "On" : "Off"))
-            : ( "RETORCMOAPTIILBIYT MOD: " + (GlobalControls.retroMode ? "ON" : "OFF"));
+        Retro.GetComponentInChildren<Text>().text = ("Retrocompatibility Mode: " + (GlobalControls.retroMode ? "On" : "Off"));
 
         // change window scale
         Scale.GetComponent<Button>().onClick.AddListener(() => {
@@ -121,58 +105,28 @@ public class OptionsScript : MonoBehaviour {
             // save RetroMode preferences to permanent globals
             LuaScriptBinder.SetPermanentGlobal("CYFWindowScale", DynValue.NewNumber(ScreenResolution.windowScale));
 
-            Scale.GetComponentInChildren<Text>().text = !LocalCrate
-                ? "Window Scale: "  + ScreenResolution.windowScale + "x"
-                : "WEENDO STRECH: " + ScreenResolution.windowScale + "X";
+            Scale.GetComponentInChildren<Text>().text = "Window Scale: "  + ScreenResolution.windowScale + "x";
         });
-        Scale.GetComponentInChildren<Text>().text = !LocalCrate
-            ? "Window Scale: " + ScreenResolution.windowScale  + "x"
-            : "WEENDO STRECH: " + ScreenResolution.windowScale + "X";
+        Scale.GetComponentInChildren<Text>().text = "Window Scale: " + ScreenResolution.windowScale  + "x";
 
         // Discord Rich Presence
         // Change Discord Status Visibility
         Discord.GetComponent<Button>().onClick.AddListener(() => {
-            Discord.GetComponentInChildren<Text>().text = (!LocalCrate ? "Discord Display: " : "DEESCORD DESPLAY: ") + DiscordControls.ChangeVisibilitySetting(1);
+            Discord.GetComponentInChildren<Text>().text = ("Discord Display: ") + DiscordControls.ChangeVisibilitySetting(1);
         });
-        Discord.GetComponentInChildren<Text>().text = (!LocalCrate ? "Discord Display: " : "DEESCORD DESPLAY: ") + DiscordControls.ChangeVisibilitySetting(0);
+        Discord.GetComponentInChildren<Text>().text = ("Discord Display: ") + DiscordControls.ChangeVisibilitySetting(0);
 
         Keys.GetComponent<Button>().onClick.AddListener(() => {
             SceneManager.LoadScene("KeybindSettings");
         });
-        Keys.GetComponentInChildren<Text>().text = !LocalCrate ? "Keybinds..." : "KEEBLEDS!1!!!1";
-
-        // Enable / Disable Crate Your Frisk
-        Crate.GetComponent<Button>().onClick.AddListener(() => {
-            GlobalControls.crate = !GlobalControls.crate;
-            LuaScriptBinder.SetPermanentGlobal("CrateYourFrisk", DynValue.NewBoolean(GlobalControls.crate));
-
-            Crate.GetComponentInChildren<Text>().text = !LocalCrate
-                ? "Crate Your Frisk: " + (GlobalControls.crate ? "On" : "Off")
-                : "BAD SPELING: " + (GlobalControls.crate ? "ON" : "OFF");
-        });
-        Crate.GetComponentInChildren<Text>().text = !LocalCrate ? "Crate Your Frisk: Off" : "BAD SPELING: ON";
-        // Hide the Crate button if CrateYourFrisk is nil
-        Crate.SetActive(CrateUnlocked);
+        Keys.GetComponentInChildren<Text>().text = "Keybinds...";
 
         // exit
         Exit.GetComponent<Button>().onClick.AddListener(() => {
-            GlobalControls.ReloadCrate();
             SceneManager.LoadScene("ModSelect");
         });
 
         StackButtons();
-
-        // Crate Your Frisk
-        if (!LocalCrate) return;
-        // labels
-        GameObject.Find("OptionsLabel").GetComponent<Text>().text     = "OPSHUNS";
-        GameObject.Find("DescriptionLabel").GetComponent<Text>().text = "MORE TXET";
-
-        // buttons
-        ResetSG.GetComponentInChildren<Text>().text   = "RESTE SESSHUN GOLBALZ";
-        ResetPG.GetComponentInChildren<Text>().text   = "RESTE PERMZ GOLBALZ";
-        ClearSave.GetComponentInChildren<Text>().text = "WYPE SAV";
-        Exit.GetComponentInChildren<Text>().text      = "EXIT TOO BSSO SELCT";
     }
 
     /// <summary>
@@ -217,55 +171,42 @@ public class OptionsScript : MonoBehaviour {
             case "ResetSG":
                 response = "Resets all Session Global, also known as Real Globals.\n\n"
                          + "Session Globals are variables that persist through battles, but are deleted when CYF is closed.";
-                return !LocalCrate ? response : Temmify.Convert(response);
+                return response;
             case "ResetPG":
                 response = "Resets all Permanent Globals, also known as AlMighty Globals.\n\n"
                          + "Permanent Globals are variables that are saved to a file, and stay even after you close CYF.\n\n"
                          + "The options on this screen are stored as Permanent Globals.";
-                return !LocalCrate ? response : Temmify.Convert(response);
+                return response;
             case "ClearSave":
                 response = "Clears your save file.\n\n"
                          + "This holds your name, stats and inventory between sessions.\n\n"
                          + "Your save file is located at:\n\n";
-                if (!LocalCrate)
-                    // return response + Application.persistentDataPath + "/save.gd</size></b>";
-                    return response + "<b><size='14'>" + Application.persistentDataPath + "/save.gd</size></b>";
-                else
-                    return Temmify.Convert(response) + "<b><size='14'>" + Application.persistentDataPath + "/save.gd</size></b>";
+                return response + "<b><size='14'>" + Application.persistentDataPath + "/save.gd</size></b>";
             case "Retro":
                 response = "Toggles retrocompatibility mode.\n\n"
                          + "This mode is designed specifically to make encounters imported from Unitale v0.2.1a act as they did on the old engine.\n\n\n\n";
-                if (!LocalCrate)
-                    return response + "<b>CAUTION!\nDISABLE</b> this for mods made for CYF. This feature should only be used with Mods made for\n<b>Unitale v0.2.1a</b>.";
-                else
-                    return Temmify.Convert(response) + "<b>" + Temmify.Convert("CAUTION!\nDISABLE") + "</b> " + Temmify.Convert("this for mods made for CYF.");
+                return response + "<b>CAUTION!\nDISABLE</b> this unless you are running an encounter written for\n<b>Unitale v0.2.1a</b>.";
             case "Scale":
                 response = "Scales the window in Windowed mode.\n\n"
                          + "This is useful for especially large screens (such as 4k monitors).\n\n"
                          + "Has no effect in Fullscreen mode.";
-                return !LocalCrate ? response : Temmify.Convert(response);
+                return response;
             case "Discord":
                 response = "Changes how much Discord Rich Presence should display on your profile regarding you playing Create Your Frisk.\n\n"
                          + "<b>Everything</b>: Everything is displayed: the mod you're playing, a timestamp and a description.\n\n"
                          + "<b>Game Only</b>: Only shows that you're playing Create Your Frisk.\n\n"
                          + "<b>Nothing</b>: Disables Discord Rich Presence entirely.\n\n"
                          + "If CYF's connection to Discord is lost, you will have to restart CYF if you want your rich presence back.";
-                return !LocalCrate ? response : Temmify.Convert(response);
+                return response;
             case "Keys":
                 response = "Allows you to change the keys bound to CYF's default keybinds, such as Confirm or Cancel.\n\n"
                          + "That way, you can make so your wild keyboard scheme still works properly (and comfortably) with CYF!";
-                return !LocalCrate ? response : Temmify.Convert(response);
-            case "Crate":
-                response = "Enables or disables the Crate Your Frisk mode of the engine.\n\n"
-                         + "This mode adds several surprises such as scrambled text or modified Player battle choices.\n\n"
-                         + "Unlocked through the completion of CYF v0.5's secret.\n\n"
-                         + "The changes are applied when you leave the Options menu.";
-                return !LocalCrate ? response : Temmify.Convert(response);
+                return response;
             case "Exit":
                 response = "Returns to the boss select screen.";
-                return !LocalCrate ? response : Temmify.Convert(response);
+                return response;
             default:
-                return !LocalCrate ? "Hover over an option and its description will appear here!" : "HOVR OVR DA TING N GET TEXT HEAR!!";
+                return "Hover over an option and its description will appear here!";
         }
     }
 
@@ -330,21 +271,21 @@ public class OptionsScript : MonoBehaviour {
             SessionGlobalResetCooldown -= 1;
         else if (SessionGlobalResetCooldown == 0) {
             SessionGlobalResetCooldown = -1;
-            ResetSG.GetComponentInChildren<Text>().text = !LocalCrate ? "Reset Session Globals" : "RSETE SESSHUN GOLBELZ";
+            ResetSG.GetComponentInChildren<Text>().text = "Reset Session Globals";
         }
 
         if (PermanentGlobalResetCooldown > 0)
             PermanentGlobalResetCooldown -= 1;
         else if (PermanentGlobalResetCooldown == 0) {
             PermanentGlobalResetCooldown = -1;
-            ResetPG.GetComponentInChildren<Text>().text = !LocalCrate ? "Reset Permanent Globals" : "RESET PERMZ GOLBELZ";
+            ResetPG.GetComponentInChildren<Text>().text = "Reset Permanent Globals";
         }
 
         if (SaveCooldown > 0)
             SaveCooldown -= 1;
         else if (SaveCooldown == 0) {
             SaveCooldown = -1;
-            ClearSave.GetComponentInChildren<Text>().text = !LocalCrate ? "Wipe Save" : "WYPE SAV";
+            ClearSave.GetComponentInChildren<Text>().text = "Wipe Save";
         }
     }
 }

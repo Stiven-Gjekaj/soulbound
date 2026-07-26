@@ -7,21 +7,12 @@ using System.Collections;
 /// Attached to the disclaimer screen so you can skip it.
 /// </summary>
 public class DisclaimerScript : MonoBehaviour {
-    public GameObject Logo, LogoCrate, RedditPlug, LegalStuff, ModSelection, TitleScreenPrompt, LuaKnowledgeDisclaimer, Version;
+    public GameObject Logo, LuaKnowledgeDisclaimer, Version;
     private bool inCredits = false;
     private int creditsCameraSpeed = 0;
 
     private void Start() {
-        if (GlobalControls.crate) {
-            Logo.GetComponent<Image>().enabled = false;
-            LogoCrate.GetComponent<Image>().enabled = true;
-            RedditPlug.GetComponent<Text>().text = "GO TO /R/UNITLAE. FOR UPDTAES!!!!!";
-            LegalStuff.GetComponent<Text>().text = "NO RELESLING HERE!!! IT'S RFEE!!! OR TUBY FEX WILL BE ANGER!!! U'LL HVAE A BED TMIE!!!";
-            ModSelection.GetComponent<Text>().text = "YASS GO OR KLIK TO\n<color='#ff0000'>PALY MODS!!!!!</color>";
-            TitleScreenPrompt.GetComponent<Text>().text = "PRSES YUMMY 2\n<color='#ffff00'>TILTE SCREN!!!!!</color>";
-            LuaKnowledgeDisclaimer.GetComponent<Text>().text = "<b><color='red'>KNOW YUOR CODE</color> R U'LL HVAE A BED TMIE!!!</b>";
-            Version.GetComponent<Text>().text = "v" + Random.Range(0,9) + "." + Random.Range(0,9) + "." + Random.Range(0,9);
-        } else if (Random.Range(0, 1000) == 021) {
+        if (Random.Range(0, 1000) == 021) {
             Logo.GetComponent<Image>().enabled              = false;
             Version.GetComponent<Transform>().localPosition = new Vector3(0f, 160f, 0f);
             Version.GetComponent<Text>().color              = new Color(1f, 1f, 1f, 1f);
@@ -97,7 +88,7 @@ public class DisclaimerScript : MonoBehaviour {
     // show anything, so it can take a moment. To compensate, this function puts "Loading"
     // text on the Disclaimer screen while that happens.
     private IEnumerator ModSelect() {
-        LuaKnowledgeDisclaimer.GetComponent<Text>().text = GlobalControls.crate ? "LAODING BSSOES!!!!!" : "Loading bosses...";
+        LuaKnowledgeDisclaimer.GetComponent<Text>().text = "Loading bosses...";
         yield return new WaitForEndOfFrame();
         GlobalControls.modDev = true;
         DiscordControls.StartBossSelect(false);

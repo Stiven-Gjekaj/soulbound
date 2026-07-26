@@ -102,24 +102,6 @@ public class SelectOMatic : MonoBehaviour {
         ListText.text   = "Boss List";
         ListShadow.text = ListText.text;
 
-        // Crate Your Frisk initializer
-        if (GlobalControls.crate) {
-            //Exit button
-            ExitText.text   = "← BYEE (RATIO'D)";
-            ExitShadow.text = ExitText.text;
-
-            //Options button
-            OptionsText.text   = "OPSHUNZ (YUMMY) →";
-            OptionsShadow.text = OptionsText.text;
-
-            //Back button within scrolling list
-            content.transform.Find("Back/Text").GetComponent<Text>().text = "← BCAK";
-
-            //Boss list button
-            ListText.gameObject.GetComponent<Text>().text   = "BSSO LITS";
-            ListShadow.gameObject.GetComponent<Text>().text = "BSSO LITS";
-        }
-
         if (retromodeWarning)
             retromodeWarning.SetActive(GlobalControls.retroMode);
 
@@ -188,22 +170,16 @@ public class SelectOMatic : MonoBehaviour {
         ModBackground.GetComponent<Image>().sprite = Portrait(boss);
 
         // Update the text
-        ModTitle.GetComponent<Text>().text = boss.name;
-        // Crate Your Frisk version
-        if (GlobalControls.crate)
-            ModTitle.GetComponent<Text>().text = Temmify.Convert(boss.name, true);
-        ModTitleShadow.GetComponent<Text>().text = ModTitle.GetComponent<Text>().text;
+        ModTitle.GetComponent<Text>().text       = boss.name;
+        ModTitleShadow.GetComponent<Text>().text = boss.name;
 
-        EncounterCount.GetComponent<Text>().text = boss.subtitle;
-        // Crate Your Frisk version
-        if (GlobalControls.crate)
-            EncounterCount.GetComponent<Text>().text = Temmify.Convert(boss.subtitle, true);
-        EncounterCountShadow.GetComponent<Text>().text = EncounterCount.GetComponent<Text>().text;
+        EncounterCount.GetComponent<Text>().text       = boss.subtitle;
+        EncounterCountShadow.GetComponent<Text>().text = boss.subtitle;
 
         // The cleared marker sits on the line the mod folder path used to occupy. Best
         // time and attempts are recorded too, but they wait for v0.4 to give them a place.
         string cleared = BossRecords.Cleared(boss.id) ? "CLEARED" : "";
-        FolderText.GetComponent<Text>().text       = GlobalControls.crate ? Temmify.Convert(cleared, true) : cleared;
+        FolderText.GetComponent<Text>().text       = cleared;
         FolderTextShadow.GetComponent<Text>().text = FolderText.GetComponent<Text>().text;
 
         // Update the color of the arrows
@@ -494,7 +470,7 @@ public class SelectOMatic : MonoBehaviour {
 
             // Set text
             string label = boss.name + (BossRecords.Cleared(boss.id) ? " - cleared" : "");
-            button.transform.Find("Text").GetComponent<Text>().text = GlobalControls.crate ? Temmify.Convert(label, true) : label;
+            button.transform.Find("Text").GetComponent<Text>().text = label;
 
             int tempCount = i;
 
