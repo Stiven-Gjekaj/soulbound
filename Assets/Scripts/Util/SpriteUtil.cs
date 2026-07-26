@@ -136,7 +136,7 @@ public static class SpriteUtil {
     }
 
     public static bool CreateLayer(string name, string relatedTag = "BasisNewest", bool before = false) {
-        string canvas = UnitaleUtil.IsOverworld ? "Canvas Two/" : "Canvas/";
+        const string canvas = "Canvas/";
         if (name == null || GameObject.Find(canvas + name + "Layer") != null)
             return false;
         if (relatedTag != "VeryHighest" && relatedTag != "VeryLowest" && relatedTag != "BasisNewest" && GameObject.Find(canvas + relatedTag + "Layer") == null)
