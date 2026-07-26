@@ -32,10 +32,9 @@ Default layers:
 Creates a sprite at the center of the screen (at 320, 240) that you can modify in many
 ways.
 
-`<CYF>` You can add a layer if you want, otherwise the sprite will be below the arena. From
-in the Overworld, the default value for `layer` is `"Default"` instead. Enter `"none"` to
-spawn your sprite outside of any layers, in the same way that the player is by default,
-although this doesn't have much use.
+`<CYF>` You can add a layer if you want, otherwise the sprite will be below the arena.
+Enter `"none"` to spawn your sprite outside of any layers, in the same way that the player
+is by default, although this doesn't have much use.
 
 `<CYF>` In CYF, you can provide a number argument for `childNumber` if you want. Leave it as
 `-1` to have it move to the top of whatever layer it's placed on (default behavior), or
@@ -50,8 +49,7 @@ and only if you would like a better understanding of how layers work.
 ### `<CYF>` `CreateSprite(string spritename, number childNumber = -1)` returns **sprite** [E/M/W]
 
 The same as `CreateSprite` listed above, except you only need to provide a sprite name and
-child number. Uses the default layer `"BelowArena"` in battles, or `"Default"` in the
-Overworld.
+child number. Uses the default layer `"BelowArena"`.
 
 ## The Sprite object
 
@@ -81,12 +79,11 @@ If parented, y position is relative to the parent.
 
 ### `<CYF>` **number** `sprite.z`
 
-Layering position of sprite *in the Overworld only*. A negative number brings it forward,
-closer to the camera, a positive number sends it backwards, farther into the background.
+Z position of the sprite. A negative number brings it forward, closer to the camera, a
+positive number sends it backwards.
 
-Note that the only thing this will affect is how your sprite and its children appear in
-front of the Player and Event objects. This variable can NOT be used to circumvent the
-layering system for regular sprites.
+Battle rendering orders sprites by layer rather than by Z, so this rarely changes what you
+see. It can NOT be used to circumvent the layering system for regular sprites.
 
 If parented, z position is relative to the parent.
 
@@ -102,8 +99,8 @@ pivot or anchor point and all parents.
 
 ### `<CYF>` **number** `sprite.absz`
 
-Layering position of sprite *in the Overworld only*. A negative number brings it forward,
-closer to the camera, a positive number sends it backwards, farther into the background.
+Z position of the sprite. A negative number brings it forward, closer to the camera, a
+positive number sends it backwards.
 
 Same as `sprite.z`, except that if this sprite has a parent, `sprite.absz` will not be
 relative to the z value of the parent.
@@ -116,8 +113,6 @@ large.
 Scaling applies based on the sprite's pivot point, see `SetPivot`, `<CYF>` `xpivot` and
 `ypivot`.
 
-`<CYF>` However, in the Overworld, Event object sprites ignore pivot when scaling.
-
 ### **number** `sprite.yscale`
 
 Vertical scaling of sprite (`1.0` by default). `2.0` is twice as large, `0.5` is half as
@@ -125,8 +120,6 @@ large.
 
 Scaling applies based on the sprite's pivot point, see `SetPivot`, `<CYF>` `xpivot` and
 `ypivot`.
-
-`<CYF>` However, in the Overworld, Event object sprites ignore pivot when scaling.
 
 ### **boolean** `sprite.isactive` (readonly)
 
@@ -285,9 +278,9 @@ It's clamped between 0 and 360, so if you set it to 365, it will become 5.
 Gets or sets the current layer a sprite is on. Does nothing if you set it to a layer that
 doesn't exist.
 
-Default value: `"BelowArena"`, or `"Default"` in the Overworld.
+Default value: `"BelowArena"`.
 
-Overworld Event sprites and Text Object letter sprites can not have their layers set.
+Text Object letter sprites can not have their layers set.
 
 Note: It is common practice to use `sprite.layer` to deparent a sprite if you need to do
 so. Setting it again will parent the sprite to the given layer, removing its previous
@@ -315,8 +308,8 @@ to true in the Encounter script prevents that effect.
 
 ### `<CYF>` `sprite.Mask(string mode)`
 
-Sets the masking mode of this sprite object. Does not function for Overworld Event sprites
-or Text Object letter sprites.
+Sets the masking mode of this sprite object. Does not function for Text Object letter
+sprites.
 
 Available modes are:
 
