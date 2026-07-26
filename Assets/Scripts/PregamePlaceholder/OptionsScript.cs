@@ -24,6 +24,15 @@ public class OptionsScript : MonoBehaviour {
 
     // Use this for initialization
     private void Start() {
+        MenuButton playerName = AdoptRetiredRow("Safe", "PlayerName");
+        if (playerName) {
+            playerName.GetComponentInChildren<Text>().text = "Change name...";
+            playerName.GetComponent<Button>().onClick.AddListener(() => {
+                SceneManager.LoadScene("EnterName");
+            });
+            buttons.Add(playerName);
+        }
+
         buttons.AddRange(new MenuButton[] {
             ResetSG.GetComponent<MenuButton>(),
             ResetPG.GetComponent<MenuButton>(),
@@ -131,6 +140,23 @@ public class OptionsScript : MonoBehaviour {
     }
 
     /// <summary>
+    /// Takes over a row Options.unity still holds for an option that has been retired,
+    /// renaming it so the hover description keys to what the row now does.
+    ///
+    /// Adding a genuinely new row needs someone with the Unity editor open, and the scene
+    /// has spare rows sitting in it doing nothing, so reusing one costs nothing and leaves
+    /// one less orphan behind. Give these proper objects when the menus are rebuilt for art.
+    /// </summary>
+    private MenuButton AdoptRetiredRow(string sceneName, string newName) {
+        Transform row = ResetSG.transform.parent.Find(sceneName);
+        if (!row)
+            return null;
+        row.gameObject.name = newName;
+        row.GetComponent<Button>().onClick.RemoveAllListeners();
+        return row.GetComponent<MenuButton>();
+    }
+
+    /// <summary>
     /// Options.unity still holds rows for options that have been retired, safe mode and
     /// Crate Your Frisk among them. The list is whatever is in `buttons`; anything else
     /// under the same parent is left over from a previous version and is hidden here.
@@ -216,6 +242,11 @@ public class OptionsScript : MonoBehaviour {
             case "Keys":
                 response = "Allows you to change the keys bound to CYF's default keybinds, such as Confirm or Cancel.\n\n"
                          + "That way, you can make so your wild keyboard scheme still works properly (and comfortably) with CYF!";
+                return response;
+            case "PlayerName":
+                response = "Changes your character's name.\n\n"
+                         + "The name is stored as a Permanent Global, so it survives wiping your save "
+                         + "file, and resetting Permanent Globals makes the game ask for it again.";
                 return response;
             case "Exit":
                 response = "Returns to the boss select screen.";
