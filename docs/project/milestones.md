@@ -62,7 +62,9 @@ which now builds all three platforms in about three minutes.
 
 ## v0.1: strip the overworld
 
-Delete the feature. Keep the engine compiling and the battle path working.
+Complete. The feature is gone and the battle path still works. The engine is 111 C#
+files and 19,504 lines, down from 129 and 25,334. See the
+[changelog](../../CHANGELOG.md).
 
 | Piece | Size |
 | ----- | ---- |
@@ -72,10 +74,10 @@ Delete the feature. Keep the engine compiling and the battle path working.
 | Overworld scenes | `TransitionOverworld`, `Shop`, `SpecialAnnouncement` |
 | Overworld prefabs | `Canvas OW`, `Main Camera OW`, `Player`, `Background 1`, `Event1`, `ImageEvent`, `Save`, `TP On-the-fly`, `Maps/` |
 | Overworld sprites | `FriskUT`, `AsrielOW`, `CharaOW`, `MonsterKidOW`, `BoosterOW`, `SavePoint` |
-| Overworld documentation | 11 of the 46 pages |
+| Overworld documentation | 11 of the 46 pages, and 2 orphaned images |
 
-`Assets/Scripts/Overworld` is a mixed folder, not an overworld folder. Six of its
-files are kept and moved out:
+`Assets/Scripts/Overworld` was a mixed folder, not an overworld folder. Six of its
+files were kept and moved out:
 
 | File | Lines | Why it stays |
 | ---- | ----- | ------------ |
@@ -86,36 +88,37 @@ files are kept and moved out:
 | `IntroManager.cs` | 186 | Backs `Intro` |
 | `EnterNameScript.cs` | 305 | Backs `EnterName` |
 
-The first three move to `Assets/Scripts/Save`, the last three join the other menu
-screens in `Assets/Scripts/PregamePlaceholder`. For the same reason
-`TextManager OW.prefab` is kept: `EnterName` instantiates it, and it carries
-`EnterNameScript`. Its misleading name is a v0.2 rename.
+The first three kept the folder under its new name, `Assets/Scripts/Save`; the last
+three joined the other menu screens in `Assets/Scripts/PregamePlaceholder`. For the
+same reason `TextManager OW.prefab` was kept: `EnterName` instantiates it, and it
+carries `EnterNameScript`. Its misleading name is a v0.2 rename.
 
-Six references genuinely point at overworld types and must be rewired rather
-than left to a constant:
+Six references genuinely pointed at overworld types and were rewired rather than
+left to a constant:
 
-- `Battle/UIController.cs` returns the player to the overworld when a battle
-  ends. It returns to the mod selector instead, until v0.3 gives it a boss
-  select to return to.
-- `Battle/GameOverBehavior.cs` sends the player back to a save point on death,
+- `Battle/UIController.cs` returned the player to the overworld when a battle
+  ended. It returns to the mod selector now, until v0.3 gives it a boss select to
+  return to.
+- `Battle/GameOverBehavior.cs` sent the player back to a save point on death,
   instantiating a teleport prefab to do it. Death restarts without one.
-- `Battle/UIController.cs` and `Battle/EnemyEncounter.cs` carry music across the
-  overworld boundary. That channel goes.
-- `Device/GlobalControls.cs` opens the overworld pause menu.
-- `Title.cs` and `EnterNameScript.cs` load the `TransitionOverworld` scene. Both
+- `Battle/UIController.cs` and `Battle/EnemyEncounter.cs` carried music across the
+  overworld boundary. That channel is gone.
+- `Device/GlobalControls.cs` opened the overworld pause menu.
+- `Title.cs` and `EnterNameScript.cs` loaded the `TransitionOverworld` scene. Both
   are kept scripts loading a deleted scene, so both go to the mod selector.
-- `SaveLoad.cs` asks the event manager to snapshot map state before saving.
+- `SaveLoad.cs` asked the event manager to snapshot map state before saving.
 
-Two rules order the work. Assets go before scripts, because deleting a scene
-never breaks compilation but a scene holding the GUID of a deleted script shows
-as a missing component. References go before definitions, because C# compiles
-all or nothing, so a type can only be deleted once nothing names it.
+Two rules ordered the work. Assets went before scripts, because deleting a scene
+never breaks compilation but a scene holding the GUID of a deleted script shows as
+a missing component. References went before definitions, because C# compiles all or
+nothing, so a type can only be deleted once nothing names it.
 
-Inside the folder the scripts form a reference cycle: `PlayerOverworld`,
-`EventManager` and `TransitionOverworld` name each other, and `EventManager`
-holds instances of all six Lua bindings that call back into it. There is no
-leaves-first order, so the cycle is peeled with small commits that cut a group
-of edges before the next group of files is deleted.
+Inside the folder the scripts formed a reference cycle: `PlayerOverworld`,
+`EventManager` and `TransitionOverworld` name each other, and `EventManager` held
+instances of all six Lua bindings that call back into it. Only `MapLoader` and
+`SpecialAnnouncementScript` were true leaves; the other 16 files were one strongly
+connected component, so they came out together once nothing outside the overworld
+named them.
 
 ## v0.2: clean up after the overworld
 
@@ -130,8 +133,11 @@ branch being deleted is already unreachable.
   and the `MapData`, `TempMapData` and `EventInfos` structs behind them.
 - `TextManager OW.prefab` and the three places `TextManager.cs` matches on its
   name. It is the name entry text box, and it should say so.
-- The scene flow from the title screen, which currently routes through name entry
-  toward a transition that no longer exists.
+- `UnitaleUtil.ExitOverworld`, which v0.1 reduced to session teardown and no longer
+  exits anything. It needs a name that matches what it does.
+- The scene flow from the title screen. v0.1 pointed it at the mod selector so it
+  led somewhere real, but a boss rush probably does not want an Undertale intro and
+  a "name the fallen human" screen in front of its boss select.
 - Documentation: `engine-architecture.md` and `repository-layout.md` both
   describe the overworld at length, and the docs index is organised around an
   engine that has one.
@@ -149,11 +155,12 @@ v0.2.7   removed the shop and kept-audio state
 v0.2.8   removed the non-overworld scene lists
 v0.2.9   removed the map fields from the session save format
 v0.2.10  renamed the overworld text box to the name entry text box
-v0.2.11  simplified the scene flow from the title screen
-v0.2.12  rewrote the engine architecture doc for a battle-only engine
-v0.2.13  rewrote the repository layout doc
-v0.2.14  reorganised the documentation index around the battle API
-v0.2.15  updated the README for the stripped engine
+v0.2.11  renamed the overworld teardown to a session reset
+v0.2.12  simplified the scene flow from the title screen
+v0.2.13  rewrote the engine architecture doc for a battle-only engine
+v0.2.14  rewrote the repository layout doc
+v0.2.15  reorganised the documentation index around the battle API
+v0.2.16  updated the README for the stripped engine
 ```
 
 That commit list is indicative. The shape is what matters: many small commits,
