@@ -67,13 +67,6 @@ public static class UnitaleUtil {
     }*/
 
     /// <summary>
-    /// There is no overworld any more, so this is permanently false. Every branch that
-    /// consults it collapses to the battle path on its own. v0.2 deletes the branches and
-    /// then this shim.
-    /// </summary>
-    public static bool IsOverworld { get { return false; } }
-
-    /// <summary>
     /// Loads the Error scene with the Lua error that occurred.
     /// </summary>
     /// <param name="source">Name of the script that caused the error.</param>
