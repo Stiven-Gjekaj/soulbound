@@ -18,14 +18,6 @@ As of v0.0 the folder holds placeholders only. There is no gameplay yet.
 | `Sounds` | sound effects, `.wav` or `.ogg` |
 | `Audio` | music, `.ogg` only |
 
-Two more folders are created here as the game grows, both documented in
-`docs/overworld/`:
-
-| Folder | Contents |
-| --- | --- |
-| `Lua/Events` | overworld event scripts |
-| `Maps` | Tiled maps, imported through `Assets/Tiled2Unity` |
-
 ## Placeholders
 
 `Lua/Encounters/encounter.lua`, `Lua/Monsters/placeholder.lua` and
