@@ -125,24 +125,42 @@ named them.
 Remove what the strip left behind. Nothing here changes behavior, because every
 branch being deleted is already unreachable.
 
-- The 48 `IsOverworld` branches, by file: `GameOverBehavior` (18), `SpriteUtil`
-  (8), `Inventory` (6), `TextManager` (5), `Misc` (3), and eight others with one
-  or two each.
-- `isInShop`, `audioKept`, `nonOWScenes`, `canTransOW`, and `IsOverworld` itself.
+The counts below are recounted from the tree after v0.1, not estimated before it.
+v0.1 consumed 8 of the branches and all 17 `audioKept` uses on its way past.
+
+- The **40** `IsOverworld` branches, by file: `GameOverBehavior` (18), `SpriteUtil`
+  (8), `Inventory` (5), `TextManager` (3), `LuaScriptBinder` (2), and one each in
+  `LuaProjectile`, `LuaTextManager`, `GlobalControls` and `UnitaleUtil` itself.
+  `Misc` is already clean.
+- `isInShop`, down to 3 uses from 9, `nonOWScenes`, `canTransOW`, and `IsOverworld`
+  itself. `audioKept` is already gone; it went with `PlayerOverworld`.
+- `GlobalControls.EventData`, which is never read or written, and
+  `GlobalControls.realName`, which is assigned `null` once and never read.
 - The map fields still on `GameState`: `mapInfos`, `tempMapInfos`, `lastScene`,
-  and the `MapData`, `TempMapData` and `EventInfos` structs behind them.
-- `TextManager OW.prefab` and the three places `TextManager.cs` matches on its
+  and the `MapData`, `TempMapData`, `EventInfos` and `Vect` structs behind them.
+  `UnitaleUtil.VectToVector` and `VectorToVect` go with `Vect`, having no callers.
+- `TextManager OW.prefab` and the two places `TextManager.cs` matches on its
   name. It is the name entry text box, and it should say so.
 - `UnitaleUtil.ExitOverworld`, which v0.1 reduced to session teardown and no longer
   exits anything. It needs a name that matches what it does.
-- The scene flow from the title screen. v0.1 pointed it at the mod selector so it
-  led somewhere real, but a boss rush probably does not want an Undertale intro and
-  a "name the fallen human" screen in front of its boss select.
+- The `Canvas OW` and `Canvas Two` lookups still left in `ErrorDisplay` and
+  `SelectOMatic`, destroying objects that can no longer exist.
 - Documentation: the API reference still describes overworld behaviour in **35
   places** across eight pages, heaviest in `misc-functions.md` (11),
-  `sprites-and-animation.md` (9) and `discord.md` (5). v0.1 fixed the links and the
+  `sprites-and-animation.md` (9) and `discord.md` (6). v0.1 fixed the links and the
   project pages; this is the prose pass, and it wants doing once rather than twice,
   which is why it waited for the branch collapse.
+
+Two things need care. `nonOWScenes` now lists all nine scenes that exist, so the
+check in `GameState.cs` can never be false: `lastScene` is dead by construction,
+not merely unused. And `GameState` is serialized to `save.gd` with a
+`BinaryFormatter`, so removing fields breaks existing saves. `SaveLoad` already
+guards that by version, so the same commit has to bump the constant, or the player
+gets a raw deserialization exception instead of the readable message.
+
+The scene flow from the title screen stays. Trimming it would change what the player
+sees, which is not what this milestone is for, and the menus want designing properly
+in v0.3 alongside boss select.
 
 Indicative commits:
 
