@@ -26,7 +26,6 @@ public class GlobalControls : MonoBehaviour {
     public static bool retroMode;       // True if the Unitale 0.2.1a retrocompatibility mode is active, false otherwise
     public static bool stopScreenShake; // Used to stop any screenshake currently ongoing
     public static bool isInFight;       // True if we're in a battle, false otherwise
-    public static bool isInShop;        // True if we're in a shop, false otherwise
     public static bool allowWipeSave;   // Allows you to wipe your save in the Error scene if it couldn't load properly
     private bool screenShaking;         // True if a screenshake is occuring, false otherwise
 

@@ -677,7 +677,6 @@ public static class UnitaleUtil {
         Inventory.RemoveAddedItems();
         ScriptWrapper.instances.Clear();
         GlobalControls.isInFight = false;
-        GlobalControls.isInShop = false;
         LuaScriptBinder.ClearBattleGlobals();
         LuaScriptBinder.ClearSessionGlobals();
     }
