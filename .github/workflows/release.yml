@@ -135,13 +135,31 @@ jobs:
                 "See [CHANGELOG.md](CHANGELOG.md) for what changed in this version.")
           PY
 
+      # GitHub excludes pre-releases from "latest", and the repository sidebar shows
+      # the latest release, so a pre-release does not appear there at all. Everything
+      # up to v1.0 is a development build, and marking them all pre-release would mean
+      # an empty sidebar for the whole of 0.4 through 0.9. The 0.x version number and
+      # the warning at the top of the notes are the honest signals; the flag is kept
+      # for the case it was meant for, a candidate that should not be the headline.
+      #
+      # This step runs under bash, which GitHub uses by default on ubuntu-latest, so
+      # [[ ]] is available. --latest needs gh 2.28 or newer; runners are well past it.
       - name: Publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -eu
+          # A plain version tag is a real release. A tag carrying a semver pre-release
+          # identifier, v0.9.0-rc1, is not.
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            RELEASE_FLAG="--prerelease"
+          else
+            RELEASE_FLAG="--latest"
+          fi
+          echo "Publishing $GITHUB_REF_NAME with $RELEASE_FLAG"
+
           gh release create "$GITHUB_REF_NAME" \
             --title "Soulbound $GITHUB_REF_NAME" \
             --notes-file notes.md \
-            --prerelease \
+            "$RELEASE_FLAG" \
             dist/*.zip dist/SHA256SUMS.txt
