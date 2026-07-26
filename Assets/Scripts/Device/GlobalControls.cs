@@ -32,10 +32,6 @@ public class GlobalControls : MonoBehaviour {
     public static string[] nonOWScenes = { "Battle", "Error", "ModSelect", "Options", "TitleScreen", "Disclaimer", "EnterName", "Intro", "KeybindSettings" };   // Scenes in which you're not considered to be in the overworld
     public static string[] canTransOW = { "Battle", "Error" };  // Scenes from which you can enter the overworld
 
-    public static Dictionary<string, GameState.MapData> GameMapData = new Dictionary<string, GameState.MapData>();              // Main save data on each map the Player has visited before
-    public static Dictionary<string, GameState.EventInfos> EventData = new Dictionary<string, GameState.EventInfos>();          // Data stored for each event in the current map, used for data saving
-    public static Dictionary<string, GameState.TempMapData> TempGameMapData = new Dictionary<string, GameState.TempMapData>();  // Data used to save changes applied to maps the Player hasn't visited yet
-
     private static bool awakened;   // Used to only run Awake() once
 
     public void Awake() {

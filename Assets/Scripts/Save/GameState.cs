@@ -113,15 +113,9 @@ public class GameState {
                 }
             }
         } catch { /* ignored */ }
-
-        mapInfos = GlobalControls.GameMapData;
-        tempMapInfos = GlobalControls.TempGameMapData;
     }
 
     public void LoadGameVariables(bool loadGlobals = true) {
-        GlobalControls.TempGameMapData = tempMapInfos;
-        GlobalControls.GameMapData = mapInfos;
-
         foreach (string key in playerVariablesNum.Keys) {
             if (!loadGlobals && !key.Contains("PlayerPos")) continue;
             double a;

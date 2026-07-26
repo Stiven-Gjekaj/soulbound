@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -194,7 +194,6 @@ public class Title : MonoBehaviour {
             yield return 0;
         PlayerCharacter.instance.Reset(false);
         LuaScriptBinder.ClearVariables();
-        GlobalControls.GameMapData.Clear();
         Inventory.inventory.Clear();
         DontDestroyOnLoad(gameObject);
         GlobalControls.modDev = true;
