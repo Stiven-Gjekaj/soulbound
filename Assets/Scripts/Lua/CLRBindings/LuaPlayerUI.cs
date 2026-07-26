@@ -103,7 +103,7 @@ public class LuaPlayerUI {
         namelv.HideBubble();
         namelv.color = new float[] { 1, 1, 1, 1 };
 
-        hplabel.Set(GlobalControls.crate ? "UI/spr_phname_0" : "UI/spr_hpname_0");
+        hplabel.Set("UI/spr_hpname_0");
         hplabel.SetPivot(0, 0);
         hplabel.SetAnchor(0, 0);
         hplabel.Scale(1, 1);
@@ -261,10 +261,10 @@ public class LuaPlayerUI {
 
     public void ResetButtonActiveSprite(string btn) {
         switch (btn) {
-            case "FIGHT": UIController.fightButtonSprite = SpriteRegistry.Get(GlobalControls.crate ? "UI/Buttons/gifhtbt_1" : "UI/Buttons/fightbt_1"); break;
-            case "ACT":   UIController.actButtonSprite   = SpriteRegistry.Get(GlobalControls.crate ? "UI/Buttons/catbt_1"   : "UI/Buttons/actbt_1");   break;
-            case "ITEM":  UIController.itemButtonSprite  = SpriteRegistry.Get(GlobalControls.crate ? "UI/Buttons/tembt_1"   : "UI/Buttons/itembt_1");  break;
-            case "MERCY": UIController.mercyButtonSprite = SpriteRegistry.Get(GlobalControls.crate ? "UI/Buttons/mecrybt_1" : "UI/Buttons/mercybt_1"); break;
+            case "FIGHT": UIController.fightButtonSprite = SpriteRegistry.Get("UI/Buttons/fightbt_1"); break;
+            case "ACT":   UIController.actButtonSprite   = SpriteRegistry.Get("UI/Buttons/actbt_1");   break;
+            case "ITEM":  UIController.itemButtonSprite  = SpriteRegistry.Get("UI/Buttons/itembt_1");  break;
+            case "MERCY": UIController.mercyButtonSprite = SpriteRegistry.Get("UI/Buttons/mercybt_1"); break;
             default:      throw new CYFException("ResetButtonActiveSprite() can only take \"FIGHT\", \"ACT\", \"ITEM\" or \"MERCY\", but you entered \"" + btn + "\".");
         }
         UpdateButtons();

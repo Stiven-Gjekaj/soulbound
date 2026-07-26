@@ -115,8 +115,6 @@ public class FightUIController : MonoBehaviour {
         int damage = (int)Mathf.Round(((PlayerCharacter.instance.WeaponATK + PlayerCharacter.instance.ATK - enemy.Defense) + Random.value * 2) * atkMult);
         if (damage < 0)
             return 0;
-        if (GlobalControls.crate)
-            damage = -damage;
         return damage;
     }
 

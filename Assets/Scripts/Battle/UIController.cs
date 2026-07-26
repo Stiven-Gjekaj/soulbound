@@ -50,7 +50,6 @@ public class UIController : MonoBehaviour {
     private bool[] disabledActions = { false, false, false, false }; // Actions disabled by the player
     public Vector2[] playerOffsets = { new Vector2(16, 19), new Vector2(16, 19), new Vector2(16, 19), new Vector2(16, 19) }; // Player can customize its position on the button.
 
-    private int meCry;  // Used to display which dialogue should be displayed if the MECRY button has been selected, in CrateYourFrisk mode
 
     public int exp = 0;     // Amount of EXP earned by the Player at the end of the encounter
     public int gold = 0;    // Amount of Gold earned by the Player at the end of the encounter
@@ -129,7 +128,7 @@ public class UIController : MonoBehaviour {
         PlayerCharacter.instance.ATK = 8 + 2 * PlayerCharacter.instance.LV;
         PlayerCharacter.instance.DEF = 10 + (int)Mathf.Floor((PlayerCharacter.instance.LV - 1) / 4f);
         #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-            Misc.WindowName = GlobalControls.crate ? ControlPanel.instance.WinodwBsaisNmae : ControlPanel.instance.WindowBasisName;
+            Misc.WindowName = ControlPanel.instance.WindowBasisName;
         #endif
         if (instance && instance.psContainer != null)
             instance.psContainer.SetActive(false);
@@ -551,17 +550,10 @@ public class UIController : MonoBehaviour {
     }
 
     private void Awake() {
-        if (GlobalControls.crate) {
-            fightButtonSprite = SpriteRegistry.Get("UI/Buttons/gifhtbt_1");
-            actButtonSprite = SpriteRegistry.Get("UI/Buttons/catbt_1");
-            itemButtonSprite = SpriteRegistry.Get("UI/Buttons/tembt_1");
-            mercyButtonSprite = SpriteRegistry.Get("UI/Buttons/mecrybt_1");
-        } else {
-            fightButtonSprite = SpriteRegistry.Get("UI/Buttons/fightbt_1");
-            actButtonSprite = SpriteRegistry.Get("UI/Buttons/actbt_1");
-            itemButtonSprite = SpriteRegistry.Get("UI/Buttons/itembt_1");
-            mercyButtonSprite = SpriteRegistry.Get("UI/Buttons/mercybt_1");
-        }
+        fightButtonSprite = SpriteRegistry.Get("UI/Buttons/fightbt_1");
+        actButtonSprite   = SpriteRegistry.Get("UI/Buttons/actbt_1");
+        itemButtonSprite  = SpriteRegistry.Get("UI/Buttons/itembt_1");
+        mercyButtonSprite = SpriteRegistry.Get("UI/Buttons/mercybt_1");
 
         //canvasParent = GameObject.Find("Canvas");
         uiAudio = GetComponent<AudioSource>();
@@ -750,66 +742,20 @@ public class UIController : MonoBehaviour {
                             break;
 
                         case Actions.ACT:
-                            if (GlobalControls.crate)
-                                UnitaleUtil.PlaySound("MEOW", "sounds/meow" + Math.RandomRange(1, 9));
-                            else if (encounter.EnabledEnemies.Length > 0)
+                            if (encounter.EnabledEnemies.Length > 0)
                                 SwitchState("ENEMYSELECT");
                             break;
 
                         case Actions.ITEM:
-                            if (GlobalControls.crate) {
-                                const string strBasis = "TEM WANT FLAKES!!!1!1";
-                                string strModified = strBasis;
-                                for (int i = strBasis.Length - 2; i >= 0; i--)
-                                    strModified = strModified.Substring(0, i) + "[voice:tem" + Math.RandomRange(1, 7) + "]" + strModified.Substring(i, strModified.Length - i);
-                                ActionDialogResult(new TextMessage(strModified, true, false));
-
-                            } else {
-                                if (Inventory.inventory.Count == 0) {
-                                    PlaySound(AudioClipRegistry.GetSound("menuconfirm"));
-                                    return;
-                                }
-                                SwitchState("ITEMMENU");
+                            if (Inventory.inventory.Count == 0) {
+                                PlaySound(AudioClipRegistry.GetSound("menuconfirm"));
+                                return;
                             }
+                            SwitchState("ITEMMENU");
                             break;
 
                         case Actions.MERCY:
-                            if (GlobalControls.crate) {
-                                string[] texts = {
-                                    "You know...\rSeeing the engine like this...\rIt makes me want to cry.",
-                                    "All these typos...\rCrate Your Frisk is bad.\nWe must destroy it.",
-                                    "We have two solutions here:\nDestroy the engine's data...",
-                                    "...Or another way. Though, I'll\rneed some time to find out\rhow to do this...",
-                                    "*sniffles* I can barely stand\rthe view... This is so\rdisgusting...",
-                                    "I feel like I'm getting there,\rkeep up the good work!",
-                                    "Here, just a bit more...",
-                                    "...No, I don't have it.\nStupid dog!\nPlease give me more time!",
-                                    "I want to puke...\nEven the engine is a\rplace of shitposts and memes.",
-                                    "Will there one day be a place\rwhere shitposts and memes\rwill not appear?",
-                                    "I hope so...\rMy eyes are bleeding.",
-                                    "Hm? Oh! Look! I have it!",
-                                    "Let me read:",
-                                    "\"To remove the big engine\rtypo bug...\""
-                                };
-
-                                if (meCry < 14)
-                                    ActionDialogResult(new TextMessage(texts[meCry], true, false));
-                                else if (meCry == 14)
-                                    ActionDialogResult(new TextMessage[] {
-                                        new RegularMessage("\"...click the BAD SPELING button\rin CYF's options menu.\""),
-                                        new RegularMessage("Is that all? Come on, all\rthis time lost for such\ran easy response..."),
-                                        new RegularMessage("...Sorry for the wait.\nDo whatever you want now! :D"),
-                                        new RegularMessage("But please..."),
-                                        new RegularMessage("For the love of all that\ris good..."),
-                                        new RegularMessage("Remove Crate Your Frisk."),
-                                        new RegularMessage("Now I'll wash my eyes with\rsome bleach."),
-                                        new RegularMessage("Cya!")
-                                    });
-                                else
-                                    ActionDialogResult(new TextMessage("But the dev is long gone\r(and blind).", true, false));
-                                meCry++;
-                            } else
-                                SwitchState("MERCYMENU");
+                            SwitchState("MERCYMENU");
                             break;
                     }
                     PlaySound(AudioClipRegistry.GetSound("menuconfirm"));
@@ -1137,16 +1083,6 @@ public class UIController : MonoBehaviour {
         actButton = GameObject.Find("ActBt").GetComponent<Image>();
         itemButton = GameObject.Find("ItemBt").GetComponent<Image>();
         mercyButton = GameObject.Find("MercyBt").GetComponent<Image>();
-        if (GlobalControls.crate) {
-            fightButton.sprite = SpriteRegistry.Get("UI/Buttons/gifhtbt_0");
-            fightButton.GetComponent<AutoloadResourcesFromRegistry>().SpritePath = "UI/Buttons/gifhtbt_0";
-            actButton.sprite = SpriteRegistry.Get("UI/Buttons/catbt_0");
-            actButton.GetComponent<AutoloadResourcesFromRegistry>().SpritePath = "UI/Buttons/catbt_0";
-            itemButton.sprite = SpriteRegistry.Get("UI/Buttons/tembt_0");
-            itemButton.GetComponent<AutoloadResourcesFromRegistry>().SpritePath = "UI/Buttons/tembt_0";
-            mercyButton.sprite = SpriteRegistry.Get("UI/Buttons/mecrybt_0");
-            mercyButton.GetComponent<AutoloadResourcesFromRegistry>().SpritePath = "UI/Buttons/mecrybt_0";
-        }
         // Add dictionaries to easily access buttons and their data through strings
         buttonDictionary.Add("FIGHT", fightButton);
         buttonDictionary.Add("ACT", actButton);
@@ -1243,11 +1179,6 @@ public class UIController : MonoBehaviour {
 
         if (SendToStaticInit != null)
             SendToStaticInit();
-
-        if (GlobalControls.crate) {
-            UserDebugger.instance.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text = "DEGUBBER (F9 OT TOGLGE, DEBUG(STIRNG) TO PRNIT)";
-            LuaSpriteController.GetOrCreate(GameObject.Find("HPLabel")).Set("UI/spr_phname_0");
-        }
 
         // PlayerController.instance.Awake();
         PlayerController.instance.playerAbs = new Rect(0, 0,
