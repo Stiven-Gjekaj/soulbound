@@ -4,14 +4,14 @@
 
 This class is used to manipulate the data the `Discord Rich Presence Status` bar displays,
 if Discord is open and if this feature is enabled. This feature can be customized in
-the engine's options screen, accessible from the mod selection screen. This object
+the engine's options screen, accessible from the boss select screen. This object
 *cannot* override the user's settings for Discord Rich Presence.
 
 - `Discord.SetName(string name)`: Sets the top row of the `Discord Rich Presence Status`
   bar, if enabled in the user's options.
 
-  By default, this line displays `Playing Mod: MODNAME`, with `MODNAME` being the name of
-  your mod.
+  By default, this line displays `Fighting BOSSNAME`, with `BOSSNAME` being the `name`
+  the boss registry gives the boss you are fighting.
 
   Setting `name` to `""` doesn't display the line at all.
 - `Discord.ClearName(boolean reset = false)`: Resets the top row of the

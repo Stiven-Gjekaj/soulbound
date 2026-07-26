@@ -40,8 +40,9 @@ Look in the folder `Assets`. In here, the folder named `Default` is the same as 
 Load all of your mods here if you want them playable in the editor.
 
 Another folder here is `Scenes`. It holds the engine's scenes: the disclaimer, the
-intro, the title screen, name entry, the mod selector, the options and keybinding
-screens, the battle, and the error screen.
+intro, the title screen, name entry, the boss select, the options and keybinding
+screens, the battle, and the error screen. The boss select scene is still named
+`ModSelect.unity`, from when it browsed mod folders.
 
 Also within `Assets` the folder `Editor` is used for shaders. It contains a folder
 `Shaders`, which is where all of your original shader files go, and another folder

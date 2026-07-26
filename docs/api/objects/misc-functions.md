@@ -210,7 +210,7 @@ at your own risk:
 Finally, there are two "special" states that evoke behavior in the engine itself:
 
 - `DONE` - Changing state to `DONE` will instantly end the current battle. This returns the
-  player to the mod selection screen.
+  player to the boss select screen.
 - `NONE` - This state does nothing. It is entered for the first frame of the encounter, but
   entering it manually will completely freeze your encounter. It might be useful if you
   want to disable all of the engine's basic functionality.

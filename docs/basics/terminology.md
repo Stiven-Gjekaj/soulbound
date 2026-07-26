@@ -23,12 +23,12 @@ a wave. Papyrus' special Cool Dude attack would also count as a wave. The engine
 you have various monsters.
 
 `modDev` - This is a feature specific to this engine. In the engine, you can access some extra
-options from the Mod Selection screen. These mainly include the options to wipe
+options from the boss select screen. These mainly include the options to wipe
 `RealGlobals` and `AlMightyGlobals`, as well as toggle `safe mode` and
 `retrocompatibilty mode`.
 
 the modDev screen is located in an "options menu" accessible
-by clicking "Options" from within the Mod Selection screen.
+by clicking "Options" from within the boss select screen.
 
 `retrocompatibilty mode` - This feature is designed in such a way where, if
 it's enabled, functions from 0.2.1a that were changed in the engine will function exactly as

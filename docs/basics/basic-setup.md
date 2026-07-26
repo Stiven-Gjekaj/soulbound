@@ -12,8 +12,8 @@ scripts are set up like this:
 - **Wave scripts** contain an update function. You may use these to spawn, track, modify
   and otherwise interact with bullets during the defending phase of the game.
 
-From the mod selection screen, you may pick any mod, and play any encounter script
-within that mod.
+The boss select screen lists one row per boss, taken from the boss registry, and each
+row names one encounter script. See [Adding a boss](adding-a-boss.md).
 
 the only folder required within a mod is the
 `YOUR MOD/Lua/Encounters/` folder. For all older versions, your encounter will break if

@@ -26,15 +26,14 @@ Disclaimer --[Menu]----> Intro -> TitleScreen -> EnterName --+
 | `Intro` | the intro sequence | `DisclaimerScript` |
 | `TitleScreen` | title screen | `Title`, `EnterNameScript` |
 | `EnterName` | name entry | `Title` |
-| `ModSelect` | mod and encounter picker | `DisclaimerScript`, `OptionsScript`, `UIController`, `GameOverBehavior`, `Title`, `EnterNameScript` |
+| `ModSelect` | the boss select, still named for the mod picker it was | `DisclaimerScript`, `OptionsScript`, `UIController`, `GameOverBehavior`, `Title`, `EnterNameScript` |
 | `Options` | options menu | `SelectOMatic`, `KeybindSettings` |
 | `KeybindSettings` | key rebinding | `OptionsScript` |
 | `Battle` | the encounter | `SelectOMatic` |
 | `Error` | the Lua error screen | `UnitaleUtil` |
 
-Both routes end at the mod selector, and every battle returns to it. It stands in for the
-boss select screen that v0.3 builds, so the title screen and name entry lead there rather
-than into a map.
+Both routes end at the boss select, and every battle returns to it, win or lose. That is
+the whole loop: pick a boss, fight it, come back to the list.
 
 There is no longer a mode flag. Up to v0.1 the engine asked `UnitaleUtil.IsOverworld` in 40
 places to decide whether it was in a battle or on a map; v0.2 removed the flag and every
@@ -51,11 +50,38 @@ Lookups check the mod folder first and fall back to `Default`. That is why a mod
 override `Sounds/hurtsound.wav` just by shipping a file at the same relative path, and why
 the placeholder monster can use the `empty` sprite without shipping any art.
 
-`StaticInits.MODFOLDER` holds the active mod. `SelectOMatic.DeepModSearch` walks
-`Assets/Mods` up to four levels deep looking for a folder that has `Lua/Encounters` with at
-least one non-`@` script, plus a `Sprites` folder. Folders whose names start with `@` are
-skipped, which is how `@Title` stays hidden from the player. With zero matches the engine
-stops on the Lua error screen with "Your mod folder is empty!".
+`StaticInits.MODFOLDER` holds the active mod, and since v0.3 it is always
+`StaticInits.GAME_MODFOLDER`, the constant `"Soulbound"`. Up to v0.2 the selection screen
+searched `Assets/Mods` four levels deep for anything that looked like a mod; that search,
+the folder hierarchy it built and the two passes that sorted it are gone.
+
+## The boss select
+
+`Assets/Scripts/Menus/BossRegistry.cs` reads `Assets/Mods/Soulbound/Lua/bosses.lua` into an
+ordered `List<BossEntry>`. That list is what the select screen shows, one row per boss, and
+the `id` on each entry names the encounter script the fight loads.
+
+The registry is data, not gameplay, so it runs in a bare MoonSharp sandbox
+(`CoreModules.Preset_HardSandbox`) rather than through `ScriptWrapper`. `ScriptWrapper`
+binds the battle API, and most of that API is null outside the Battle scene.
+
+`SelectOMatic` reloads the registry every time the screen opens, so editing `bosses.lua`
+does not need a restart. Everything it validates, and what happens when a check fails, is
+in [Adding a boss](../basics/adding-a-boss.md).
+
+`SelectOMatic` binds to `ModSelect.unity` entirely through inspector fields, so changing
+what it lists needs no scene edit. That is why the screen is still built out of objects
+named `ModTitle`, `EncounterCount` and `encounterBox`: renaming them would mean editing the
+scene, and a purpose-built boss select is v0.7 work, to be done alongside the art.
+
+Starting a fight is four lines, at the end of `SelectOMatic.LaunchBoss`:
+
+```csharp
+StaticInits.InitAll(StaticInits.MODFOLDER, true);
+GlobalControls.isInFight = true;
+DiscordControls.StartBattle(boss.name);
+SceneManager.LoadScene("Battle");
+```
 
 ## The `@Title` dependency
 
