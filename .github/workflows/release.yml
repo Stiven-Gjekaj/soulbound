@@ -1,0 +1,134 @@
+name: Release
+
+# Releases are cut by pushing a version tag, for example:
+#   git tag v0.3.0 && git push origin v0.3.0
+# The tag is the source of truth for the version. build.yml stays the per-push
+# check; this workflow only runs for tags.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            targetPlatform: StandaloneWindows64
+            suffix: win64
+          - name: MacOS
+            targetPlatform: StandaloneOSX
+            suffix: macos64
+          - name: Linux
+            targetPlatform: StandaloneLinux64
+            suffix: lin64
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          lfs: true
+
+      - name: Read the version from the tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-
+
+      - name: Build project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+          buildMethod: UnityBuilderAction.BuildScript.Build
+          buildName: Soulbound-${{ matrix.suffix }}
+          versioning: Custom
+          version: ${{ steps.version.outputs.version }}
+
+      # Assemble the same payload build.yml produces: the player, plus the
+      # engine defaults, the mods folder and the documentation.
+      - name: Assemble the build
+        run: |
+          set -eu
+          OUT="${{ github.workspace }}/build/${{ matrix.targetPlatform }}"
+          sudo mkdir -v "$OUT/Default" "$OUT/Mods"
+          sudo cp -Rv "${{ github.workspace }}/Assets/Default/" "$OUT/"
+          sudo cp -Rv "${{ github.workspace }}/Assets/Mods/" "$OUT/"
+          sudo cp -Rv "${{ github.workspace }}/docs/" "${{ github.workspace }}/build"
+          sudo find "$OUT" -name "*.meta" -type f -delete
+
+      - name: Add the Mac instructions
+        if: matrix.targetPlatform == 'StandaloneOSX'
+        run: sudo cp "${{ github.workspace }}/How to run Soulbound on Mac.txt" "${{ github.workspace }}/build/${{ matrix.targetPlatform }}/"
+
+      - name: Zip the build
+        run: |
+          set -eu
+          cd "${{ github.workspace }}/build"
+          sudo mv "${{ matrix.targetPlatform }}" "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}"
+          sudo zip -qr "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}.zip" \
+            "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}" docs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Soulbound-${{ matrix.suffix }}
+          path: build/*.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish the release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download the platform builds
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      # The changelog is the source for release notes. Pull out the section for
+      # this version; fall back to a pointer if there is no matching heading.
+      - name: Extract the release notes
+        id: notes
+        run: |
+          set -eu
+          VERSION="${GITHUB_REF_NAME#v}"
+          python3 - "$VERSION" <<'PY' > notes.md
+          import re, sys
+          version = sys.argv[1]
+          text = open("CHANGELOG.md", encoding="utf-8").read()
+          # match "## 0.3" or "## 0.3.0", with or without a trailing date
+          pattern = re.compile(
+              r"^## %s(?:\.0)?\b.*?$(.*?)(?=^## |\Z)" % re.escape(version.rsplit(".", 1)[0]),
+              re.M | re.S)
+          m = pattern.search(text)
+          print(m.group(1).strip() if m else
+                "See [CHANGELOG.md](CHANGELOG.md) for what changed in this version.")
+          PY
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Soulbound $GITHUB_REF_NAME" \
+            --notes-file notes.md \
+            --prerelease \
+            dist/*.zip
