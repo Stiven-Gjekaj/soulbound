@@ -25,7 +25,7 @@
         }
     }
     public int MaxHP = 20;
-    private string _Name = ControlPanel.instance.BasisName;
+    private string _Name = StartingName;
     public string Name {
         get {
             return _Name;
@@ -62,9 +62,18 @@
         instance = this;
     }
 
+    /// <summary>
+    /// The name the player chose, or the fallback if they somehow have not chosen one. The
+    /// boss select sends anyone without a stored name through name entry first, so the
+    /// fallback should never reach the screen.
+    /// </summary>
+    private static string StartingName {
+        get { return PlayerProfile.HasName ? PlayerProfile.Name : ControlPanel.instance.BasisName; }
+    }
+
     public void Reset(bool resetName = true) {
         if (resetName)
-            Name = ControlPanel.instance.BasisName;
+            Name = StartingName;
         SetLevel(1);
         SetEXP(0);
         SetGold(0);

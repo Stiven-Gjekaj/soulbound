@@ -229,6 +229,9 @@ public class EnterNameScript : MonoBehaviour {
             setColor("Done");
         } else {
             PlayerCharacter.instance.Name = playerName;
+            // Store the name the player actually typed, not the version PlayerCharacter
+            // truncated to nine characters, so it round trips.
+            PlayerProfile.Name = PlayerCharacter.instance.Name;
             if (isNewGame) {
                 GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
                 GameObject.Find("Main Camera").GetComponent<AudioSource>().PlayOneShot(AudioClipRegistry.GetSound("intro_holdup"));
