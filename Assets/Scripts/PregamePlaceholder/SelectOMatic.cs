@@ -195,8 +195,10 @@ public class SelectOMatic : MonoBehaviour {
             EncounterCount.GetComponent<Text>().text = Temmify.Convert(boss.subtitle, true);
         EncounterCountShadow.GetComponent<Text>().text = EncounterCount.GetComponent<Text>().text;
 
-        // Reserved for the cleared marker
-        FolderText.GetComponent<Text>().text       = "";
+        // The cleared marker sits on the line the mod folder path used to occupy. Best
+        // time and attempts are recorded too, but they wait for v0.4 to give them a place.
+        string cleared = BossRecords.Cleared(boss.id) ? "CLEARED" : "";
+        FolderText.GetComponent<Text>().text       = GlobalControls.crate ? Temmify.Convert(cleared, true) : cleared;
         FolderTextShadow.GetComponent<Text>().text = FolderText.GetComponent<Text>().text;
 
         // Update the color of the arrows
@@ -486,9 +488,8 @@ public class SelectOMatic : MonoBehaviour {
             button.transform.Find("Fill").GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 
             // Set text
-            button.transform.Find("Text").GetComponent<Text>().text = boss.name;
-            if (GlobalControls.crate)
-                button.transform.Find("Text").GetComponent<Text>().text = Temmify.Convert(boss.name, true);
+            string label = boss.name + (BossRecords.Cleared(boss.id) ? " - cleared" : "");
+            button.transform.Find("Text").GetComponent<Text>().text = GlobalControls.crate ? Temmify.Convert(label, true) : label;
 
             int tempCount = i;
 
