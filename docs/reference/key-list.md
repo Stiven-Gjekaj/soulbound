@@ -5,19 +5,19 @@
 
 ## Regular alphabet
 
-All regular alphabet characters are exactly the same between their key names and CYF Key IDs.
-For instance, the "A" key will be `A` in CYF.
+All regular alphabet characters are exactly the same between their key names and the engine Key IDs.
+For instance, the "A" key will be `A` in the engine.
 
 Note that using `Input.GetKey("A")`, for instance, will detect the lowercase "a".
 
 ## F-keys
 
-All F-keys are exactly the same between their key names and CYF Key IDs. For instance, the
-`F12` key will be `F12` in CYF. For reference, the supported F-keys are `F1` through `F15`.
+All F-keys are exactly the same between their key names and the engine Key IDs. For instance, the
+`F12` key will be `F12` in the engine. For reference, the supported F-keys are `F1` through `F15`.
 
 ## Keyboard number keys
 
-| Keyboard key | ID for CYF use |
+| Keyboard key | Engine ID |
 | --- | --- |
 | 1 | Alpha1 |
 | 2 | Alpha2 |
@@ -32,7 +32,7 @@ All F-keys are exactly the same between their key names and CYF Key IDs. For ins
 
 ## Keypad keys
 
-| Keyboard key | ID for CYF use |
+| Keyboard key | Engine ID |
 | --- | --- |
 | 1 (End) | Keypad1 |
 | 2 (Down) | Keypad2 |
@@ -54,7 +54,7 @@ All F-keys are exactly the same between their key names and CYF Key IDs. For ins
 
 ## Keyboard arrow keys
 
-| Keyboard key | ID for CYF use |
+| Keyboard key | Engine ID |
 | --- | --- |
 | Up | UpArrow |
 | Down | DownArrow |
@@ -65,7 +65,7 @@ All F-keys are exactly the same between their key names and CYF Key IDs. For ins
 
 Note: the `%` key cannot be detected as of this moment.
 
-| Keyboard key | ID for CYF use |
+| Keyboard key | Engine ID |
 | --- | --- |
 | Backspace | Backspace |
 | Tab | Tab |
@@ -103,7 +103,7 @@ Note: the `%` key cannot be detected as of this moment.
 
 ## Misc. keyboard keys
 
-| Keyboard key | ID for CYF use |
+| Keyboard key | Engine ID |
 | --- | --- |
 | Insert | Insert |
 | Home | Home |
@@ -133,7 +133,7 @@ Note: the `%` key cannot be detected as of this moment.
 
 ## Mouse inputs
 
-| Mouse input | ID for CYF use |
+| Mouse input | Engine ID |
 | --- | --- |
 | Left Mouse Button | Mouse0 |
 | Right Mouse Button | Mouse1 |
@@ -152,14 +152,14 @@ All controller buttons follow the same format: `JoystickXButtonY`
 
 Note: It is not recommended to directly query a user's controller inputs, as these can
 greatly vary between users. It would be best to make a keybind and let the user bind their
-controller buttons to it, or to restrict yourself to standard CYF keys.
+controller buttons to it, or to restrict yourself to standard the engine keys.
 
 ## New in v0.6.6. Controller axes (joysticks, D-pad, triggers)
 
 Most controller axes follow the same format: `AxisX-Y +` or `AxisX-Y -`
 
 - X represents the number of the axis currently checked, between 3 and 10.
-- Y represents the number of the controller currently in use, between 1 and 2. CYF currently
+- Y represents the number of the controller currently in use, between 1 and 2. the engine currently
   only handles axes for up to 2 controllers.
 
 Axes 1 and 2 have specific names: Axis 1 is named `HorizontalY`, while Axis 2 is named
@@ -168,4 +168,4 @@ Axes 1 and 2 have specific names: Axis 1 is named `HorizontalY`, while Axis 2 is
 Note: It is not recommended to directly query a user's controller inputs except for
 `HorizontalY` and `VerticalY`, as these can greatly vary between users. It would be best to
 make a keybind and let the user bind their controller buttons to it, or to restrict yourself
-to standard CYF keys.
+to standard the engine keys.

@@ -18,7 +18,7 @@ You can access the shader objects by using **shader** `sprite.shader` and **shad
 
 Loads `shaderName` from the AssetBundle named `bundleName` in the `Shaders` folder.
 
-The bundle is either CYF's default shaders bundle, a bundle you got from someone or
+The bundle is either the engine's default shaders bundle, a bundle you got from someone or
 somewhere else, or a bundle you built using Unity.
 
 To clarify, `shaderName` is the name of the `.shader` file within the bundle, **not** the

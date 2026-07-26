@@ -1,6 +1,6 @@
 # Shaders - Introduction
 
-As of Create Your Frisk v0.6.5, you may now use Unity shaders in your encounters.
+You can use Unity shaders in your encounters.
 
 Be warned that **this is a very advanced feature** and not everyone will be able to create
 their own shaders. However, any shaders people make and release can be added into a mod
@@ -9,7 +9,7 @@ system works.
 
 ## Basic overview
 
-Here's how shaders are set up in CYF:
+Here's how shaders are set up in the engine:
 
 - First of all: Shaders are stored as
   [Unity AssetBundles](https://docs.unity3d.com/2018.4/Documentation/Manual/AssetBundlesIntro.html).
@@ -21,7 +21,7 @@ Here's how shaders are set up in CYF:
   your mod to be cross-compatible between operating systems.
 - These files are created by Unity, so if you want to create your own shaders, **you MUST
   set up Unity** on your machine. Read [Unity setup](../basics/unity-setup.md) for a guide.
-- There are some default shaders included with CYF, present in the `CYF/Default/Shaders`
+- There are some default shaders included with the engine, present in the `the engine/Default/Shaders`
   folder. They are treated just like sprites and audio, in that shaders will be read from
   the mod's `Shaders` folder first, and the Default shaders folder second.
 
@@ -30,7 +30,7 @@ And on the topic of creating shaders:
 - All shaders are coded using Unity ShaderLabs. See [Coding a shader](coding-a-shader.md)
   for links and help. They will be created as `.shader` files on the Unity side before
   they're exported to bundles. Note that the majority of the work and involvement in
-  creating a shader is knowing how to write the shader, and has nothing to do with CYF.
+  creating a shader is knowing how to write the shader, and has nothing to do with the engine.
 - Not all errors and issues with shaders will explicitly show an error screen in game,
   instead resulting in a pink "error" shader being applied. When creating your shader in
   Unity, you will be able to see syntax errors and such before compiling your shader.
@@ -48,13 +48,13 @@ And on the topic of creating shaders:
 
 ## Creating shaders
 
-The first step involved with creating shaders is to set up Create Your Frisk in Unity on
+The first step involved with creating shaders is to set up the project in Unity on
 your machine. Read through [Unity setup](../basics/unity-setup.md) for a guide on doing
 this.
 
 After that, locate the path `Assets/Editor/Shaders`. This is where you will create and edit
-your shaders as `.shader` files. You can also find here all of the default shaders Create
-Your Frisk comes with, which are in `Default/Shaders` when Create Your Frisk gets built.
+your shaders as `.shader` files. You can also find here all of the default shaders the
+engine ships, which end up in `Default/Shaders` in a build.
 
 Create a new `.shader` file here, with whatever name you like. This name is the name you
 will eventually pass to `shader.Set` from the Lua side. Follow the instructions in
@@ -75,7 +75,7 @@ able to drop in your mod's `Shaders` folder later. You can have multiple shaders
 in one bundle, and as many bundles as you like. As an example, all of the shaders listed
 below are part of the `cyfshaders` bundle.
 
-Finally, to compile all shaders into AssetBundles, click on `Create Your Frisk` at the top
+Finally, to compile all shaders into AssetBundles, click on `Soulbound` at the top
 of the Unity window, and click on `Build Shader AssetBundles...` in the list. A new window
 will appear.
 
@@ -93,7 +93,7 @@ that you may now move to your mod's `Shaders` folder.
 
 ## Sample shaders
 
-Create Your Frisk v0.6.5 comes with an AssetBundle named `"cyfshaders"`, containing several
+The engine ships an AssetBundle named `"cyfshaders"`, containing several
 sample shaders for you to toy with, be it on the Lua side or as a means to create your own
 shaders.
 
@@ -106,7 +106,7 @@ keywords are disabled by default, that's just how the shader language functions.
 | --- | --- | --- |
 | CYFShaderTemplate (not in the bundle) | A template base shader to build all your own shaders from. Same as the sample shader in [Coding a shader](coding-a-shader.md). | No unique properties or variables. |
 | Displacement | A shader that allows for the use of displacement maps, by means of images in your mod's Sprites folder. Colors greater than 50% will move the rendered space forward, while colors less than 50% will move it backwards. For reference, the color `#808080` represents zero displacement. | `DispMap` - Texture - The displacement map in question. `Intensity` - Float - Controls the magnitude of the displacement. 1 by default. `NO_PIXEL_SNAP` - Keyword - If enabled, disables pixel snapping on the newly rendered image (blurry). `NO_WRAP` - Keyword - If enabled, does not render pixels that were outside of the original image or screen boundaries. |
-| FitScreen | This shader is intended for use alongside `Misc.SetWideFullscreen(true)`, and should be applied to the camera through `Misc.ScreenShader`. It forcefully takes the 640x480, 4:3 normal display area of CYF and stretches it across the user's monitor, when in fullscreen. In other words, it uses a "stretch" display method instead of keeping letterboxing, even if it is controllable. | `Width` - Float - Controls the new size of the display area. Should be set to `640` normally, or `math.ceil(math.max(Misc.MonitorWidth / 3, 640))` in fullscreen. `NO_PIXEL_SNAP` - Keyword - If enabled, disables pixel snapping on the newly sized screen render (blurry). |
+| FitScreen | This shader is intended for use alongside `Misc.SetWideFullscreen(true)`, and should be applied to the camera through `Misc.ScreenShader`. It forcefully takes the 640x480, 4:3 normal display area of the engine and stretches it across the user's monitor, when in fullscreen. In other words, it uses a "stretch" display method instead of keeping letterboxing, even if it is controllable. | `Width` - Float - Controls the new size of the display area. Should be set to `640` normally, or `math.ceil(math.max(Misc.MonitorWidth / 3, 640))` in fullscreen. `NO_PIXEL_SNAP` - Keyword - If enabled, disables pixel snapping on the newly sized screen render (blurry). |
 | Gradient | A simple shader that takes 4 colors (all white by default), applies them to the 4 corners of an image or the screen, and generates a color gradient connecting them. The colorization is done similarly to `sprite.color`, so the effect may be most visible with white images. | `TopLeft` - Color - Color for the top left corner. `TopRight` - Color - Color for the top right corner. `BottomLeft` - Color - Color for the bottom left corner. `BottomRight` - Color - Color for the bottom right corner. |
 | Invert | A simple shader that inverts the colors of every displayed pixel. | No unique properties or variables. |
 | Rotation | This shader is intended to be applied to the camera through `Misc.ScreenShader`. The purpose of this shader is to allow the entire screen to be rotated all around. It has customizable pivot points, as well. | `Rotation` - Float - Rotation of the screen. 0 by default. This value takes degrees. `xPivot` - Float - X pivot to rotate around. 0.5 (center) by default. `yPivot` - Float - Y pivot to rotate around. 0.5 (center) by default. `WRAP` - Keyword - If enabled, renders pixels that were outside of the original screen boundaries. `NO_PIXEL_SNAP` - Keyword - If enabled, disables pixel snapping on the newly rendered image (blurry). |

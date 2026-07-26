@@ -1,7 +1,7 @@
 # Coding a shader
 
 The purpose of this page is to go over everything necessary to know about actually coding
-the `.shader` files that can be made into shader AssetBundles for Create Your Frisk v0.6.5
+the `.shader` files that can be made into shader AssetBundles for the engine
 and higher. You will need to code at least a little in Unity ShaderLabs, so some helpful
 links are provided right at the top for you to look at.
 
@@ -10,14 +10,14 @@ Please read [Shaders - Introduction](introduction.md) before continuing.
 ## Getting started with shaders
 
 The first thing you should know about shaders is that most of the process is not related to
-Create Your Frisk. It almost solely depends on your own ability to code in Unity's
+the engine. It almost solely depends on your own ability to code in Unity's
 ShaderLabs format. There are some sample shaders provided that you may look at for
 reference (see [Shaders - Introduction](introduction.md)), but ultimately the deciding
 factor is your own skill and knowledge.
 
 The helpful links below definitely will come in handy, especially as reference material,
 but it is not guaranteed you will be able to code your own shader as easily as you can code
-in CYF.
+in the engine.
 
 The basics:
 
@@ -48,7 +48,7 @@ Other links:
 - [Cg Programming](https://en.wikibooks.org/wiki/Cg_Programming) - Some additional guides
   and tutorials on writing the `CGPROGRAM`
 
-## Properties of CYF shaders
+## Properties of the engine shaders
 
 ### Name
 
@@ -56,18 +56,18 @@ The shader's name is defined at the very top of the script. You will see somethi
 this:
 
 ```
-Shader "CYF/ScreenTest"
+Shader "the engine/ScreenTest"
 {
 ```
 
 The name is what is between quotation marks here. This is also the same name you will
 provide if you are using `shader.Test` within the editor. This name must be unique if you
 want to use `shader.Test` with no issues. For that reason, it is good practice to start
-your shader's name with `CYF/`, or some other identifier.
+your shader's name with `the engine/`, or some other identifier.
 
 ### Keywords
 
-Because of Create Your Frisk's Unity version (2018.4), the concept of global and local
+Because of the engine's Unity version (2018.4), the concept of global and local
 keywords does not exist, as they were only added in a future Unity version. Make sure you
 read
 [this page](https://docs.unity3d.com/2018.4/Documentation/Manual/SL-MultipleProgramVariants.html),
@@ -91,7 +91,7 @@ this:
 
 which would use `shader.EnableKeyword("NO_WRAP")` and `shader.DisableKeyword("NO_WRAP")`.
 
-You may also check out the source code for the sample shaders included with CYF if you
+You may also check out the source code for the sample shaders included with the engine if you
 would like more examples.
 
 ### Check if shader is on the camera or a sprite
@@ -114,7 +114,7 @@ Note that you do not have to define it using `#pragma` first.
 
 ### Sprite masking
 
-Sprite masking is the CYF feature controlled by `sprite.Mask`. The default mode is "off",
+Sprite masking is the the engine feature controlled by `sprite.Mask`. The default mode is "off",
 but depending on its other 5 values, it behaves differently. Here is how to make your shader
 compatible with sprite masking.
 
@@ -130,7 +130,7 @@ their own code in the fragment shader at the bottom of the script.
 Finally, all of the code related to "stencils" and the "color mask" variable are also needed
 for sprite masking compatibility, the properties are defined at about two places each.
 
-By including all of this code in your shader, you will maintain compatibility with CYF
+By including all of this code in your shader, you will maintain compatibility with the engine
 sprite shaders.
 
 Additionally: When in the mask modes "invertedsprite" and "invertedstencil", the keyword
@@ -166,7 +166,7 @@ may be lost suddenly.
 
 ### Pixel snap
 
-Create Your Frisk is designed with the intent to output its screen image in a pixelated
+The engine is designed with the intent to output its screen image in a pixelated
 format, obviously comparable to Undertale itself. However, shaders are not guaranteed to be
 precise, and can often result in non-integer coordinates of pixels. As a result, you may see
 "blurriness" output to the screen with some shaders, and you may wish to avoid that.
@@ -212,7 +212,7 @@ a template to build off of. It is based on the Unity default shader, UI/Default.
 ```
 // Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
 
-Shader "CYF/Template"
+Shader "the engine/Template"
 {
     Properties
     {

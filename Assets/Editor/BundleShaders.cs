@@ -10,7 +10,7 @@ public static class BundleShaders {
     private static string assetBundleDirectory = "Assets/Editor/Output";
     private static string shaderDirectory = "Assets/Editor/Shaders";
 
-    [MenuItem("Create Your Frisk/Build Shader AssetBundles...")]
+    [MenuItem("Soulbound/Build Shader AssetBundles...")]
     static void OneBundleOption() {
         if (EditorApplication.isPlaying) {
             Debug.LogError("You may only build AssetBundles while not in play mode.");

@@ -1,6 +1,6 @@
 # Item list
 
-This page lists all items added in CYF, as well as their effect.
+This page lists all items added in the engine, as well as their effect.
 
 ## Consumable items
 
@@ -19,7 +19,7 @@ This page lists all items added in CYF, as well as their effect.
 | Cinnamon Bunny | Restores 22 HP | 25 G | |
 | Astronaut Food | Restores 21 HP | 25 G | |
 | Crab Apple | Restores 18 HP | 25 G | |
-| Sea Tea | Restores 18 HP | 18 G | This item doesn't increase the Player's speed in CYF |
+| Sea Tea | Restores 18 HP | 18 G | This item doesn't increase the Player's speed in the engine |
 | Abandoned Quiche | Restores 34 HP | 200 G | |
 | Temmie Flakes | Restores 2 HP | 6 G | |
 | Dog Salad | Randomly restores between 2, 10, 30 and all HP | 10 G | |
@@ -30,7 +30,7 @@ This page lists all items added in CYF, as well as their effect.
 | Hush Puppy | Restores 65 HP | 600 G | |
 | Starfait | Restores 14 HP | 60 G | |
 | Glamburger | Restores 27 HP | 120 G | |
-| Legendary Hero | Restores 40 HP | 300 G | This item doesn't increase the Player's ATK in CYF |
+| Legendary Hero | Restores 40 HP | 300 G | This item doesn't increase the Player's ATK in the engine |
 | Steak in the Shape of Mettaton's Face | Restores 60 HP | 500 G | |
 | Potato Chisps | Restores 13 HP | 25 G | |
 | Bad Memory | Restores all HP if HP is 3 or lower, otherwise reduces HP by 1 | 10 G | |
@@ -45,8 +45,8 @@ Note: Weapons do not modify the usual ATTACKING state.
 | Toy Knife | 3 ATK | 30 G | |
 | Tough Glove | 5 ATK | 50 G | |
 | Ballet Shoes | 7 ATK | 100 G | |
-| Torn Notebook | 2 ATK | 55 G | This item doesn't increase the Player's INV in CYF |
-| Burnt Pan | 10 ATK | 200 G | This item doesn't increase the efficiency of consumable items in CYF |
+| Torn Notebook | 2 ATK | 55 G | This item doesn't increase the Player's INV in the engine |
+| Burnt Pan | 10 ATK | 200 G | This item doesn't increase the efficiency of consumable items in the engine |
 | Empty Gun | 12 ATK | 350 G | |
 | Worn Dagger | 15 ATK | 500 G | |
 | Real Knife | 99 ATK | 99999 G | |
@@ -58,12 +58,12 @@ Note: Weapons do not modify the usual ATTACKING state.
 | Faded Ribbon | 3 DEF | 30 G | |
 | Manly Bandanna | 7 DEF | 50 G | |
 | Old Tutu | 10 DEF | 100 G | |
-| Cloudy Glasses | 6 DEF | 35 G | This item doesn't increase the Player's INV in CYF |
-| Stained Apron | 11 DEF | 200 G | This item doesn't increase the efficiency of consumable items in CYF |
+| Cloudy Glasses | 6 DEF | 35 G | This item doesn't increase the Player's INV in the engine |
+| Stained Apron | 11 DEF | 200 G | This item doesn't increase the efficiency of consumable items in the engine |
 | Cowboy Hat | 12 DEF | 350 G | |
 | Heart Locket | 15 DEF | 500 G | |
 | The Locket | 99 DEF | 99999 G | |
-| Temmie Armor | 20 DEF | 99999 G | All of this item's secondary effects aren't applied in CYF (ATK +, HP Regen, INV +) |
+| Temmie Armor | 20 DEF | 99999 G | All of this item's secondary effects aren't applied in the engine (ATK +, HP Regen, INV +) |
 
 ## Miscellaneous
 
