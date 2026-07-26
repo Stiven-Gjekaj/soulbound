@@ -46,6 +46,14 @@ public class SelectOMatic : MonoBehaviour {
         if (bosses.Count == 0)
             return;
 
+        // Arriving from anywhere but a fight is a fresh run, so start at the first boss.
+        // Coming back from a fight keeps the cursor on the boss just fought.
+        if (StaticInits.ENCOUNTER == "") {
+            currentBoss    = 0;
+            selectedItem   = 0;
+            bossListScroll = 0.0f;
+        }
+
         // Keep the stored selection in range, in case the registry shrank since last time.
         if (currentBoss >= bosses.Count)
             currentBoss = 0;
@@ -130,10 +138,7 @@ public class SelectOMatic : MonoBehaviour {
                 OptionsText.GetComponent<Text>().color   = new Color(1f, 1f, 1f, 0.5f);
                 OptionsShadow.GetComponent<Text>().color = new Color(0f, 0f, 0f, 0.5f);
             }
-        // Player is coming here from the Disclaimer scene
-        } else
-            // When the player enters from the Disclaimer screen, reset the stored scroll position
-            bossListScroll = 0.0f;
+        }
 
         // Reset it to let us accurately tell if the player just came here from the Disclaimer scene or the Battle scene
         StaticInits.ENCOUNTER = "";
