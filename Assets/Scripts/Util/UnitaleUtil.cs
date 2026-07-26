@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using MoonSharp.Interpreter;
 using System;
@@ -129,11 +129,6 @@ public static class UnitaleUtil {
 
         //Add "line " and "char " before some numbers
         return matches.Cast<Match>().Aggregate(source, (current, match) => current.Replace(match.Value, "line " + match.Groups[1].Value + ", char " + match.Groups[2].Value));
-    }
-
-    public static AudioSource GetCurrentOverworldAudio() {
-        //if (GameObject.Find("Main Camera OW") && Camera.main != GameObject.Find("Main Camera OW")) return GameObject.Find("Main Camera OW").GetComponent<AudioSource>();
-        return GameObject.Find("Background").GetComponent<MapInfos>().isMusicKeptBetweenBattles ? PlayerOverworld.audioKept : Camera.main.GetComponent<AudioSource>();
     }
 
     public static Vector3 VectToVector(GameState.Vect v)    { return new Vector3(v.x, v.y, v.z); }
@@ -690,32 +685,15 @@ public static class UnitaleUtil {
         MapCorrespondanceList.Clear();
     }
 
-    public static void ResetOW(bool resetSave = false) {
-        EventManager.instance = null;
-        GameState.current = null;
-        ItemBoxUI.active = false;
-        GlobalControls.realName = null;
-        PlayerOverworld.instance = null;
-        PlayerOverworld.audioCurrTime = 0;
-        PlayerOverworld.audioKept = null;
-        if (resetSave)
-            SaveLoad.Load();
-        ShopScript.scriptName = null;
-    }
-
-    public static void ExitOverworld(bool totalUnload = true) {
+    public static void ExitOverworld() {
         foreach (string str in NewMusicManager.audiolist.Keys)
             if ((AudioSource)NewMusicManager.audiolist[str] != null && str != "src")
                 Object.Destroy(((AudioSource)NewMusicManager.audiolist[str]).gameObject);
         NewMusicManager.audiolist.Clear();
         NewMusicManager.audioname.Clear();
-        Object.Destroy(GameObject.Find("Player"));
-        Object.Destroy(GameObject.Find("Canvas OW"));
-        Object.Destroy(GameObject.Find("Canvas Two"));
-        if (GameOverBehavior.gameOverContainerOw)
-            Object.Destroy(GameOverBehavior.gameOverContainerOw);
         StaticInits.InitAll("@Title");
-        ResetOW(true);
+        GameState.current = null;
+        GlobalControls.realName = null;
         PlayerCharacter.instance.Reset();
         Inventory.inventory.Clear();
         Inventory.RemoveAddedItems();
@@ -724,7 +702,6 @@ public static class UnitaleUtil {
         GlobalControls.isInShop = false;
         LuaScriptBinder.ClearBattleGlobals();
         LuaScriptBinder.ClearSessionGlobals();
-        Object.Destroy(GameObject.Find("Main Camera OW"));
     }
 
     public static string TimeFormatter(float time) {
