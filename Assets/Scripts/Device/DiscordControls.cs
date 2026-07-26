@@ -105,33 +105,6 @@ public static class DiscordControls {
     }
 
     /// <summary>
-    /// Sets the status when you're entering the Overworld, erasing details and timer
-    /// </summary>
-    public static void StartOW() {
-        activity.Details = "In the Overworld";
-        activity.State = "";
-        ClearTime(false);
-
-        UpdatePresence();
-    }
-
-    /// <summary>
-    /// This function runs whenever showing a scene
-    /// </summary>
-    public static void ShowOWScene(string mapName) {
-        activity.Details = "In the Overworld";
-        activity.State = mapName;
-        UnitaleUtil.MapCorrespondanceList.TryGetValue(mapName, out activity.State);
-        ClearTime(false);
-
-        oldDetails = activity.Details;
-        oldState = activity.State;
-        oldTime = activity.Timestamps.Start;
-
-        UpdatePresence();
-    }
-
-    /// <summary>
     /// Sets the status when you're choosing a mod, erasing details and timer
     /// </summary>
     /// <param name="reset">Whether to reset the timer when loading the mod select scene.</param>
