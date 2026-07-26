@@ -44,9 +44,9 @@ folder named `Default` in the built executable versions of Create Your Frisk. Li
 `Mods` is the same as the `Mods` folder in the built versions of CYF. Load all of your
 mods here if you want them playable in the editor.
 
-Another folder here is `Scenes`. If you are using Create Your Frisk's Overworld feature,
-this is where all overworld scenes will go. See the [Overworld](../overworld/basics.md)
-section of the documentation for more information.
+Another folder here is `Scenes`. It holds the engine's scenes: the disclaimer, the
+intro, the title screen, name entry, the mod selector, the options and keybinding
+screens, the battle, and the error screen.
 
 Also within `Assets` the folder `Editor` is used for shaders. It contains a folder
 `Shaders`, which is where all of your original shader files go, and another folder

@@ -22,12 +22,6 @@ a wave. Papyrus' special Cool Dude attack would also count as a wave. Unitale wo
 "wave scripts" for attacks; you can use multiple wave scripts at the same time for when
 you have various monsters.
 
-`<CYF>` `overworld` - A CYF feature that is external to battles. It allows the user to
-explore maps, like in Undertale. The overworld can contain event objects, too. You can
-find a tutorial on maps in
-[How to create a map](../overworld/how-to-create-a-map.md) and a tutorial on events in
-[How to create an event](../overworld/how-to-create-an-event.md).
-
 `<CYF>` `modDev` - This is a feature exclusive to CYF. In CYF, you can access some extra
 options from the Mod Selection screen. These mainly include the options to wipe
 `RealGlobals` and `AlMightyGlobals`, as well as toggle `safe mode` and

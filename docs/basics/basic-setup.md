@@ -47,10 +47,6 @@ Libraries and modules are more Lua functionality than they are Unitale functiona
 please read up about them at the
 [Lua modules tutorial](http://lua-users.org/wiki/ModulesTutorial) instead.
 
-`<CYF>` In the Overworld, *Event scripts* are located in `YOURMOD/Lua/Events/`, and
-*Shop scripts* are located in `YOURMOD/Lua/Shops`. These features are explained in the
-[Overworld](../overworld/basics.md) category in this documentation.
-
 ### Music
 
 Music can be put in `YOUR MOD/Audio/`. Your music must be in .ogg or .wav format.

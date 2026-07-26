@@ -310,10 +310,7 @@ Plays the sound given as an argument.
 New in v0.6.6: Only usable with the Overworld's main text as well as the main text object
 in battles.
 
-Displays a set face sprite, or sequence of face sprites, next to your dialogue set by
-`General.SetDialog`. Note that the overworld's automatic line break system will not
-account for face sprites set this way; instead, it's recommended to set a face sprite in
-`General.SetDialog` (see [The General object](../overworld/objects/general.md)).
+Displays a set face sprite, or sequence of face sprites, next to your dialogue.
 
 This function loads face sprites from `YOUR MOD/Sprites/Mugshots`, and if none exists,
 from `Default/Sprites/Mugshots`. You may put folder names in here, such as
