@@ -20,7 +20,6 @@ public class GlobalControls : MonoBehaviour {
     public static IUndertaleInput input = new KeyboardInput();              // KeyboardInput singleton, registering any key press the Player does and handling them
     public static LuaInputBinding luaInput = new LuaInputBinding(input);    // Input Lua object, usable on the Lua side
 
-    public static string realName;      // Player's name in the overworld, given through the scene EnterName
     public static bool modDev;          // True if we entered the mod selection screen and not the overworld, false otherwise
     public static bool crate;           // True if CrateYourFrisk mode is active, false otherwise
     public static bool retroMode;       // True if the Unitale 0.2.1a retrocompatibility mode is active, false otherwise

@@ -671,7 +671,6 @@ public static class UnitaleUtil {
         NewMusicManager.audioname.Clear();
         StaticInits.InitAll("@Title");
         GameState.current = null;
-        GlobalControls.realName = null;
         PlayerCharacter.instance.Reset();
         Inventory.inventory.Clear();
         Inventory.RemoveAddedItems();
