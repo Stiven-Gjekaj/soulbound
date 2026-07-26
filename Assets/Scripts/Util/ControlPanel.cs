@@ -10,7 +10,9 @@
     public float MaxDigitsAfterComma = 5;
     public float PlayerMovementPerSec = 120.0f;
     public float MinimumAlpha = 0.5f;
-    public string BasisName = "Rhenao";
+    // Fallback only. The boss select sends anyone with no stored name through name entry
+    // first, so this should never reach the screen. See PlayerProfile.
+    public string BasisName = "Soul";
     public string WindowBasisName = "Create Your Frisk v" + GlobalControls.CYFversion + " LTS " + (GlobalControls.BetaVersion > 0 ? (GlobalControls.LTSversion + 1) + " b" + GlobalControls.BetaVersion : "" + GlobalControls.LTSversion);
     public bool FrameBasedMovement = false;
     #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
