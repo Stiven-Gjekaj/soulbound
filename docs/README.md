@@ -104,6 +104,7 @@ CYF. Start with [How to read this documentation](how-to-read.md).
 
 | Page | What it covers |
 | --- | --- |
+| [Milestones](project/milestones.md) | status and what comes next |
 | [Repository layout](project/repository-layout.md) | what lives where and why |
 | [Building](project/building.md) | Unity version, build script, CI |
 | [Engine architecture](project/engine-architecture.md) | scene flow, Lua bindings, mod loading |

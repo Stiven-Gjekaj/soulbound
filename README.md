@@ -186,9 +186,9 @@ directly, are covered in
 <a href="docs/project/engine-architecture.md"><b>Architecture</b></a>
 </td>
 <td align="center" width="25%" valign="top">
-<h3>Build</h3>
-<p>Unity version, build<br/>script, and CI</p>
-<a href="docs/project/building.md"><b>Building</b></a>
+<h3>Roadmap</h3>
+<p>Status and what<br/>comes next</p>
+<a href="docs/project/milestones.md"><b>Milestones</b></a>
 </td>
 </tr>
 </table>
