@@ -151,6 +151,7 @@ public class UIController : MonoBehaviour {
 
         //Properly set "isInFight" to false, as it shouldn't be true anymore
         GlobalControls.isInFight = false;
+        BossRecords.FightEnded();
 
         LuaScriptBinder.ClearBattleGlobals();
         GlobalControls.stopScreenShake = true;
@@ -1261,6 +1262,9 @@ public class UIController : MonoBehaviour {
         if (UnitaleUtil.firstErrorShown) return;
         encounter.CallOnSelfOrChildren("EncounterStarting");
 
+        // Everything above this line is loading, which is not the player's time.
+        BossRecords.ClockStart();
+
         if (!stateSwitched)
             SwitchState("ACTIONSELECT", true);
     }
@@ -1268,6 +1272,7 @@ public class UIController : MonoBehaviour {
     public void CheckAndTriggerVictory() {
         if (encounter.EnabledEnemies.Length > 0)
             return;
+        BossRecords.FightWon();
         Camera.main.GetComponent<AudioSource>().Stop();
         bool levelUp = PlayerCharacter.instance.AddBattleResults(exp, gold);
         Inventory.RemoveAddedItems();

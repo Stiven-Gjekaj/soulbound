@@ -150,6 +150,7 @@ public class SelectOMatic : MonoBehaviour {
         ModBackground.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.1875f);
 
         StaticInits.ENCOUNTER = boss.id;
+        BossRecords.FightStarting(boss.id);
 
         yield return new WaitForEndOfFrame();
         try {
