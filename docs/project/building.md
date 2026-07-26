@@ -58,10 +58,39 @@ using [game-ci/unity-builder](https://github.com/game-ci/unity-builder). It call
 `Assets/Editor/UnityBuilderAction/BuildScript.cs`, then copies `Assets/Default`,
 `Assets/Mods` and `docs` into the artifact the same way `Build.py` does.
 
-It needs three repository secrets: `UNITY_LICENSE`, `UNITY_EMAIL` and `UNITY_PASSWORD`.
-
-`.github/workflows/activation.yml` is a manual helper that requests a Unity manual activation
-file, which is how you obtain the `UNITY_LICENSE` secret. Run it from the Actions tab, upload
-the resulting `.alf` to Unity, and store the returned license as the secret.
-
 CI is the authoritative check that the project still compiles, since the build needs Unity.
+
+## Unity licensing for CI
+
+The build cannot run until the repository carries Unity credentials as Actions secrets.
+Which secrets depends on the licence.
+
+**Personal licence**, the free tier:
+
+1. Sign in to Unity Hub on your own machine. Activating there writes a `.ulf` licence file.
+   On Windows it lands in `C:\ProgramData\Unity`, on macOS in
+   `/Library/Application Support/Unity`, on Linux in `~/.local/share/unity3d/Unity`.
+2. Open that file and copy its entire contents, XML and all.
+3. Add it as the repository secret `UNITY_LICENSE`.
+4. Add `UNITY_EMAIL` and `UNITY_PASSWORD` for the same Unity account.
+
+**Professional licence**, Unity Plus or Pro: use `UNITY_SERIAL` holding the serial key from
+your Unity subscription instead of `UNITY_LICENSE`, plus the same `UNITY_EMAIL` and
+`UNITY_PASSWORD`.
+
+Until those secrets exist, every `build.yml` run fails at the `game-ci/unity-builder` step
+with:
+
+```
+Missing Unity License File and no Serial was found.
+```
+
+That is a repository configuration gap, not a fault in the project's code. The failure
+happens in a couple of seconds, before Unity compiles anything, so a red build with that
+message says nothing about whether the code is sound.
+
+There is deliberately no activation workflow in this repository. GameCI's
+`unity-request-activation-file` action was deprecated and now fails on purpose, and the
+`.ulf` procedure above replaces it. Do not add one back.
+
+The upstream reference is [GameCI's activation docs](https://game.ci/docs/github/activation).
