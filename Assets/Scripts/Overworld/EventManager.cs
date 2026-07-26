@@ -1708,7 +1708,7 @@ end";
 
         if (forced) {
             // Save the game immediately if requested
-            SaveLoad.Save(true);
+            SaveLoad.Save();
             if (scr != null)
                 scr.Call("CYFEventNextCommand");
             yield break;
@@ -1782,7 +1782,7 @@ end";
             } else if (GlobalControls.input.Confirm == ButtonState.PRESSED) {
                 if (save) {
                     // Save the game
-                    SaveLoad.Save(true);
+                    SaveLoad.Save();
                     // Update the save dialogue box's data
                     PlayerOverworld.instance.utHeart.color = new Color(c.r, c.g, c.b, 0);
                     txtName.SetTextQueue(new[] { new TextMessage("[charspacing:2]" + PlayerCharacter.instance.Name, false, true) });

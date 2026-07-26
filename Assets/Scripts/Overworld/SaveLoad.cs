@@ -43,9 +43,7 @@ public static class SaveLoad {
         }
     }
 
-    public static void Save(bool saveMapState = false) {
-        if (saveMapState)
-            EventManager.instance.SetEventStates(true);
+    public static void Save() {
         GameState currentGame = new GameState();
         currentGame.SaveGameVariables();
         BinaryFormatter bf = new BinaryFormatter();
