@@ -660,7 +660,7 @@ public static class UnitaleUtil {
             RemoveChildren(go, false, false);
     }
 
-    public static void ExitOverworld() {
+    public static void ResetSession() {
         foreach (string str in NewMusicManager.audiolist.Keys)
             if ((AudioSource)NewMusicManager.audiolist[str] != null && str != "src")
                 Object.Destroy(((AudioSource)NewMusicManager.audiolist[str]).gameObject);

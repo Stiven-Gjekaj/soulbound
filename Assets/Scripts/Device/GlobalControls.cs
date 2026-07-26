@@ -148,7 +148,7 @@ public class GlobalControls : MonoBehaviour {
             // The Error scene can only be exited if we entered the mod through the mod selection screen
             if (sceneName == "Error" && !modDev) {
                 ScreenResolution.ResetAfterBattle();
-                UnitaleUtil.ExitOverworld();
+                UnitaleUtil.ResetSession();
                 SceneManager.LoadScene("Disclaimer");
                 DiscordControls.StartTitle();
                 Destroy(GameObject.Find("SpritePivot"));
