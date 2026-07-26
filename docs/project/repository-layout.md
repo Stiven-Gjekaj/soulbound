@@ -14,10 +14,9 @@ opens the game.
       Soulbound/           the game
     Plugins/               MoonSharp, Discord SDK, user32.dll
     Resources/             prefabs, sprites and audio loaded by name at runtime
-    Scenes/                the twelve engine scenes
-    Scripts/               engine source, 135 C# files
+    Scenes/                the nine engine scenes
+    Scripts/               engine source, 111 C# files
     Sprites/               menu and title sprites
-    Tiled2Unity/           Tiled map importer
   Packages/                Unity package manifest
   ProjectSettings/         Unity project configuration
   docs/                    this documentation
@@ -39,7 +38,6 @@ Frisk loads it from at runtime. The layout inside that folder is described in
 | `Lua/Monsters` | one script per monster, including bosses |
 | `Lua/Waves` | bullet patterns |
 | `Lua/Libraries` | shared Lua modules |
-| `Lua/Events` | overworld event scripts, added when the overworld starts |
 | `Sprites` | sprites, with `Sprites/UI` for interface art |
 | `Sounds` | sound effects |
 | `Audio` | music |
@@ -48,7 +46,7 @@ There is deliberately no top-level `assets/` directory. Windows and macOS use
 case-insensitive filesystems, so a root `assets/` and Unity's `Assets/` would be the same
 directory and would break checkouts.
 
-## What v0.0 removed
+## What v0.0 and v0.1 removed
 
 v0.0 started from an unmodified Create Your Frisk v0.6.6 LTS 3 snapshot and removed the
 upstream example content:
@@ -58,27 +56,30 @@ upstream example content:
 - Eleven demo overworld scenes: `test`, `test2`, `test4`, `test5`, `test-1`, `BasicOWScene`,
   `newhome1`, `newhome2`, `newhome3`, `Void`, `Secret`
 - The demo Tiled2Unity map data: meshes, imported XML, textures, prefabs and the
-  map-specific materials. The importer scripts, shaders and generic materials stayed.
-- `Assets/Resources/Prefabs/Maps`, the demo map prefabs
+  map-specific materials
 - `Assets/Scripts/Tests`, six scripts with no scene or code references
 - The Bootstrap documentation website, replaced by this `docs` folder
+
+v0.1 removed the overworld itself, because this game does not have one:
+
+- 12 of the 18 files in `Assets/Scripts/Overworld`, and all six overworld Lua bindings.
+  The folder is now `Assets/Scripts/Save`, holding the three save files that were never
+  overworld code. `Title`, `IntroManager` and `EnterNameScript` moved to
+  `Assets/Scripts/PregamePlaceholder` with the other menu screens
+- The `TransitionOverworld`, `Shop` and `SpecialAnnouncement` scenes
+- Eight overworld prefabs and the six overworld sprite folders
+- `Assets/Tiled2Unity`, the map importer v0.0 kept on the assumption that maps were coming
+- The 11 overworld documentation pages
 
 `Assets/Scripts/Why` was kept: `DogGyrator.cs` is used by `Error.unity` and `Temmify.cs` by
 five engine files.
 
 ## Engine files that reference content
 
-Four places name content directly. If you add or remove maps and mods, check them:
-
-- `ProjectSettings/EditorBuildSettings.asset` lists every scene included in a build
-- `Assets/Scripts/Util/UnitaleUtil.cs`, `AddKeysToMapCorrespondanceList()` maps scene names
-  to the save point names shown to the player
-- `Assets/Resources/Prefabs/Main Camera OW.prefab`, `FirstLevelToLoad`
-- `Assets/Resources/Prefabs/Canvas OW.prefab`, `FirstLevelToLoad`, `LevelToLoad`,
-  `ModFolder`, `FirstModFolder`
-
-The two prefabs currently point at the `Soulbound` mod with no first map set, because the
-game has no overworld map yet.
+One place names content directly: `ProjectSettings/EditorBuildSettings.asset` lists every
+scene included in a build. Scenes are loaded by name from C#, so that file's order does not
+matter but its contents do. The three prefabs that used to name a starting map and mod went
+with the overworld in v0.1.
 
 ## Mods and .gitignore
 
