@@ -29,7 +29,7 @@ public class GlobalControls : MonoBehaviour {
     private bool screenShaking;         // True if a screenshake is occuring, false otherwise
 
     public static string[] nonOWScenes = { "Battle", "Error", "ModSelect", "Options", "TitleScreen", "Disclaimer", "EnterName", "Intro", "KeybindSettings" };   // Scenes in which you're not considered to be in the overworld
-    public static string[] canTransOW = { "Battle", "Error" };  // Scenes from which you can enter the overworld
+    public static string[] escapableScenes = { "Battle", "Error" };  // Scenes you can leave by pressing Escape
 
     private static bool awakened;   // Used to only run Awake() once
 
@@ -144,7 +144,7 @@ public class GlobalControls : MonoBehaviour {
         else if (isInFight && Input.GetKeyDown(KeyCode.H) && sceneName != "Error" && UserDebugger.instance.gameObject.activeSelf)
             gameObject.GetComponent<ProjectileHitboxRenderer>().enabled = !gameObject.GetComponent<ProjectileHitboxRenderer>().enabled;
         // Exit a battle or the Error scene
-        else if (Input.GetKeyDown(KeyCode.Escape) && (canTransOW.Contains(sceneName) || isInFight)) {
+        else if (Input.GetKeyDown(KeyCode.Escape) && (escapableScenes.Contains(sceneName) || isInFight)) {
             if (isInFight && EnemyEncounter.script.GetVar("unescape").Boolean && sceneName != "Error") return;
             // The Error scene can only be exited if we entered the mod through the mod selection screen
             if (sceneName == "Error" && !modDev) {
