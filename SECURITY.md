@@ -24,8 +24,8 @@ acknowledged unless you prefer to remain anonymous.
 
 ## Scope
 
-Soulbound runs on Create Your Frisk, which executes mod Lua scripts with the full
-trust of your user account. It is a game engine, not a sandbox: a mod can do
+Soulbound executes mod Lua scripts with the full trust of your user account. It
+is a game engine, not a sandbox: a mod can do
 anything the game process can do, including reading and writing files through the
 `Misc` object's file functions.
 
@@ -33,6 +33,7 @@ Do not run untrusted mods expecting isolation. Reports about the lack of mod
 sandboxing are out of scope, since that is a known and documented property of the
 engine rather than a vulnerability.
 
-Vulnerabilities in the upstream engine itself are best reported to
-[Create Your Frisk](https://github.com/RhenaudTheLukark/CreateYourFrisk), though
-we are glad to know about them too so we can carry a fix.
+Soulbound's engine began as Create Your Frisk and still shares much of its code.
+If a vulnerability is inherited rather than ours, it is worth reporting to
+[Create Your Frisk](https://github.com/RhenaudTheLukark/CreateYourFrisk) as well,
+though we are glad to know about it either way so we can carry a fix.

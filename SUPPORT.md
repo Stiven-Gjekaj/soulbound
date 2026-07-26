@@ -10,7 +10,7 @@ Need help with Soulbound? Here is where to look.
 
 - Start with the [documentation index](docs/README.md), which covers the whole
   engine API.
-- New to modding Create Your Frisk? Read
+- New to modding this engine? Read
   [docs/basics/basic-setup.md](docs/basics/basic-setup.md) for how the engine
   reads a mod folder, then
   [docs/basics/special-variables.md](docs/basics/special-variables.md) for the

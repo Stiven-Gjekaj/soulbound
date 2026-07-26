@@ -60,7 +60,7 @@ licensing in a fork; that is configuration, not your change.
 
 ## Coding style
 
-- Match the surrounding code. The engine is inherited from Create Your Frisk, so
+- Match the surrounding code. Much of the engine is inherited, so
   new code in `Assets/Scripts/` should read like what is already there rather
   than like a fresh project.
 - Keep game content in `Assets/Mods/Soulbound/`. That is where the engine loads
@@ -81,13 +81,9 @@ what sits where, and
 [docs/project/engine-architecture.md](docs/project/engine-architecture.md) for
 the scene flow, the Lua binding layer, and how mods are loaded.
 
-Four places in the engine name content directly. If you add or remove maps and
-mods, check them:
-
-- `ProjectSettings/EditorBuildSettings.asset`
-- `Assets/Scripts/Util/UnitaleUtil.cs`, `AddKeysToMapCorrespondanceList()`
-- `Assets/Resources/Prefabs/Main Camera OW.prefab`
-- `Assets/Resources/Prefabs/Canvas OW.prefab`
+One place in the engine names content directly:
+`ProjectSettings/EditorBuildSettings.asset` lists every scene in a build. Scenes
+are loaded by name from C#, so its order does not matter but its contents do.
 
 ## Commit messages and pull requests
 
