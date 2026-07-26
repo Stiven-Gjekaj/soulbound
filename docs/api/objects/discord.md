@@ -10,8 +10,8 @@ Create Your Frisk's options screen, accessible from the mod selection screen. Th
 - `Discord.SetName(string name)`: Sets the top row of the `Discord Rich Presence Status`
   bar, if enabled in the user's options.
 
-  By default, this line displays `Playing Mod: MODNAME` (with `MODNAME` being the name of
-  your mod) in battle, or `In the Overworld` if in the Overworld.
+  By default, this line displays `Playing Mod: MODNAME`, with `MODNAME` being the name of
+  your mod.
 
   Setting `name` to `""` doesn't display the line at all.
 - `Discord.ClearName(boolean reset = false)`: Resets the top row of the
@@ -22,12 +22,7 @@ Create Your Frisk's options screen, accessible from the mod selection screen. Th
 - `Discord.SetDetails(string details)`: Sets the second row of the
   `Discord Rich Presence Status` bar, if enabled in the user's options.
 
-  By default, this line displays the name of the currently running encounter file in
-  battle, or the name of the current map if in the Overworld. If the current map has no
-  name, the line will be hidden.
-
-  Map names are set in `AddKeysToMapCorrespondanceList` in the file
-  `Assets/Scripts/Util/UnitaleUtil.cs`.
+  By default, this line displays the name of the currently running encounter file.
 
   Setting `details` to `""` doesn't display the line at all.
 - `Discord.ClearDetails(boolean reset = true)`: Resets the second row of the
@@ -46,11 +41,9 @@ Create Your Frisk's options screen, accessible from the mod selection screen. Th
   the given time will be displayed as an elapsed time counter, counting upwards from the
   value you entered (in the format `mm:ss elapsed`).
 
-  By default, this line will display the time elapsed since the encounter was started in
-  battle, or it will be hidden if in the Overworld.
+  By default, this line will display the time elapsed since the encounter was started.
 - `Discord.ClearTime(boolean reset = false)`: Resets the current time displayed in the
   `Discord Rich Presence Status` bar, if enabled in the user's options.
 
   If `reset` is true, the entire line will be hidden. Otherwise, it will be reset to its
-  default value (see `Discord.SetTime` above). Since there is no timer in the Overworld,
-  using `reset` may produce some erroneous values if used in the Overworld.
+  default value (see `Discord.SetTime` above).
