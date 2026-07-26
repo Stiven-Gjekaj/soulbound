@@ -77,34 +77,32 @@ public static class LuaScriptBinder {
 
         script.Globals["CYFversion"] = GlobalControls.CYFversion;
         script.Globals["LTSversion"] = GlobalControls.LTSversion;
-        if (!UnitaleUtil.IsOverworld) {
-            script.Globals["CreateSprite"] = (Func<string, string, int, DynValue>)SpriteUtil.MakeIngameSprite;
-            script.Globals["CreateLayer"] = (Func<string, string, bool, bool>)SpriteUtil.CreateLayer;
-            script.Globals["CreateProjectileLayer"] = (Action<string, string, bool>)SpriteUtil.CreateProjectileLayer;
-            script.Globals["SetFrameBasedMovement"] = (Action<bool>)SetFrameBasedMovement;
-            script.Globals["SetAction"] = (Action<string>)SetAction;
-            script.Globals["SetPPCollision"] = (Action<bool>)SetPPCollision;
-            script.Globals["AllowPlayerDef"] = (Action<bool>)AllowPlayerDef;
-            script.Globals["CreateText"] = (Func<Script, DynValue, DynValue, int, string, int, LuaTextManager>)CreateText;
-            script.Globals["CreateBar"] = (Func<float, float, float, float, LifeBarController>)LifeBarController.Create;
-            script.Globals["CreateBarWithSprites"] = (Func<float, float, string, string, LifeBarController>)LifeBarController.Create;
-            script.Globals["GetCurrentState"] = (Func<string>)GetState;
-            script.Globals["BattleDialog"] = (Action<Script, DynValue>)EnemyEncounter.BattleDialog;
-            script.Globals["BattleDialogue"] = (Action<Script, DynValue>)EnemyEncounter.BattleDialog;
-            script.Globals["CreateState"] = (Action<string>)UIController.CreateNewUIState;
+        script.Globals["CreateSprite"] = (Func<string, string, int, DynValue>)SpriteUtil.MakeIngameSprite;
+        script.Globals["CreateLayer"] = (Func<string, string, bool, bool>)SpriteUtil.CreateLayer;
+        script.Globals["CreateProjectileLayer"] = (Action<string, string, bool>)SpriteUtil.CreateProjectileLayer;
+        script.Globals["SetFrameBasedMovement"] = (Action<bool>)SetFrameBasedMovement;
+        script.Globals["SetAction"] = (Action<string>)SetAction;
+        script.Globals["SetPPCollision"] = (Action<bool>)SetPPCollision;
+        script.Globals["AllowPlayerDef"] = (Action<bool>)AllowPlayerDef;
+        script.Globals["CreateText"] = (Func<Script, DynValue, DynValue, int, string, int, LuaTextManager>)CreateText;
+        script.Globals["CreateBar"] = (Func<float, float, float, float, LifeBarController>)LifeBarController.Create;
+        script.Globals["CreateBarWithSprites"] = (Func<float, float, string, string, LifeBarController>)LifeBarController.Create;
+        script.Globals["GetCurrentState"] = (Func<string>)GetState;
+        script.Globals["BattleDialog"] = (Action<Script, DynValue>)EnemyEncounter.BattleDialog;
+        script.Globals["BattleDialogue"] = (Action<Script, DynValue>)EnemyEncounter.BattleDialog;
+        script.Globals["CreateState"] = (Action<string>)UIController.CreateNewUIState;
 
-            if (EnemyEncounter.doNotGivePreviousEncounterToSelf)
-                EnemyEncounter.doNotGivePreviousEncounterToSelf = false;
-            else
-                script.Globals["Encounter"] = EnemyEncounter.script;
+        if (EnemyEncounter.doNotGivePreviousEncounterToSelf)
+            EnemyEncounter.doNotGivePreviousEncounterToSelf = false;
+        else
+            script.Globals["Encounter"] = EnemyEncounter.script;
 
-            DynValue PlayerStatus = UserData.Create(PlayerController.luaStatus);
-            script.Globals.Set("Player", PlayerStatus);
-            DynValue ArenaStatus = UserData.Create(ArenaManager.luaStatus);
-            script.Globals.Set("Arena", ArenaStatus);
-            DynValue LuaUI = UserData.Create(new LuaPlayerUI());
-            script.Globals.Set("UI", LuaUI);
-        }
+        DynValue PlayerStatus = UserData.Create(PlayerController.luaStatus);
+        script.Globals.Set("Player", PlayerStatus);
+        DynValue ArenaStatus = UserData.Create(ArenaManager.luaStatus);
+        script.Globals.Set("Arena", ArenaStatus);
+        DynValue LuaUI = UserData.Create(new LuaPlayerUI());
+        script.Globals.Set("UI", LuaUI);
         script.Globals["DEBUG"] = (Action<string>)UnitaleUtil.WriteInLogAndDebugger;
         script.Globals["EnableDebugger"] = (Action<bool>)EnableDebugger;
         // clr bindings
@@ -332,11 +330,7 @@ public static class LuaScriptBinder {
             luatm.SetCaller(scrWrap);
             break;
         }
-        // Layers don't exist in the overworld, so we don't set it
-        if (!UnitaleUtil.IsOverworld || GlobalControls.isInShop)
-            luatm.layer = layer;
-        else
-            luatm.layer = (layer == "BelowPlayer" ? "Default" : layer);
+        luatm.layer = layer;
 
         // Converts the text argument into a table if it's a simple string
         text = text.Type == DataType.String ? DynValue.NewTable(scr, text) : text;
