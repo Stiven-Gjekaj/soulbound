@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -17,13 +16,14 @@ public class SelectOMatic : MonoBehaviour {
     public EventSystem eventSystem;
 
     private static float bossListScroll;        // Used to keep track of the position of the boss list. Resets if you press escape
-    private static float encounterListScroll;   // Used to keep track of the position of the encounter list. Resets if you press escape
 
     private float ExitButtonAlpha = 5f;         // Used to fade the "Exit" button in and out
     private float OptionsButtonAlpha = 5f;      // Used to fade the "Options" button in and out
 
     private static int selectedItem;            // Used to let users navigate the boss and encounter menus with the arrow keys!
 
+    // encounterBox is the scrolling overlay the boss list lives in. It keeps its old name
+    // because it is bound by name to ModSelect.unity.
     public GameObject encounterBox, devMod, content, retromodeWarning;
     public GameObject btnList,              btnBack,              btnNext,              btnExit,              btnOptions;
     public Text       ListText, ListShadow, BackText, BackShadow, NextText, NextShadow, ExitText, ExitShadow, OptionsText, OptionsShadow;
@@ -113,24 +113,8 @@ public class SelectOMatic : MonoBehaviour {
 
         bossSelection();
 
-        // This check will be true if we just exited out of an encounter
-        // If that's the case, we want to open the encounter list so the user only has to click once to re enter
+        // This check will be true if we just came back from a fight rather than from the Disclaimer screen
         if (StaticInits.ENCOUNTER != "") {
-            // Check to see if there is more than one encounter in the mod just exited from
-            // Note: Encounters starting with @ are ignored
-            DirectoryInfo encounterFiles = new DirectoryInfo(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters"));
-            string[] encounterNames = encounterFiles.GetFiles("*.lua").Select(f => Path.GetFileNameWithoutExtension(f.Name)).Where(f => !f.StartsWith("@")).ToArray();
-
-            // Highlight the chosen encounter whenever the user exits the boss menu
-            if (encounterNames.Length > 1) {
-                int temp = selectedItem;
-                encounterSelection();
-                selectedItem = temp;
-                content.transform.GetChild(selectedItem).GetComponent<MenuButton>().StartAnimation(1);
-            }
-            // Move the scrolly bit to where it was when the player entered the encounter
-            content.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, encounterListScroll);
-
             // Start the Exit button at half transparency
             ExitButtonAlpha                       = 0.5f;
             ExitText.GetComponent<Text>().color   = new Color(1f, 1f, 1f, 0.5f);
@@ -143,41 +127,38 @@ public class SelectOMatic : MonoBehaviour {
                 OptionsShadow.GetComponent<Text>().color = new Color(0f, 0f, 0f, 0.5f);
             }
         // Player is coming here from the Disclaimer scene
-        } else {
-            // When the player enters from the Disclaimer screen, reset stored scroll positions
-            bossListScroll      = 0.0f;
-            encounterListScroll = 0.0f;
-        }
+        } else
+            // When the player enters from the Disclaimer screen, reset the stored scroll position
+            bossListScroll = 0.0f;
 
         // Reset it to let us accurately tell if the player just came here from the Disclaimer scene or the Battle scene
         StaticInits.ENCOUNTER = "";
     }
 
-    private IEnumerator LaunchMod() {
+    private IEnumerator LaunchBoss(BossEntry boss) {
         // First: make sure the encounter is still here and can be opened
-        if (!File.Exists(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters/" + StaticInits.ENCOUNTER + ".lua"))) {
-            UnitaleUtil.DisplayLuaError(BossRegistry.FileName, "The encounter script \"" + StaticInits.ENCOUNTER + ".lua\" was there when the boss list loaded, but it is gone now.");
+        if (!File.Exists(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters/" + boss.id + ".lua"))) {
+            UnitaleUtil.DisplayLuaError(BossRegistry.FileName, "The boss \"" + boss.id + "\" had an encounter script when the list loaded, but it is gone now.");
             yield break;
         }
 
         // Dim the background to indicate loading
         ModBackground.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.1875f);
 
-        // Store the current position of the scrolly bit
-        encounterListScroll = content.GetComponent<RectTransform>().anchoredPosition.y;
+        StaticInits.ENCOUNTER = boss.id;
 
         yield return new WaitForEndOfFrame();
         try {
             StaticInits.InitAll(StaticInits.MODFOLDER, true);
             if (UnitaleUtil.firstErrorShown)
                 throw new Exception();
-            Debug.Log("Loading " + StaticInits.ENCOUNTER);
+            Debug.Log("Loading " + boss.id);
             GlobalControls.isInFight = true;
-            DiscordControls.StartBattle(StaticInits.GAME_MODFOLDER, StaticInits.ENCOUNTER);
+            DiscordControls.StartBattle(StaticInits.GAME_MODFOLDER, boss.name);
             SceneManager.LoadScene("Battle");
         } catch (Exception e) {
             ModBackground.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.25f);
-            Debug.LogError("An error occured while loading a boss:\n" + e.Message + "\n\n" + e.StackTrace);
+            Debug.LogError("An error occured while starting a boss fight:\n" + e.Message + "\n\n" + e.StackTrace);
         }
     }
 
@@ -185,14 +166,12 @@ public class SelectOMatic : MonoBehaviour {
     private void ShowBoss(int id) {
         BossEntry boss = bosses[id];
 
-        // Make clicking the background go to the encounter select screen
+        // Make clicking the background start the fight
         ModBackground.GetComponent<Button>().onClick.RemoveAllListeners();
         ModBackground.GetComponent<Button>().onClick.AddListener(() => {
             eventSystem.SetSelectedGameObject(null);
-            if (animationDone) {
-                encounterSelection();
-                content.transform.GetChild(selectedItem).GetComponent<MenuButton>().StartAnimation(1);
-            }
+            if (animationDone)
+                StartCoroutine(LaunchBoss(boss));
         });
 
         // Update the portrait
@@ -342,16 +321,15 @@ public class SelectOMatic : MonoBehaviour {
         // Controls:
 
         ////////////////// Main: ////////////////////////////////////
-        //        Confirm: Start the fight (if the boss has only    //
-        //                 one encounter), or open encounter list   //
+        //        Confirm: Fight the boss on screen                 //
         //         Cancel: Return to Disclaimer screen              //
         //             Up: Open the boss list                       //
         //           Menu: Open the options menu                    //
         //           Left: Scroll left                              //
         //          Right: Scroll right                             //
-        ////////////////// Encounter or boss list: //////////////////
-        //        Confirm: Start an encounter, or select a boss     //
-        //         Cancel: Exit                                     //
+        ////////////////// Boss list: ///////////////////////////////
+        //        Confirm: Jump to a boss                           //
+        //         Cancel: Close the list                           //
         //             Up: Move up                                  //
         //           Down: Move down                                //
         /////////////////////////////////////////////////////////////
@@ -367,7 +345,7 @@ public class SelectOMatic : MonoBehaviour {
                 else if (GlobalControls.input.Up == ButtonState.PRESSED) {
                     bossListMenu();
                     content.transform.GetChild(selectedItem).GetComponent<MenuButton>().StartAnimation(1);
-                // Open the encounter list or start the encounter (if there is only one encounter)
+                // Fight the boss on screen
                 } else if (GlobalControls.input.Confirm == ButtonState.PRESSED)
                     ModBackground.GetComponent<Button>().onClick.Invoke();
             }
@@ -379,7 +357,7 @@ public class SelectOMatic : MonoBehaviour {
             if (GlobalControls.input.Cancel == ButtonState.PRESSED)
                 btnExit.GetComponent<Button>().onClick.Invoke();
         } else {
-            // Encounter or boss list controls
+            // Boss list controls
             if (GlobalControls.input.Up == ButtonState.PRESSED || GlobalControls.input.Down == ButtonState.PRESSED) {
                 // Store previous value of selectedItem
                 int previousSelectedItem = selectedItem;
@@ -414,10 +392,10 @@ public class SelectOMatic : MonoBehaviour {
                     content.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, buttonBottomEdge - 230);
             }
 
-            // Exit
+            // Close the list
             if (GlobalControls.input.Cancel == ButtonState.PRESSED)
                 ModBackground.GetComponent<Button>().onClick.Invoke();
-            // Select the boss or encounter
+            // Jump to the highlighted boss
             else if (GlobalControls.input.Confirm == ButtonState.PRESSED)
                 content.transform.GetChild(selectedItem).GetComponent<Button>().onClick.Invoke();
         }
@@ -447,75 +425,6 @@ public class SelectOMatic : MonoBehaviour {
         }
         // Hide the selection box
         encounterBox.SetActive(false);
-    }
-
-    // Shows the list of available encounters in a mod.
-    private void encounterSelection() {
-        // Hide the boss list button
-        btnList.SetActive(false);
-
-        // Automatically choose "back"
-        selectedItem = 0;
-
-        // Make clicking the background exit the encounter selection screen
-        ModBackground.GetComponent<Button>().onClick.RemoveAllListeners();
-        ModBackground.GetComponent<Button>().onClick.AddListener(() => {
-            eventSystem.SetSelectedGameObject(null);
-            if (animationDone)
-                bossSelection();
-        });
-        // Show the encounter selection box
-        encounterBox.SetActive(true);
-        // Reset the encounter box's position
-        content.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-
-        // Give the back button its function
-        GameObject back = content.transform.Find("Back").gameObject;
-        back.GetComponent<Button>().onClick.RemoveAllListeners();
-        back.GetComponent<Button>().onClick.AddListener(bossSelection);
-
-        DirectoryInfo di = new DirectoryInfo(Path.Combine(FileLoader.ModDataPath, "Lua/Encounters"));
-        if (!di.Exists || di.GetFiles().Length <= 0) return;
-        string[] encounters = di.GetFiles("*.lua").Select(f => Path.GetFileNameWithoutExtension(f.Name)).Where(f => !f.StartsWith("@")).ToArray();
-
-        int count = 0;
-        foreach (string encounter in encounters) {
-            count += 1;
-
-            // Create a button for each encounter file
-            GameObject button = Instantiate(back);
-
-            // Set parent and name
-            button.transform.SetParent(content.transform);
-            button.name = "EncounterButton";
-
-            // Set position
-            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 100 - count * 30);
-
-            // Set color
-            button.GetComponent<Image>().color                        = new Color(0.75f, 0.75f, 0.75f, 0.5f);
-            button.GetComponent<MenuButton>().NormalColor             = new Color(0.75f, 0.75f, 0.75f, 0.5f);
-            button.GetComponent<MenuButton>().HoverColor              = new Color(0.75f, 0.75f, 0.75f, 1f);
-            button.transform.Find("Fill").GetComponent<Image>().color = new Color(0.5f,  0.5f,  0.5f,  0.5f);
-
-            // Set text
-            button.transform.Find("Text").GetComponent<Text>().text = Path.GetFileNameWithoutExtension(encounter);
-            if (GlobalControls.crate)
-                button.transform.Find("Text").GetComponent<Text>().text = Temmify.Convert(Path.GetFileNameWithoutExtension(encounter), true);
-
-            // Finally, set function!
-            string filename = Path.GetFileNameWithoutExtension(encounter);
-
-            int tempCount = count;
-
-            button.GetComponent<Button>().onClick.RemoveAllListeners();
-            button.GetComponent<Button>().onClick.AddListener(() => {
-                eventSystem.SetSelectedGameObject(null);
-                selectedItem          = tempCount;
-                StaticInits.ENCOUNTER = filename;
-                StartCoroutine(LaunchMod());
-            });
-        }
     }
 
     // Opens the scrolling interface and lets the user jump straight to any boss.
