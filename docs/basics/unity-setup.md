@@ -1,9 +1,8 @@
 # `<CYF>` Unity setup (optional)
 
 This page covers how to set up Create Your Frisk in the Unity editor, which is necessary
-for using the Overworld feature as well as for setting up shaders. It is also helpful for
-seeing the way encounters work from the Unity side, and in particular how sprite layers
-work.
+for setting up shaders. It is also helpful for seeing the way encounters work from the
+Unity side, and in particular how sprite layers work.
 
 ## Get started
 

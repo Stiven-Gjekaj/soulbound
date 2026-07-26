@@ -1,7 +1,6 @@
 # `<CYF>` Shaders - Introduction
 
-As of Create Your Frisk v0.6.5, you may now use Unity shaders in your encounters, and the
-overworld.
+As of Create Your Frisk v0.6.5, you may now use Unity shaders in your encounters.
 
 Be warned that **this is a very advanced feature** and not everyone will be able to create
 their own shaders. However, any shaders people make and release can be added into a mod

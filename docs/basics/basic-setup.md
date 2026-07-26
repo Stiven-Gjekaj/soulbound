@@ -11,18 +11,9 @@ scripts are set up like this:
   mod can have multiple encounter scripts.
 - **Wave scripts** contain an update function. You may use these to spawn, track, modify
   and otherwise interact with bullets during the defending phase of the game.
-- `<CYF>` **Event scripts** are used within the Overworld. They contain different
-  functions that can be set up within Unity to run under certain conditions in game.
-- `<CYF>` **Shop scripts** are used within the Overworld. They contain many variables and
-  functions controlling not only what items can be sold at what prices, but also
-  shopkeeper dialog, special code and events to run, and the potential to animate the
-  shopkeeper yourself.
 
 From the mod selection screen, you may pick any mod, and play any encounter script
 within that mod.
-
-`<CYF>` In Create Your Frisk, the Overworld exists, and battles can be initiated from
-the Overworld with proper setup.
 
 `<CYF>` As of CYF v0.6.4, the only folder required within a mod is the
 `YOUR MOD/Lua/Encounters/` folder. For all older versions, your encounter will break if
