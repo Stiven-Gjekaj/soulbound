@@ -3,7 +3,7 @@
 Projectile management is, starting from 0.2.0, available from both the encounter and the
 wave scripts. As a result it is now in its own section.
 
-### `<CYF>` `CreateProjectileLayer(string name, string position = "", boolean below = false)` [E/W]
+### `CreateProjectileLayer(string name, string position = "", boolean below = false)` [E/W]
 
 Creates a layer named `name` that projectiles can be placed in. To create your new
 projectile layer, you'll need to choose a pre-existing layer.
@@ -14,22 +14,22 @@ projectile layer, you'll need to choose a pre-existing layer.
 If `below` is true, the new layer will be created below the layer given in `position`,
 otherwise it will be above it.
 
-### `CreateProjectile(string spritename, number initial_x, number initial_y,` `<CYF>` `string layer = "")` returns **bullet** [E/W]
+### `CreateProjectile(string spritename, number initial_x, number initial_y,` `string layer = "")` returns **bullet** [E/W]
 
 Creates a bullet that you can store and modify, with its spawn position relative to the
 center of the arena. The hitbox of the bullet is a rectangle around the sprite, unless you
 use CYF's PP mode.
 
-`<CYF>` You can specify a layer if you want, otherwise the bullet will be in the normal
+You can specify a layer if you want, otherwise the bullet will be in the normal
 bullet layer.
 
-### `CreateProjectileAbs(string spritename, number initial_x, number initial_y,` `<CYF>` `string layer = "")` returns **bullet** [E/W]
+### `CreateProjectileAbs(string spritename, number initial_x, number initial_y,` `string layer = "")` returns **bullet** [E/W]
 
 Same as `CreateProjectile`, but the bullet's spawn position is relative to the bottom left
 of the screen instead of the arena's center. The hitbox of the bullet is a rectangle around
 the sprite, unless you use CYF's PP mode.
 
-`<CYF>` You can specify a layer if you want, otherwise the bullet will be in the normal
+You can specify a layer if you want, otherwise the bullet will be in the normal
 bullet layer.
 
 ## The Bullet object
@@ -50,7 +50,7 @@ section for usage details.
 Note: In 0.2.1a, modifying the sprite does not change the bullet's hitbox yet, it's always
 the original square of the bullet when it was created.
 
-`<CYF>` But, in CYF, changing the bullet's sprite *does* modify the bullet's hitbox.
+But, in CYF, changing the bullet's sprite *does* modify the bullet's hitbox.
 
 ### **number** `Bullet.x`
 
@@ -69,7 +69,7 @@ The X position of this bullet, relative to the bottom-left corner of the screen.
 
 The Y position of this bullet, relative to the bottom-left corner of the screen.
 
-### `<CYF>` **boolean** `Bullet.ppcollision`
+### **boolean** `Bullet.ppcollision`
 
 If this is true, the bullet will use the Pixel-Perfect Collision system.
 
@@ -80,7 +80,7 @@ Manually setting this will set `Bullet.ppchanged` to true.
 See `SetPPCollision` in [The Pixel-Perfect Collision System](pixel-perfect-collision.md)
 for more information.
 
-### `<CYF>` **boolean** `Bullet.ppchanged` (read-only)
+### **boolean** `Bullet.ppchanged` (read-only)
 
 Tells you if the bullet's collision system has been changed by manually changing
 `Bullet.ppcollision`.
@@ -91,14 +91,14 @@ Bullets with `Bullet.ppchanged` set to true will NOT be affected by future calls
 Will be false after you call `Bullet.ResetCollisionSystem()`, or if you haven't changed
 `Bullet.ppcollision`.
 
-### `<CYF>` `Bullet.ResetCollisionSystem()`
+### `Bullet.ResetCollisionSystem()`
 
 Resets the collision system of the bullet to the encounter's **default** collision system.
 
 The default collision system is set by `SetPPCollision`. See
 [The Pixel-Perfect Collision System](pixel-perfect-collision.md) for more information.
 
-### `<CYF>` **string** `Bullet.layer`
+### **string** `Bullet.layer`
 
 The bullet layer that the bullet is on.
 
@@ -153,22 +153,22 @@ Moves this bullet on top of all currently existing projectiles.
 Note that newly spawned projectiles are always on top by default; this function is mostly
 to move existing bullets to the top.
 
-`<CYF>` Moves the bullet to the top of its current layer.
+Moves the bullet to the top of its current layer.
 
 ### `Bullet.SendToBottom()`
 
 Moves this bullet below all currently existing projectiles.
 
-`<CYF>` Moves the bullet to the bottom of its current layer.
+Moves the bullet to the bottom of its current layer.
 
-### `<CYF>` `Bullet.isColliding()`
+### `Bullet.isColliding()`
 
 Returns true if the player is colliding with the bullet.
 
 Will use PPCollision (pixel-perfect collisions) if the bullet has PP enabled. See
 `Bullet.ppcollision`.
 
-### `<CYF>` `Bullet.OnHit(bullet bullet)`
+### `Bullet.OnHit(bullet bullet)`
 
 This variable must receive a function, which can be done in two possible ways:
 
@@ -189,7 +189,7 @@ when the bullet collides with the Player.
 
 The bullet and its `OnHit` function must both be created in the same script.
 
-### `<CYF>` **boolean** `Bullet.isPersistent = false`
+### **boolean** `Bullet.isPersistent = false`
 
 Set this to true and, if you're not in retrocompatibility mode, this will make the bullet
 stay loaded even after the wave ends.

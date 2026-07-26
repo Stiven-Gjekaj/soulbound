@@ -16,14 +16,14 @@ frame-based timing method to ensure equal behaviour across all framerates.
   framerates (this is essentially `deltatime*framerate`). This will be around 1.0 when the
   application runs at 60FPS, ~0.5 at 120FPS and ~2.0 at 30FPS, and so on. By multiplying
   your movement by this value, your waves will be consistent on lower framerates as well.
-- `<CYF>` **number** `Time.wave` (readonly) - Returns the elapsed time (in seconds) of the
+- **number** `Time.wave` (readonly) - Returns the elapsed time (in seconds) of the
   current waves while in `DEFENDING`. -1 outside of `DEFENDING`.
 
   You can use `wavetimer - Time.wave` while in `DEFENDING` to see how much time is left in
   the defense round.
-- `<CYF>` **number** `Time.frameCount` (readonly) - The total number of frames since the
+- **number** `Time.frameCount` (readonly) - The total number of frames since the
   start of the encounter.
-- `<CYF>` **number** `Time.timeScale` - The scale at which time passes. When timeScale is
+- **number** `Time.timeScale` - The scale at which time passes. When timeScale is
   1.0, time passes as fast as real time. When timeScale is 0.5 time passes 2x slower than
   realtime.
 

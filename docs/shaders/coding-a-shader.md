@@ -1,4 +1,4 @@
-# `<CYF>` Coding a shader
+# Coding a shader
 
 The purpose of this page is to go over everything necessary to know about actually coding
 the `.shader` files that can be made into shader AssetBundles for Create Your Frisk v0.6.5

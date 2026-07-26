@@ -1,25 +1,22 @@
 # Soulbound documentation
 
-Soulbound is built on Create Your Frisk (CYF), a Lua-moddable Undertale battle engine
-forked from Unitale. Everything below documents that engine: how it reads a mod and the
-Lua API your scripts call.
+This documents the Soulbound engine: how it reads a mod, and the Lua API your scripts
+call. Everything here applies to the engine as it ships in this repository.
 
-This started as a Markdown conversion of the CYF v0.6.6 LTS 3 documentation that upstream
-shipped as an HTML site. The overworld pages were removed in v0.1, when the feature itself
-was taken out, and v0.2 corrected the pages that still described overworld behaviour. The
-rest is preserved.
+Start with [How to read this documentation](how-to-read.md).
 
 Note: the pages carry casual Undertale spoilers throughout.
 
-## Conventions
+## Where this came from
 
-Two markers appear inline in these pages:
+The engine began as Create Your Frisk, and these pages began as a hand conversion of the
+documentation it shipped as an HTML site. They have diverged since: v0.1 removed the
+overworld and its 11 pages, v0.2 corrected everything that still described overworld
+behaviour, and v0.3 dropped the version markers that only made sense while the engine was
+a Create Your Frisk fork. What is left describes this engine, not that one.
 
-- `<CYF>` marks something added by Create Your Frisk, not present in original Unitale
-- `<0.2.1a>` marks something specific to Unitale 0.2.1a
-
-Retrocompatibility mode, toggled from the options screen, makes Unitale mods run under
-CYF. Start with [How to read this documentation](how-to-read.md).
+Full attribution is in the [README](../README.md#credits), and the project is GPLv3
+because Create Your Frisk is.
 
 ## Basics
 
@@ -28,7 +25,7 @@ CYF. Start with [How to read this documentation](how-to-read.md).
 | [How to read this documentation](how-to-read.md) | notation used throughout these pages |
 | [Controls](basics/controls.md) | the keys Unitale and CYF use |
 | [Basic setup](basics/basic-setup.md) | mod folder structure and what the engine expects to find. Start here |
-| [Unity setup](basics/unity-setup.md) | `<CYF>` setting up Unity, playing mods from the editor, exporting builds |
+| [Unity setup](basics/unity-setup.md) | setting up Unity, playing mods from the editor, exporting builds |
 | [Special variables](basics/special-variables.md) | the variables the engine reads out of your scripts |
 | [Terminology](basics/terminology.md) | what things are called, for example the "arena" |
 
@@ -39,7 +36,7 @@ CYF. Start with [How to read this documentation](how-to-read.md).
 | [Text commands](api/text-commands.md) | effects, colours, voices and skipping inside dialogue boxes |
 | [Game events](api/game-events.md) | the functions the engine calls in your script, and when |
 | [Projectile management](api/projectiles.md) | creating and controlling bullets |
-| [Pixel-perfect collision](api/pixel-perfect-collision.md) | `<CYF>` per-pixel hitboxes instead of rectangles |
+| [Pixel-perfect collision](api/pixel-perfect-collision.md) | per-pixel hitboxes instead of rectangles |
 | [Sprites and animation](api/sprites-and-animation.md) | creating sprites and animating them |
 
 ### Functions and objects
@@ -51,19 +48,19 @@ CYF. Start with [How to read this documentation](how-to-read.md).
 | [The Player object](api/objects/player.md) | player stats, position, damage and healing |
 | [The Script object](api/objects/script.md) | reading and writing variables across scripts |
 | [The Audio object](api/objects/audio.md) | music and sound playback |
-| [The NewAudio object](api/objects/newaudio.md) | `<CYF>` multi-channel audio |
+| [The NewAudio object](api/objects/newaudio.md) | multi-channel audio |
 | [The Input object](api/objects/input.md) | keyboard state |
-| [The Text object](api/objects/text.md) | `<CYF>` text anywhere, any font, with or without a bubble |
+| [The Text object](api/objects/text.md) | text anywhere, any font, with or without a bubble |
 | [The Time object](api/objects/time.md) | frame timing |
-| [The Inventory object](api/objects/inventory.md) | `<CYF>` items |
-| [The Misc object](api/objects/misc.md) | `<CYF>` window, machine and system access |
-| [The Discord object](api/objects/discord.md) | `<CYF>` rich presence |
+| [The Inventory object](api/objects/inventory.md) | items |
+| [The Misc object](api/objects/misc.md) | window, machine and system access |
+| [The Discord object](api/objects/discord.md) | rich presence |
 | [The Arena object](api/objects/arena.md) | resizing and moving the arena |
-| [The UI object](api/objects/ui.md) | `<CYF>` the battle interface |
+| [The UI object](api/objects/ui.md) | the battle interface |
 
 ## Shaders
 
-`<CYF>` Added in Create Your Frisk v0.6.5.
+Added in Create Your Frisk v0.6.5.
 
 | Page | What it covers |
 | --- | --- |
@@ -76,8 +73,8 @@ CYF. Start with [How to read this documentation](how-to-read.md).
 | Page | What it covers |
 | --- | --- |
 | [Dialog bubble names](reference/dialog-bubble-names.md) | every name usable with `dialogbubble` |
-| [Key list](reference/key-list.md) | `<CYF>` keys for `Input.GetKey(key)` and `[waitfor:key]` |
-| [Item list](reference/item-list.md) | `<CYF>` the engine's built-in items |
+| [Key list](reference/key-list.md) | keys for `Input.GetKey(key)` and `[waitfor:key]` |
+| [Item list](reference/item-list.md) | the engine's built-in items |
 
 ## This project
 

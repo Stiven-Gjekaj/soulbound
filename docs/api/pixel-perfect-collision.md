@@ -1,4 +1,4 @@
-# `<CYF>` The Pixel-Perfect Collision System
+# The Pixel-Perfect Collision System
 
 Instead of Unitale's default rectangular collisions and having to use thousands of lines of
 `if` statements in `OnHit` just to get precise collisions, you can use the Pixel-Perfect
@@ -41,7 +41,7 @@ By default, this is the encounter's **default** collision system.
 
 Manually setting this will set `Bullet.ppchanged` to true.
 
-### `<CYF>` **boolean** `Bullet.ppchanged` (read-only)
+### **boolean** `Bullet.ppchanged` (read-only)
 
 Tells you if the bullet's collision system has been changed by manually changing
 `Bullet.ppcollision`.
@@ -52,7 +52,7 @@ Bullets with `Bullet.ppchanged` set to true will NOT be affected by future calls
 Will be false after you call `Bullet.ResetCollisionSystem()`, or if you haven't changed
 `Bullet.ppcollision`.
 
-### `<CYF>` `Bullet.ResetCollisionSystem()`
+### `Bullet.ResetCollisionSystem()`
 
 Resets the collision system of the bullet to the encounter's **default** collision system.
 

@@ -1,4 +1,4 @@
-# `<CYF>` Shaders - Introduction
+# Shaders - Introduction
 
 As of Create Your Frisk v0.6.5, you may now use Unity shaders in your encounters.
 

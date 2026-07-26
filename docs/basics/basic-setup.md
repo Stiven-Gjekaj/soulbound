@@ -15,7 +15,7 @@ scripts are set up like this:
 From the mod selection screen, you may pick any mod, and play any encounter script
 within that mod.
 
-`<CYF>` As of CYF v0.6.4, the only folder required within a mod is the
+As of CYF v0.6.4, the only folder required within a mod is the
 `YOUR MOD/Lua/Encounters/` folder. For all older versions, your encounter will break if
 the other folders are missing.
 
@@ -65,7 +65,7 @@ the sprite to 2x its original resolution for an oldschool look.
 To *add a background* you can have one file titled `bg.png` in the sprites folder. This
 image will stretch over the entire background, so 640x480 resolution is recommended.
 Actually modifying and animating the background from the Lua side is not possible;
-`<CYF>` however, in CYF, you may use sprite layers to create a sprite behind the built-in
+however, in CYF, you may use sprite layers to create a sprite behind the built-in
 background layer and animate *that* instead.
 
 ## The Default directory

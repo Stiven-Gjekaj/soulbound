@@ -21,10 +21,10 @@ Possible key options are below:
 - `Input.Confirm` - Z or Enter
 - `Input.Cancel` - X or any Shift key
 - `Input.Menu` - C or any Control key
-- `Input.Up` - Up arrow or `<CYF>` W
-- `Input.Down` - Down arrow or `<CYF>` S
-- `Input.Left` - Left arrow or `<CYF>` A
-- `Input.Right` - Right arrow or `<CYF>` D
+- `Input.Up` - Up arrow or W
+- `Input.Down` - Down arrow or S
+- `Input.Left` - Left arrow or A
+- `Input.Right` - Right arrow or D
 
 Note: do not rely on the Input object to replace proper UI controls. Changing game state in
 the UI based on input will likely cause a fair share of issues and is not supported at
@@ -34,67 +34,67 @@ Here follows a list of other variables and functions available within the Input 
 New in v0.6.6: Keep in mind that the [Key list](../../reference/key-list.md) page shows a
 list of most available keys within the engine.
 
-- `<CYF>` **number** `Input.MousePosX` (readonly) - Returns the X position of the mouse
+- **number** `Input.MousePosX` (readonly) - Returns the X position of the mouse
   relative to the bottom left corner of the screen, from `0` to `639`.
-- `<CYF>` **number** `Input.MousePosY` (readonly) - Returns the Y position of the mouse
+- **number** `Input.MousePosY` (readonly) - Returns the Y position of the mouse
   relative to the bottom left corner of the screen, from `0` to `479`.
-- `<CYF>` **boolean** `Input.IsMouseInWindow` (readonly) - Returns true if the mouse is in
+- **boolean** `Input.IsMouseInWindow` (readonly) - Returns true if the mouse is in
   the window, false otherwise.
-- `<CYF>` New in v0.6.6. **boolean** `Input.IsMouseVisible` - Returns true if the mouse
+- New in v0.6.6. **boolean** `Input.IsMouseVisible` - Returns true if the mouse
   cursor is visible, false otherwise. True by default. Can be set in order to hide or show
   the mouse cursor.
-- `<CYF>` **number** `Input.MouseScroll` (readonly) - Returns a number representing the
+- **number** `Input.MouseScroll` (readonly) - Returns a number representing the
   change in the user's scroll wheel position, or movement supplied by the trackpad when
   using a Mac. `0` represents no movement, while a positive number means the user is
   scrolling up, and a negative number means the user is scrolling down.
-- `<CYF>` **number** `Input.GetKey(string keyname)` - Gets the state of the given key.
-- `<CYF>` New in v0.6.6. **number** `Input.GetAxisRaw(string axisName)` - Gets the precise
+- **number** `Input.GetKey(string keyname)` - Gets the state of the given key.
+- New in v0.6.6. **number** `Input.GetAxisRaw(string axisName)` - Gets the precise
   state of the given axis (joystick, trigger, D-Pad), between `-1` and `1`.
-- `<CYF>` New in v0.6.6. **{table of string}** `Input.GetPressedKeys()` - Gets a list of
+- New in v0.6.6. **{table of string}** `Input.GetPressedKeys()` - Gets a list of
   all the keys which are currently pressed. This function only takes keys into account, not
   axes.
-- `<CYF>` New in v0.6.6. **{table of string}** `Input.GetHeldKeys()` - Gets a list of all
+- New in v0.6.6. **{table of string}** `Input.GetHeldKeys()` - Gets a list of all
   the keys which are currently held. This function only takes keys into account, not axes.
-- `<CYF>` New in v0.6.6. **{table of string}** `Input.GetReleasedKeys()` - Gets a list of
+- New in v0.6.6. **{table of string}** `Input.GetReleasedKeys()` - Gets a list of
   all the keys which are currently being released. This function only takes keys into
   account, not axes.
-- `<CYF>` New in v0.6.6. `Input.CreateKeybind(string name, {table of string} keys = { })` -
+- New in v0.6.6. `Input.CreateKeybind(string name, {table of string} keys = { })` -
   Creates a keybind, which can be used as a shortcut to get the state of several keys at
   the same time.
 
   For quick setup, you can give it a list of keys to bind to it immediately, or you can
   only give it a name and use the functions `Input.SetKeybindKeys()` or
   `Input.BindKeyToKeybind()` to bind keys to it afterwards.
-- `<CYF>` New in v0.6.6. `Input.RemoveKeybind(string name)` - Completely removes an
+- New in v0.6.6. `Input.RemoveKeybind(string name)` - Completely removes an
   existing keybind.
 
   Note that base CYF keybinds cannot be deleted, as it would cause errors when the engine
   tries to fetch them.
-- `<CYF>` New in v0.6.6. `Input.SetKeybindKeys(string name, {table of string} keys)` OR
+- New in v0.6.6. `Input.SetKeybindKeys(string name, {table of string} keys)` OR
   `Input[string name] = {table of string} keys` - Replaces a keybind's list of bound keys
   with the given list of keys, erasing any keys set before running this function.
-- `<CYF>` New in v0.6.6. **boolean** `Input.BindKeyToKeybind(string name, string key)` -
+- New in v0.6.6. **boolean** `Input.BindKeyToKeybind(string name, string key)` -
   Adds a key to the keys bound to the given keybind. Returns true if the key was
   successfully bound to the keybind, false otherwise.
 
   If the key is already bound to the given keybind, nothing will happen and this function
   will return false.
-- `<CYF>` New in v0.6.6. **boolean** `Input.UnbindKeyFromKeybind(string name, string key)` -
+- New in v0.6.6. **boolean** `Input.UnbindKeyFromKeybind(string name, string key)` -
   Removes a key from the keys bound to the given keybind. Returns true if the key was
   successfully unbound from the keybind, false otherwise.
 
   If the key is not bound to the given keybind, nothing will happen and this function will
   return false.
-- `<CYF>` New in v0.6.6. **number** `Input.GetKeybind(string name)` OR `Input[string name]` -
+- New in v0.6.6. **number** `Input.GetKeybind(string name)` OR `Input[string name]` -
   Gets the state of the given keybind.
-- `<CYF>` New in v0.6.6. **{table of string}** `Input.GetKeybindKeys(string name)` -
+- New in v0.6.6. **{table of string}** `Input.GetKeybindKeys(string name)` -
   Returns a table of the keys currently bound to the given keybind.
-- `<CYF>` New in v0.6.6. **{table of {table of string}}** `Input.GetKeybindConflicts()` -
+- New in v0.6.6. **{table of {table of string}}** `Input.GetKeybindConflicts()` -
   Returns a table containing one table for each existing keybind conflict. Each conflict
   table contains as its first value the key that currently has a conflict, with each
   following value being the keybinds containing this key.
 
   Example: If the key `T` is bound to both keybinds `Confirm` and `Cancel`, then the
   resulting conflict table will be `{ "T", "Confirm", "Cancel" }`.
-- `<CYF>` New in v0.6.6. `Input.ResetKeybinds()` - Resets all created and modified keybinds
+- New in v0.6.6. `Input.ResetKeybinds()` - Resets all created and modified keybinds
   within the encounter, effectively wiping any keybind changes made in this encounter.

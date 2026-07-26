@@ -5,18 +5,18 @@
 `Arrow keys, Z (or Enter), X (or left/right Shift)` - The same as in Undertale.
 
 `Esc` - Exit to the Mod Selection screen to assist in quickly testing mods.
-`<CYF>` Disabled if the encounter has `unescape` set to true.
+Disabled if the encounter has `unescape` set to true.
 
 `F9` - Toggle the debug console. You can write text to this with `DEBUG("your text here")`
 in your scripts.
 
 `F4, Alt+Enter` - Toggle fullscreen mode.
-`<CYF>` You can change how fullscreen displays with the option "cropped fullscreen" in
+You can change how fullscreen displays with the option "cropped fullscreen" in
 the Options menu, found in the Mod Selection screen.
 
-`<CYF>` `H` with debugger open (`F9`) - Show or hide hitboxes of bullets and the player.
+`H` with debugger open (`F9`) - Show or hide hitboxes of bullets and the player.
 
-## `<CYF>` Mod Selection screen (main)
+## Mod Selection screen (main)
 
 `Z, Enter, or Mouse Click` - Start an encounter, or open an encounter list for a mod if
 it has multiple. See below.
@@ -27,7 +27,7 @@ it has multiple. See below.
 
 `Left or Right arrows` - Scroll through your installed mods.
 
-## `<CYF>` Mod Selection screen (mod or encounter list)
+## Mod Selection screen (mod or encounter list)
 
 `Z, Enter, or Mouse Click` - Jump to a mod you have installed (mod list), or start a
 selected encounter (encounter list).

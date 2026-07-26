@@ -1,4 +1,4 @@
-# `<CYF>` Item list
+# Item list
 
 This page lists all items added in CYF, as well as their effect.
 

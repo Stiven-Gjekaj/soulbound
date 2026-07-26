@@ -1,6 +1,6 @@
-# `<CYF>` The Misc object
+# The Misc object
 
-### `<CYF>` The Misc object [E/M/W]
+### The Misc object [E/M/W]
 
 The Misc object has some window-related and computer-related functions. Most of them are
 functions.

@@ -22,22 +22,22 @@ ways in which you can use it.
 - `Audio.LoadFile(string filename)` - Load music from the Audio folder titled
   `filename.ogg` or `filename.wav` and play it immediately. If you don't want immediate
   playback, call `Audio.Stop()` after this. Don't include the file extension.
-- `Audio.PlaySound(string filename, <CYF> number volume = 0.65)` - Play the sound from the
+- `Audio.PlaySound(string filename,  number volume = 0.65)` - Play the sound from the
   Sounds folder titled `filename.ogg` or `filename.wav`. Don't include the file extension.
-- `<CYF>` **boolean** `Audio.isPlaying` - Returns true if the music is playing, or false
+- **boolean** `Audio.isPlaying` - Returns true if the music is playing, or false
   if the music is stopped or paused.
-- `<CYF>` `Audio.StopAll()` - Stops all playing audio.
-- `<CYF>` `Audio.PauseAll()` - Pauses all the audio sources.
-- `<CYF>` `Audio.UnpauseAll()` - Unpauses all the audio sources.
-- `<CYF>` `Audio.SetSoundDictionary(string key, string value)` - Adds a sound to the sound
+- `Audio.StopAll()` - Stops all playing audio.
+- `Audio.PauseAll()` - Pauses all the audio sources.
+- `Audio.UnpauseAll()` - Unpauses all the audio sources.
+- `Audio.SetSoundDictionary(string key, string value)` - Adds a sound to the sound
   dictionary. Doing so allows you to change the name of the sounds played by the engine,
   like for example `hurtsound` or `menumove`.
 
   Setting `key` to `"RESETDICTIONARY"` will reset the entire sound dictionary to its
   original state.
-- `<CYF>` `Audio.GetSoundDictionary(string key)` - Returns the index of the sound in the
+- `Audio.GetSoundDictionary(string key)` - Returns the index of the sound in the
   sound dictionary. Returns the key itself if the key isn't in the dictionary.
-- `<CYF>` `Audio[string key]`, `Audio[string key] = string value` - Fast way to use
+- `Audio[string key]`, `Audio[string key] = string value` - Fast way to use
   `Audio.SetSoundDictionary` / `GetSoundDictionary`.
 
 As this is an object, you can't directly use it with `[func]`, but you can make your own

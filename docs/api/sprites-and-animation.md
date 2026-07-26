@@ -1,6 +1,6 @@
 # Sprites and animation
 
-### `<CYF>` `CreateLayer(string name, string position = "BelowArena", boolean below = false)` returns **boolean** [E/M/W]
+### `CreateLayer(string name, string position = "BelowArena", boolean below = false)` returns **boolean** [E/M/W]
 
 Creates a layer named `name` that sprites can be placed in. To create your new sprite
 layer, you'll need to choose a pre-existing layer. Returns `true` if the layer was
@@ -27,16 +27,16 @@ Default layers:
 - `"BelowBullet"`: Above the background, the UI, the Arena and the Player.
 - `"Top"`: Above everything.
 
-### `CreateSprite(string spritename,` `<CYF>` `string layer = "BelowArena", number childNumber = -1)` returns **sprite** [E/M/W]
+### `CreateSprite(string spritename,` `string layer = "BelowArena", number childNumber = -1)` returns **sprite** [E/M/W]
 
 Creates a sprite at the center of the screen (at 320, 240) that you can modify in many
 ways.
 
-`<CYF>` You can add a layer if you want, otherwise the sprite will be below the arena.
+You can add a layer if you want, otherwise the sprite will be below the arena.
 Enter `"none"` to spawn your sprite outside of any layers, in the same way that the player
 is by default, although this doesn't have much use.
 
-`<CYF>` In CYF, you can provide a number argument for `childNumber` if you want. Leave it as
+In CYF, you can provide a number argument for `childNumber` if you want. Leave it as
 `-1` to have it move to the top of whatever layer it's placed on (default behavior), or
 choose a numbered index you want it to appear in, with `1` being the very bottom-most in
 the layer, and higher numbers moving it above other elements in sequence.
@@ -46,7 +46,7 @@ Unity, playtest your mod in it, and look at the order of game objects in the Ins
 [Unity setup](../basics/unity-setup.md) for instructions on this. Note that this is optional
 and only if you would like a better understanding of how layers work.
 
-### `<CYF>` `CreateSprite(string spritename, number childNumber = -1)` returns **sprite** [E/M/W]
+### `CreateSprite(string spritename, number childNumber = -1)` returns **sprite** [E/M/W]
 
 The same as `CreateSprite` listed above, except you only need to provide a sprite name and
 child number. Uses the default layer `"BelowArena"`.
@@ -59,7 +59,7 @@ New in v0.6.6: As this object exists in CYF's hierarchy, it's possible to manipu
 parent and children. See the [General objects](objects/general-objects.md) page for more
 information.
 
-### `<CYF>` **string** `sprite.spritename` (readonly)
+### **string** `sprite.spritename` (readonly)
 
 Returns the path of the image used by this sprite, starting from the `Sprites/` folder.
 
@@ -77,7 +77,7 @@ its pivot or anchor point (center by default).
 
 If parented, y position is relative to the parent.
 
-### `<CYF>` **number** `sprite.z`
+### **number** `sprite.z`
 
 Z position of the sprite. A negative number brings it forward, closer to the camera, a
 positive number sends it backwards.
@@ -97,7 +97,7 @@ its pivot or anchor point and all parents.
 Vertical position of sprite relative to the bottom left corner of the screen, ignoring its
 pivot or anchor point and all parents.
 
-### `<CYF>` **number** `sprite.absz`
+### **number** `sprite.absz`
 
 Z position of the sprite. A negative number brings it forward, closer to the camera, a
 positive number sends it backwards.
@@ -110,7 +110,7 @@ relative to the z value of the parent.
 Horizontal scaling of sprite (`1.0` by default). `2.0` is twice as large, `0.5` is half as
 large.
 
-Scaling applies based on the sprite's pivot point, see `SetPivot`, `<CYF>` `xpivot` and
+Scaling applies based on the sprite's pivot point, see `SetPivot`, `xpivot` and
 `ypivot`.
 
 ### **number** `sprite.yscale`
@@ -118,14 +118,14 @@ Scaling applies based on the sprite's pivot point, see `SetPivot`, `<CYF>` `xpiv
 Vertical scaling of sprite (`1.0` by default). `2.0` is twice as large, `0.5` is half as
 large.
 
-Scaling applies based on the sprite's pivot point, see `SetPivot`, `<CYF>` `xpivot` and
+Scaling applies based on the sprite's pivot point, see `SetPivot`, `xpivot` and
 `ypivot`.
 
 ### **boolean** `sprite.isactive` (readonly)
 
-`<0.2.1a>` Returns `true` if the sprite has been removed and `false` otherwise.
+Returns `true` if the sprite has been removed and `false` otherwise.
 
-`<CYF>` **In retromode, behaves the same as 0.2.1a**. If not in retromode, this is `false`
+**In retromode, behaves the same as 0.2.1a**. If not in retromode, this is `false`
 if the sprite has been removed and `true` otherwise.
 
 ### **number** `sprite.width` (readonly)
@@ -144,7 +144,7 @@ This never changes until the sprite itself is swapped.
 
 Note: Does not take `sprite.yscale` into account.
 
-### `<CYF>` **number** `sprite.xpivot`
+### **number** `sprite.xpivot`
 
 Horizontal pivot point of the sprite. `0` is the left side, and `1` is the right side. Can
 be any number inside or outside of this range.
@@ -153,7 +153,7 @@ be any number inside or outside of this range.
 
 See `sprite.SetPivot`.
 
-### `<CYF>` **number** `sprite.ypivot`
+### **number** `sprite.ypivot`
 
 Vertical pivot point of the sprite. `0` is the bottom side, and `1` is the top side. Can be
 any number inside or outside of this range.
@@ -162,14 +162,14 @@ any number inside or outside of this range.
 
 See `sprite.SetPivot`.
 
-### `<CYF>` **boolean** `sprite.animcomplete` (readonly)
+### **boolean** `sprite.animcomplete` (readonly)
 
 If a sprite has started an animation, this tells you if the animation is complete.
 
 If a sprite does not have an active animation, if the animation's loop mode is `LOOP`, or
 if the animation isn't finished yet, this will be `false`. Otherwise, it will be `true`.
 
-### `<CYF>` **number** `sprite.currentframe`
+### **number** `sprite.currentframe`
 
 If a sprite has an active animation running, this represents the index of the active frame
 in the animation. Otherwise, this will return `0`.
@@ -186,7 +186,7 @@ on, up to `4` for the last one.
 Likewise, setting `sprite.currentframe = 3` with the above example will jump the animation
 to the first frame where `"sans_head3"` would be the currently shown image.
 
-### `<CYF>` **number** `sprite.currenttime`
+### **number** `sprite.currenttime`
 
 If a sprite has an active animation running, this represents its current play time, in
 seconds. Can both be read and set.
@@ -195,7 +195,7 @@ If an animation is not running, this will be `0`.
 
 Similar in function to `NewAudio.GetPlayTime` / `NewAudio.GetCurrentTime`.
 
-### `<CYF>` **number** `sprite.totaltime` (read-only)
+### **number** `sprite.totaltime` (read-only)
 
 If a sprite has an active animation running, this represents the total amount of time its
 animation will last for. Note that this is based on the speed the animation runs at, and
@@ -206,19 +206,19 @@ If an animation is not running, this will be `0`.
 
 Similar in function to `NewAudio.GetTotalTime`.
 
-### `<CYF>` **number** `sprite.animationspeed`
+### **number** `sprite.animationspeed`
 
 If a sprite has an active animation running, this represents the amount of seconds each
 frame will be displayed for.
 
 Can both be read and set. Must be greater than 0.
 
-### `<CYF>` **boolean** `sprite.animationpaused`
+### **boolean** `sprite.animationpaused`
 
 If a sprite has an active animation running, you can set this to `true` to pause it, or
 `false` to resume it.
 
-### `<CYF>` **string** `sprite.loopmode`
+### **string** `sprite.loopmode`
 
 Gets the loop mode of a sprite's current animation, or sets the loop mode of a sprite's
 *next* animation.
@@ -232,7 +232,7 @@ Can be:
 - `ONESHOTEMPTY` - Same as `ONESHOT`, except that when the animation is finished, the
   sprite object will use an empty sprite.
 
-### **{table of number, number, number,** `<CYF>` **number = 1}** `sprite.color`
+### **{table of number, number, number,** **number = 1}** `sprite.color`
 
 Gets or sets the coloration of a sprite, as a table of 3 or 4 values from 0 to 1.
 
@@ -240,9 +240,9 @@ For example, `sprite.color = {1.0, 0.0, 0.0}` colors the sprite red. This actual
 the sprite's original color, so if you want full control over the color, make sure your
 sprite is white. *Black areas are not affected by coloration.*
 
-`<CYF>`: You can provide a 4th value, which sets the alpha (transparency) of the sprite.
+: You can provide a 4th value, which sets the alpha (transparency) of the sprite.
 
-### `<CYF>` **{table of number, number, number, number = 255}** `sprite.color32`
+### **{table of number, number, number, number = 255}** `sprite.color32`
 
 Gets or sets the coloration of a sprite, as a table of 3 or 4 values from 0 to 255.
 
@@ -256,7 +256,7 @@ You can provide a 4th value, which sets the alpha (transparency) of the sprite.
 
 Gets or sets a sprite's transparency, as a value from 0 to 1.
 
-### `<CYF>` **number** `sprite.alpha32`
+### **number** `sprite.alpha32`
 
 Gets or sets a sprite's transparency, as a value from 0 to 255.
 
@@ -266,14 +266,14 @@ Gets or sets a sprite's rotation, in degrees.
 
 It's clamped between 0 and 360, so if you set it to 365, it will become 5.
 
-### New in v0.6.6. `<CYF>` **number** `sprite.localRotation`
+### New in v0.6.6. **number** `sprite.localRotation`
 
 Gets or sets a sprite's local rotation, as in its rotation compared to its parent, in
 degrees.
 
 It's clamped between 0 and 360, so if you set it to 365, it will become 5.
 
-### `<CYF>` **string** `sprite.layer`
+### **string** `sprite.layer`
 
 Gets or sets the current layer a sprite is on. Does nothing if you set it to a layer that
 doesn't exist.
@@ -286,7 +286,7 @@ Note: It is common practice to use `sprite.layer` to deparent a sprite if you ne
 so. Setting it again will parent the sprite to the given layer, removing its previous
 parenting altogether.
 
-### New in v0.6.6. `<CYF>` **number** `sprite.characterNumber`
+### New in v0.6.6. **number** `sprite.characterNumber`
 
 Only used for letters fetched through `Text.GetLetters()`. Gets the index of the character
 this sprite displays. If the current letter shows the first character of the text object,
@@ -306,7 +306,7 @@ Note: Using this function with a sprite which has a parent with a different rota
 reset the sprite's rotation to its usual value. Setting the variable `noscalerotationbug`
 to true in the Encounter script prevents that effect.
 
-### `<CYF>` `sprite.Mask(string mode)`
+### `sprite.Mask(string mode)`
 
 Sets the masking mode of this sprite object. Does not function for Text Object letter
 sprites.
@@ -339,7 +339,7 @@ invisible sprite (using the default sprite "empty" is recommended), parent both 
 intended parent and child sprite to the invisible sprite, and apply motion to the invisible
 sprite rather than the parent sprite.
 
-### `<CYF>` **shader** `sprite.shader`
+### **shader** `sprite.shader`
 
 The shader object linked to this sprite object.
 
@@ -378,7 +378,7 @@ sprite's pivot point will be on the bottom left corner of its parent's own sprit
 
 If a sprite has no parent, then all layers span across the entire screen.
 
-### `<CYF>` `sprite.Move(number x, number y)`
+### `sprite.Move(number x, number y)`
 
 Moves the sprite `x` pixels right, and `y` pixels up.
 
@@ -407,7 +407,7 @@ Note: Using this function with a sprite which has a parent with a different rota
 reset the sprite's rotation to its usual value. Setting the variable `noscalerotationbug`
 to true in the Encounter script prevents that effect.
 
-### `sprite.SetAnimation({table of string} spriteTable, number timePerFrame = 1/30,` `<CYF>` `string prefix = "")`
+### `sprite.SetAnimation({table of string} spriteTable, number timePerFrame = 1/30,` `string prefix = "")`
 
 Performs frame-by-frame animation with your own time between frames, in seconds. It's the
 same as changing the sprite object's image with `sprite.Set` on a set timer. If
@@ -415,14 +415,14 @@ same as changing the sprite object's image with `sprite.Set` on a set timer. If
 
 Example: `sprite.SetAnimation({"sans_head1", "sans_head2", "sans_head3"})`
 
-`<CYF>` `prefix`: An optional string providing the path to a folder contained within your
+`prefix`: An optional string providing the path to a folder contained within your
 Sprites folder. This path will be automatically added to the beginning of every sprite's
 name.
 
 For example, you can load your collection of 6 sprites in `Sprites/character` with
 `sprite.SetAnimation({"spr1", "spr2", "spr3", "spr4", "spr5", "spr6"}, 1/30, "character")`.
 
-`<CYF>` This can use sprites with different sizes.
+This can use sprites with different sizes.
 
 Note: Using this function with a sprite which has a parent with a different rotation will
 reset the sprite's rotation to its usual value. Setting the variable `noscalerotationbug`
@@ -446,12 +446,12 @@ appear on top of their parents, regardless of this function being called.
 Sends this sprite to the bottom of its layer's hierarchy. Similar rules apply as with
 `SendToTop()`.
 
-### `<CYF>` `sprite.MoveBelow(sprite otherSpriteObject)`
+### `sprite.MoveBelow(sprite otherSpriteObject)`
 
 If both sprites have the same parent, this will move the calling sprite just below the
 other sprite.
 
-### `<CYF>` `sprite.MoveAbove(sprite otherSpriteObject)`
+### `sprite.MoveAbove(sprite otherSpriteObject)`
 
 If both sprites have the same parent, this will move the calling sprite just above the
 other sprite.
@@ -461,20 +461,20 @@ other sprite.
 Removes a sprite object. Calling anything other than `isactive` after this will give you an
 error. Removing a sprite object will also remove all *children* of the sprite object.
 
-`<CYF>` Note: Calling `bullet.sprite.Remove` will instead call `bullet.Remove`, unless you
+Note: Calling `bullet.sprite.Remove` will instead call `bullet.Remove`, unless you
 are using retromode.
 
-### `<CYF>` `sprite.SetVar(string yourVariableName, value)` or `sprite[string yourVariableName] = value`
+### `sprite.SetVar(string yourVariableName, value)` or `sprite[string yourVariableName] = value`
 
 Sets a variable in a sprite object that you can retrieve with `sprite.GetVar`. Identical to
 `SetVar` in projectiles.
 
-### `<CYF>` `sprite.GetVar(string yourVariableName)` or `sprite[string yourVariableName]`
+### `sprite.GetVar(string yourVariableName)` or `sprite[string yourVariableName]`
 
 Gets a variable in a sprite object that you previously set with `sprite.SetVar`. Identical
 to `GetVar` in projectiles.
 
-### `<CYF>` `sprite.Dust(boolean playSound = true, boolean removeObject = false)`
+### `sprite.Dust(boolean playSound = true, boolean removeObject = false)`
 
 Turns a sprite into dust, just like what happens in Undertale when an enemy is killed.
 

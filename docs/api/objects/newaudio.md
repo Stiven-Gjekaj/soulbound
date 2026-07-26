@@ -1,6 +1,6 @@
-# `<CYF>` The NewAudio object
+# The NewAudio object
 
-### `<CYF>` The NewAudio object [E/M/W]
+### The NewAudio object [E/M/W]
 
 The NewAudio object allows you to create sound channels and has overall better music
 management than the Audio object.

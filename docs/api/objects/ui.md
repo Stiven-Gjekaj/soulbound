@@ -1,6 +1,6 @@
-# `<CYF>` The UI object
+# The UI object
 
-### `<CYF>` The UI object [E/M/W]
+### The UI object [E/M/W]
 
 This section details the various elements you can use to manipulate CYF's internal user
 interface.
@@ -188,7 +188,7 @@ Sets the active button's active sprite and moves the Player where it needs to be
 currently selected button. This function is automatically called after most functions
 related to button manipulation.
 
-## `<CYF>` The Bar object [E/M/W]
+## The Bar object [E/M/W]
 
 This separate section lists the various functions and variables usable when dealing with a
 bar object, which can be used for life bars, for example.

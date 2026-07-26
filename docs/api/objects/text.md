@@ -1,4 +1,4 @@
-# `<CYF>` The Text object
+# The Text object
 
 With the Text Object, you can create text wherever you want, with or without a bubble,
 with a tail or without a tail.

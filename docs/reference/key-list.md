@@ -1,4 +1,4 @@
-# `<CYF>` Key list
+# Key list
 
 `Input.GetKey` uses Unity key codes. A complete list
 [can be found here](https://docs.unity3d.com/2018.4/Documentation/ScriptReference/KeyCode.html).

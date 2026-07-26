@@ -1,6 +1,6 @@
-# `<CYF>` The Inventory object
+# The Inventory object
 
-### `<CYF>` The Inventory object [E/M/W]
+### The Inventory object [E/M/W]
 
 Items can be deleted and the Inventory System has been simplified. Here are the functions
 created to help you with items.

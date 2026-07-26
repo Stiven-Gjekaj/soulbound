@@ -1,6 +1,6 @@
-# `<CYF>` The Shader object
+# The Shader object
 
-### `<CYF>` The Shader object [E/M/W]
+### The Shader object [E/M/W]
 
 The shader object is a Lua side object that can force a sprite object to display using a
 certain shader, and manipulate said shader.

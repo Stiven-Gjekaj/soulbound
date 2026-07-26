@@ -56,7 +56,7 @@ Happens when you select an item from the item menu.
   number 1.
 - `silent`: If this is true, avoid doing things like writing battle text.
 
-`<CYF>` In CYF, you can use the Inventory object to edit the player's inventory. The
+In CYF, you can use the Inventory object to edit the player's inventory. The
 items' names will be in caps, like with `HandleCustomCommand()`.
 
 ```lua
@@ -116,7 +116,7 @@ for all of the encounter, even during waves. This is an extremely powerful funct
 can run any code at any time, no matter what. The only exception is the game over state,
 if the player dies, no code from within this function will be run.
 
-### `<CYF>` `BeforeDeath()`
+### `BeforeDeath()`
 
 This function runs the moment the Player takes mortal damage (by any means, including
 bullet damage, scripted damage, setting `Player.hp` to `0`, and even text commands), just
@@ -160,7 +160,7 @@ scripted `Kill()` calls will not trigger it.
 
 Calling `BattleDialog()` here will probably screw up the battle UI.
 
-### `<CYF>` `OnSpare()`
+### `OnSpare()`
 
 Happens after you successfully spared a monster. If you implement `OnSpare()`, your
 monster will not be spared automatically, and you will have to do it manually with the
@@ -169,13 +169,13 @@ monster will not be spared automatically, and you will have to do it manually wi
 `OnSpare()` will only happen through a monster spare that happened with the SPARE command;
 scripted `Spare()` calls will not trigger it.
 
-### `<CYF>` `BeforeDamageCalculation()`
+### `BeforeDamageCalculation()`
 
 Happens before the damage calculation the moment you press Z when attacking. You can
 easily use `SetDamage()` in this function. This is also the best place to initiate a dodge
 animation, if you want such a thing.
 
-### `<CYF>` `BeforeDamageValues(number damage)`
+### `BeforeDamageValues(number damage)`
 
 Happens before the damage UI is displayed on the monster (the life bar and the damage
 number) and before the hp changing. You can still change the target with
@@ -223,7 +223,7 @@ defense step.
 That's pretty much it. Update your bullets here, more on bullet creation and control is on
 the [Projectile management](projectiles.md) page.
 
-### `<CYF>` `EndingWave()`
+### `EndingWave()`
 
 This function is called just before the wave ends. It allows you to easily reset some
 variables and other such things.

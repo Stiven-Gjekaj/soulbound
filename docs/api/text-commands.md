@@ -3,7 +3,7 @@
 There are **two types** of text commands: commands that get executed instantly, like text
 color and effects; and commands that get executed inline, as they're displayed, like wait
 commands and character voices. Note that currently, if you skip a text command (with X),
-it'll also skip all inline commands that were still in your text. `<CYF>` *Unless*, that
+it'll also skip all inline commands that were still in your text. *Unless*, that
 is, you use `playerskipdocommand`.
 
 On line breaks: there are actually two different kinds. In *UI messages* where asterisks
@@ -11,7 +11,7 @@ are used, you can use `\n` to start a new line *with* an asterisk. If you want a
 *without* an asterisk, use `\r`.
 
 This is different for monster dialogue that isn't prefixed with asterisks: *always* use
-`\n` for line breaks here. `<CYF>` Or use `autolinebreak`. See
+`\n` for line breaks here. Or use `autolinebreak`. See
 [Special variables](../basics/special-variables.md).
 
 ## Instant commands
@@ -39,18 +39,18 @@ offered, actual usage in Undertale is very limited.
 The default UI text is plain white and the default enemy dialogue text is plain black,
 `[color:ffffff]` and `[color:000000]` respectively.
 
-### `<CYF>` `[color]`
+### `[color]`
 
 This command resets any previous usage of the `[color:rrggbb]` command, displaying any
 following text in the font's default color.
 
-### `<CYF>` `[alpha:aa]`
+### `[alpha:aa]`
 
 This command allows you to set the alpha (transparency) value of your text.
 
 The number you enter should be a two-character hex value between `"00"` and `"ff"`.
 
-### `<CYF>` `[alpha]`
+### `[alpha]`
 
 This command resets any previous usage of the `[alpha:aa]` command, displaying any
 following text in the font's default alpha.
@@ -61,7 +61,7 @@ Same usage as color but *only affects the first asterisk in a dialogue box that 
 asterisks.* This is a dirty workaround, but now you don't need it anymore, it's
 deprecated.
 
-`<CYF>` As commands are now executed before the star, you can use `[color:rrggbb]` to
+As commands are now executed before the star, you can use `[color:rrggbb]` to
 color the star.
 
 ### `[effect:x]` or `[effect:x,intensity]` or (new in v0.6.6) `[effect:x,intensity,step]`
@@ -80,7 +80,7 @@ following effects:
 - `twitch`: Letters twitch occasionally, the battle UI has this by default. Intensity sets
   how far a letter should shake. Default is 2.0.
 
-### `<CYF>` `[lettereffect:x]` or `[lettereffect:x,intensity]` or (new in v0.6.6) `[lettereffect:x,intensity,step]`
+### `[lettereffect:x]` or `[lettereffect:x,intensity]` or (new in v0.6.6) `[lettereffect:x,intensity,step]`
 
 This works the same as `[effect:x]`, but it works **inline**. This means you can have
 *multiple* different text effects in a single line.
@@ -110,7 +110,7 @@ it after the font change. Possible options:
 For all default fonts, check out the `Default/Sprites/UI/Fonts` folder. Every font with a
 matching .xml file is mapped.
 
-### `<CYF>` `[charspacing:number]` and `[charspacing:default]`
+### `[charspacing:number]` and `[charspacing:default]`
 
 Sets the number of pixels that separate characters on the same line. Negative means less
 space between characters, positive means more space between characters.
@@ -120,7 +120,7 @@ The default value is `3`. Fonts can specify a `<charspacing>` tag that *sets* th
 Enter `[charspacing:default]` to reset this value to the value provided by the font, or
 the default value of 3.
 
-### `<CYF>` `[linespacing:number]`
+### `[linespacing:number]`
 
 Number of pixels that separate different lines. The number you enter here gets *added on*
 to the active font's regular line spacing. Negative means less space between lines,
@@ -141,7 +141,7 @@ Prevents this dialogue from being skipped by pressing X.
 It is effective only whenever the text reaches it, but if it is placed at the beginning of
 a line of text, it will always work, even if it is not the first command.
 
-### `<CYF>` `[noskip:off]`
+### `[noskip:off]`
 
 Cancels a previous `[noskip]` command.
 
@@ -149,10 +149,10 @@ Cancels a previous `[noskip]` command.
 
 Instantly shows the entire text without having to wait or press anything.
 
-`<CYF>` Note: This command works as an inline command when placed at the beginning of a
+Note: This command works as an inline command when placed at the beginning of a
 line of text.
 
-### `<CYF>` `[instant:allowcommand]`
+### `[instant:allowcommand]`
 
 The same as `[instant]`, but here other text commands are called, except `[w]`,
 `[letters]` and commands with the "`skipover`" tag.
@@ -160,11 +160,11 @@ The same as `[instant]`, but here other text commands are called, except `[w]`,
 Note: This command works as an inline command when placed at the beginning of a line of
 text.
 
-### `<CYF>` `[instant:stop]`
+### `[instant:stop]`
 
 Cancels a previous `[instant]` or `[instant:allowcommand]` command, and resumes typing.
 
-### `<CYF>` `[instant:stopall]`
+### `[instant:stopall]`
 
 Cancels a previous `[instant]`, `[instant:allowcommand]` command or a Player skip, and
 resumes typing.
@@ -213,19 +213,19 @@ first line:  "[noskip][voice:flowey][effect:none]RUN. [w:30]INTO. [w:30]THE.\n[w
 second line: "[instant][effect:none]RUN. INTO. THE.\nfriendliness\npellets"
 ```
 
-### `<CYF>` `[nextthisnow]`
+### `[nextthisnow]`
 
 Skips to the next dialogue of the current monster only, even if several monsters are
 speaking, effectively desyncing their text. It acts like `[next]` outside of monster text
 objects, its only difference is that it only affects the current monster if used on a
 monster's text object.
 
-### `<CYF>` `[finished]`
+### `[finished]`
 
 Sets this dialogue box as "finished". To go through the next dialogue box, you'll have to
 wait until the other monsters' dialogue boxes are also finished.
 
-### `<CYF>` `[waitfor:key]`
+### `[waitfor:key]`
 
 Waits for the user to press the given key to continue the message. Check the
 [Key list](../reference/key-list.md) to see the available keys.
@@ -233,7 +233,7 @@ Waits for the user to press the given key to continue the message. Check the
 Note that keybinds are also accepted here. For more info, check the page on
 [The Input object](objects/input.md).
 
-### `[func:x]`, `[func:x,argument]` `<CYF>` or `[func:x,{argument1, argument2...}]`
+### `[func:x]`, `[func:x,argument]` or `[func:x,{argument1, argument2...}]`
 
 The most powerful command. `[func]` allows you to execute *any function from your script
 in line with the text*. Refer to the examples below.
@@ -262,7 +262,7 @@ if you are using it in monster dialogue through `currentdialogue`, your function
 exist within the monster's Lua script, regardless of what script is actually setting the
 monster's dialogue.
 
-### `<CYF>` `[speed:x]`
+### `[speed:x]`
 
 Makes the text handler print `x` characters over every 4 frames. The default text speed in
 CYF (`[speed:1]`) is 1 character every 4 frames.
@@ -275,7 +275,7 @@ for instance.
 
 **Overrides `[waitall:x]`.**
 
-### `<CYF>` `[letters:x]`
+### `[letters:x]`
 
 For this frame only, the text box will show the next x characters.
 
@@ -287,11 +287,11 @@ will be displayed.
 For the rest of the line, the text box will show the next x characters every time one
 character should be displayed.
 
-### `<CYF>` `[name]`
+### `[name]`
 
 This text gets replaced by the name of the player. You can also use `Player.name`.
 
-### `<CYF>` `[music:x]`
+### `[music:x]`
 
 Plays the music given as an argument on the main music channel, unless the argument is one
 of these keywords:
@@ -301,11 +301,11 @@ of these keywords:
 - `unpause` = Unpauses the music.
 - `stop`, `null`, `nil` or an empty string = Stops the current music.
 
-### `<CYF>` `[sound:x]`
+### `[sound:x]`
 
 Plays the sound given as an argument.
 
-### `<CYF>` `[mugshot:face]`, `[mugshot:null]` or `[mugshot:{face1,face2,...,time}]`
+### `[mugshot:face]`, `[mugshot:null]` or `[mugshot:{face1,face2,...,time}]`
 
 New in v0.6.6: Only usable with the main text object in battles.
 
@@ -330,7 +330,7 @@ If you do not provide a time, or the time you enter is lower than 0, a default v
 New in v0.6.6. Note: mugshots in battle are 130x130, so if bigger mugshots are applied,
 5 pixels around each edge are hidden.
 
-### `<CYF>` `[health:x,y]`
+### `[health:x,y]`
 
 Heals the Player by x points. Can damage the player if x is negative, but the Player's HP
 will not go under 1 unless certain conditions are met. The parameter y is optional.
@@ -350,7 +350,7 @@ Tags:
   - `killable` = The possible HP reduction can now kill the Player.
   - `set` = The amount of HP given in the first argument will be the Player's current HP.
 
-## `<CYF>` Command tags
+## Command tags
 
 These tags can be added after a text command and have different behaviours. To use them,
 you must do this: `[command:tag]` or `[command:arguments:tag]`. For now, only one tag can

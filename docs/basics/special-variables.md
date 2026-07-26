@@ -6,25 +6,25 @@ examples' code or write your own. This section serves to explain the variables y
 
 ## All-script variables
 
-### `<CYF>` **boolean** `isCYF` [E/M/W]
+### **boolean** `isCYF` [E/M/W]
 
 A value, true by default, that indicates that you're on CYF. nil if not on CYF. Test it
 with `if not isCYF then` or `if isCYF then`.
 
-### `<CYF>` **boolean** `isRetro` [E/M/W]
+### **boolean** `isRetro` [E/M/W]
 
 A value which is true whenever CYF's retrocompatibility mode is active and false when it
 isn't. Test it with `if not isRetro then` or `if isRetro then`.
 
-### `<CYF>` **boolean** `safe` [E/M/W]
+### **boolean** `safe` [E/M/W]
 
 True if CYF's safe mode is enabled, false otherwise.
 
-### `<CYF>` **boolean** `windows` [E/M/W]
+### **boolean** `windows` [E/M/W]
 
 Returns true if the user is on Windows, false otherwise.
 
-### `<CYF>` **string** `CYFversion` [E/M/W]
+### **string** `CYFversion` [E/M/W]
 
 Returns a different string based on the version of CYF you are using.
 
@@ -38,7 +38,7 @@ Tip: Lua has a very useful built-in string comparing function. You can very easi
 for `if CYFversion < "0.6.2.2" then`, `if CYFversion >= "0.6.1.2" then` and other
 combinations.
 
-### `<CYF>` **number** `LTSversion` [E/M/W]
+### **number** `LTSversion` [E/M/W]
 
 Returns a different number based on the LTS version of CYF you are using.
 
@@ -119,44 +119,44 @@ You will always need at least as many enemy positions as enemies in your encount
 this example we have 3 enemy positions set to show you how you can define more than one,
 but since this example only contains Vegetoid you only really need one position.
 
-`<CYF>` **boolean** `autolinebreak` - False by default. If this value is set to true, the
+**boolean** `autolinebreak` - False by default. If this value is set to true, the
 auto linebreak system will automatically add line breaks (`\r`) to the text. No need to
 use `\r` or `\n` anymore.
 
-`<CYF>` **boolean** `playerskipdocommand` - False by default. If this value is set to
+**boolean** `playerskipdocommand` - False by default. If this value is set to
 true, text commands will be called even if the player skips the text, except for `[w]`
 and `[letters]` commands, and commands with the tag "`skipover`".
 
-`<CYF>` **boolean** `unescape` - False by default. If this value is set to true, you
+**boolean** `unescape` - False by default. If this value is set to true, you
 can't exit the battle with the ESC key anymore.
 
-`<CYF>` **boolean** `flee` - True by default. If this value is set to false, the Flee
+**boolean** `flee` - True by default. If this value is set to false, the Flee
 option will not appear in the Mercy menu.
 
-`<CYF>` **boolean** `fleesuccess` - `nil` by default. Set this to `true` or `false` to
+**boolean** `fleesuccess` - `nil` by default. Set this to `true` or `false` to
 force the Flee option to succeed or fail, respectively. Otherwise, Undertale's formula is
 used, which starts at a 50% chance to flee on the first turn, and increases by 10% every
 turn after that, regardless of if those turns were spent trying to flee as well.
 
-`<CYF>` **{table of string}** `fleetexts` - If you set this to a table filled with
+**{table of string}** `fleetexts` - If you set this to a table filled with
 strings, a random one of your strings will be displayed whenever the player flees the
 battle, if that's enabled.
 
-`<CYF>` **boolean** `revive` - If this variable is set to true, the player will be revived
+**boolean** `revive` - If this variable is set to true, the player will be revived
 when they hit 0 HP. By default, there will be no special text for the player being
 revived; however, if you set `deathtext`, that will be used.
 
-`<CYF>` **{table of string}** `deathtext` - Text displayed when the player dies, in the
+**{table of string}** `deathtext` - Text displayed when the player dies, in the
 Game Over screen. By default, it'll use the normal death text. This text is also used if
 the player gets revived while `revive` is true. Otherwise, there is no revive text.
 
-`<CYF>` **string** `deathmusic` - Sets the death music. The music is played if `revive` is
+**string** `deathmusic` - Sets the death music. The music is played if `revive` is
 not set.
 
-`<CYF>` **{table of script}** `Wave` - A table returning the current wave scripts used.
+**{table of script}** `Wave` - A table returning the current wave scripts used.
 Returns a table with a length of 0 if not in the state DEFENDING.
 
-`<CYF>` **boolean** `noscalerotationbug` - If this variable is set to true, the rotation
+**boolean** `noscalerotationbug` - If this variable is set to true, the rotation
 of any child sprite with a rotated parent will no longer be reset after either changing
 its sprite in any way or scaling it.
 
@@ -209,7 +209,7 @@ down.
 **{table of string}** `randomdialogue` - A list of random dialogue the monster can have.
 One of these is selected at random if `currentdialogue` is `nil`, meaning it has no value.
 
-`<CYF>` Note: The dialogue bubble will not be shown so long as it has no displayable
+Note: The dialogue bubble will not be shown so long as it has no displayable
 letters. Set `randomdialogue` to a line with only text commands, such as
 `"[noskip][next]"`, to use this to your advantage.
 
@@ -219,14 +219,14 @@ Vegetoid's green carrots after selecting Dinner from the ACT menu. This variable
 *cleared every time after it's read out in the monster dialogue phase*. This is done so
 you don't have to take care of managing it manually.
 
-`<CYF>` Note: The dialogue bubble will not be shown so long as it has no displayable
+Note: The dialogue bubble will not be shown so long as it has no displayable
 letters. Set `currentdialogue` to a line with only text commands, such as
 `"[noskip][next]"`, to use this to your advantage.
 
-`<CYF>` **string** `defensemisstext` - The text which will be displayed if the Player's
+**string** `defensemisstext` - The text which will be displayed if the Player's
 attack is successful but deals 0 damage. "MISS" by default.
 
-`<CYF>` **string** `noattackmisstext` - The text which will be displayed if the Player
+**string** `noattackmisstext` - The text which will be displayed if the Player
 doesn't press Z when attacking. "MISS" by default.
 
 **boolean** `cancheck` - Either true or false. You can leave this line out; it will be
@@ -239,7 +239,7 @@ in your ACT menu. If you want a custom Check action, you can add it back into yo
 false by default. If you change this to true, your monster's name will turn yellow and it
 will be spareable.
 
-`<CYF>` **boolean** `isactive` - Tells you whether this enemy is active. Will be false if
+**boolean** `isactive` - Tells you whether this enemy is active. Will be false if
 they have been manually de-activated, killed or spared.
 
 **Setting this will do nothing. You must call** `SetActive` (see
@@ -250,7 +250,7 @@ extension. This is the initial sprite for your monster. It can be changed using
 `SetSprite(name)`; see [Sprites and animation](../api/sprites-and-animation.md) for
 details.
 
-`<CYF>` **sprite** `monstersprite` - Sprite handler of the monster.
+**sprite** `monstersprite` - Sprite handler of the monster.
 
 **string** `dialogbubble` - What dialogue bubble will be used for the monster's dialogue.
 You can change this at any time, but this *must* be initially set to something. For a list
@@ -280,7 +280,7 @@ object has `textobject` as child, so moving it will also move that object.
 New in v0.6.6. **text** `textobject` - Text object used to display the monster's dialogue.
 Moving it also moves the dialog bubble if dialogbubble is nil.
 
-`<CYF>` **string** `dialogueprefix` - A string, appended to the beginning of every
+**string** `dialogueprefix` - A string, appended to the beginning of every
 monster's dialogue. The default is `"[effect:rotate]"`.
 
 **string** `name` - Monster name. Fairly self-explanatory; shows up in the FIGHT/ACT menus.
@@ -290,7 +290,7 @@ Can also be changed at any time.
 value will always accurately reflect your monster's current HP. You can then modify this
 value to change your monster's current HP.
 
-`<CYF>` **number** `maxhp` - Your monster's max HP. After the fight has started this value
+**number** `maxhp` - Your monster's max HP. After the fight has started this value
 will be always the same, unless you change it. It is mainly used for lifebars and such.
 You better not set it as 0 or as a negative number, though.
 
@@ -310,20 +310,20 @@ time up until the fight ends.
 **string** `check` - When checking with the default Check option, this is what's listed
 under the monster's name, ATK and DEF.
 
-`<CYF>` **boolean** `unkillable` - Set it to true and the monster will not be killed if it
+**boolean** `unkillable` - Set it to true and the monster will not be killed if it
 has less than 1 HP. However, it can still be killed with `Kill()`.
 
-`<CYF>` **boolean** `canmove` - Deprecated, always returns true. Old behavior: Returns
+**boolean** `canmove` - Deprecated, always returns true. Old behavior: Returns
 true if you are able to move or unbind `monstersprite`, false otherwise.
 
-`<CYF>` **number** `posx` - The x position of the enemy's sprite.
+**number** `posx` - The x position of the enemy's sprite.
 
-`<CYF>` **number** `posy` - The y position of the enemy's sprite.
+**number** `posy` - The y position of the enemy's sprite.
 
-`<CYF>` **string** `font` - The default font used by the monster. Set it to `nil` if you
+**string** `font` - The default font used by the monster. Set it to `nil` if you
 want to use the normal monster font.
 
-`<CYF>` **string** `voice` - The default voice used by the monster. Set it to `nil` if you
+**string** `voice` - The default voice used by the monster. Set it to `nil` if you
 want to use the default voice.
 
 New in v0.6.6. **{table of number, number, number, number = 1}** `sparecolor` - Changes
@@ -338,7 +338,7 @@ is set.
 
 ## Wave script variables
 
-### `<CYF>` **string** `wavename` [W]
+### **string** `wavename` [W]
 
 Returns the name of the wave file, without the extension, from the Waves folder.
 

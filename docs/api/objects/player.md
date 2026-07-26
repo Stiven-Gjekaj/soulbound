@@ -19,48 +19,48 @@ vertical position to get the edges of the player's hitbox, if you need that for 
 - **number** `Player.hp` - get or set the player's current HP. Can't exceed max HP. If set
   to 0, game over triggers.
 
-  `<CYF>` The hp value is now a float, but there can be some problems about accuracy of
+  The hp value is now a float, but there can be some problems about accuracy of
   float values.
-- `<CYF>` **number** `Player.maxhp` - returns the player's MaxHP value.
+- **number** `Player.maxhp` - returns the player's MaxHP value.
 
   As of CYF v0.6.4, this is settable. Setting this is the same as calling
   `Player.SetMaxHPShift(<value>, 0, true, false, false)`. Max hp is not a float, but
   regular hp is.
-- `<CYF>` **number** `Player.maxhpshift` (readonly) - returns the difference between the
+- **number** `Player.maxhpshift` (readonly) - returns the difference between the
   player's current Max HP and their normal, unmodified Max HP.
-- `<CYF>` **number** `Player.atk` - base attack of the player. Depends on the player's
+- **number** `Player.atk` - base attack of the player. Depends on the player's
   level.
 
   Changing `Player.lv` or ending the battle will **reset** this to its intended value.
-- `<CYF>` **string** `Player.weapon` (readonly) - name of the player's current weapon.
-- `<CYF>` **number** `Player.weaponatk` (readonly) - attack value of the player's current
+- **string** `Player.weapon` (readonly) - name of the player's current weapon.
+- **number** `Player.weaponatk` (readonly) - attack value of the player's current
   weapon.
-- `<CYF>` **number** `Player.def` - base defense of the player. Depends on the player's
+- **number** `Player.def` - base defense of the player. Depends on the player's
   level.
 
   Changing `Player.lv` or ending the battle will **reset** this to its intended value.
-- `<CYF>` **string** `Player.armor` (readonly) - name of the player's current armor.
-- `<CYF>` **number** `Player.armordef` (readonly) - defense value of the player's current
+- **string** `Player.armor` (readonly) - name of the player's current armor.
+- **number** `Player.armordef` (readonly) - defense value of the player's current
   armor.
-- `<CYF>` **number** `Player.speed` - Player's speed in pixels per second. Default is 120.
+- **number** `Player.speed` - Player's speed in pixels per second. Default is 120.
 - **string** `Player.name` - get or set the player's current name.
 
-  `<0.2.1a>` 6 letters max. By default, it is a name randomly chosen from a small list of
+  6 letters max. By default, it is a name randomly chosen from a small list of
   pre-set names.
 
-  `<CYF>` 9 letters max. "Rhenao" by default.
+  9 letters max. "Rhenao" by default.
 - **number** `Player.lv` - use this to get or set the player's current level. It can be
-  between 1 and 20 (99 in `<CYF>`). It's 1 by default. Player starts with 20HP / 10 ATK and
+  between 1 and 20 (99 in ). It's 1 by default. Player starts with 20HP / 10 ATK and
   gets 4 HP / 2 ATK per level.
 
   Leveling up the player through code doesn't automatically heal them; you'll have to do
   this manually.
-- `<CYF>` **number** `Player.lastenemychosen` (readonly) - gets the id of the last chosen
+- **number** `Player.lastenemychosen` (readonly) - gets the id of the last chosen
   enemy in the ACT/FIGHT menus. -1 at the beginning of a fight.
 
   Note: This is NOT the same as the enemy's position in the `enemies` table. This is the
   position of the enemies in the *menu* in-game.
-- `<CYF>` **number** `Player.lasthitmultiplier` (readonly) - gets the accuracy value from
+- **number** `Player.lasthitmultiplier` (readonly) - gets the accuracy value from
   the last time the player was in `ATTACKING`. Normally, it will be between 0 and 2. It
   will be -1 if the player missed the attack (and at the beginning of the battle) and 2.2
   if the attack was perfectly precise.
@@ -78,7 +78,7 @@ vertical position to get the edges of the player's hitbox, if you need that for 
   Set `ignoreDef` to true, and if the encounter variable `allowPlayerDef` is true, the
   damage dealt here will ignore the player's defense.
 
-  `<CYF>` Call `Player.Hurt(0, 0)` to stop the player's invincibility frames without
+  Call `Player.Hurt(0, 0)` to stop the player's invincibility frames without
   making a sound. Set `playSound` to `false`, and no sound will be played whatsoever.
 - `Player.Heal(number value)` - heals the player for this amount. This is exactly the same
   as `Player.Hurt(-value, 0)`. It also plays the healing sound.
@@ -89,7 +89,7 @@ vertical position to get the edges of the player's hitbox, if you need that for 
 
   Use this if you want to implement your own controls in a wave, for example a custom soul
   mode like the blue or purple soul.
-- `<CYF>` `Player.Move(number x, number y, boolean ignoreWalls = false)` - Moves the player
+- `Player.Move(number x, number y, boolean ignoreWalls = false)` - Moves the player
   soul based on its last position. If `ignoreWalls` is false, it will make sure the player
   doesn't go outside of the arena; otherwise, it ignores the arena's boundaries. If you
   want to move the player out of bounds in a wave, you'll have to call
@@ -107,9 +107,9 @@ vertical position to get the edges of the player's hitbox, if you need that for 
   ignores the arena's boundaries. If you want to move the player out of bounds in a wave,
   you'll have to call `Player.SetControlOverride(true)` as the player's default movement
   keeps the soul inside the arena.
-- `<CYF>` `Player.ForceHP(number amount)` - Lets you set the player's HP to a number above
+- `Player.ForceHP(number amount)` - Lets you set the player's HP to a number above
   the player's Max HP. The REAL maximum is 999.
-- `<CYF>` `Player.SetMaxHPShift(number shift, number invulnerabilitySeconds = 1.7f, boolean set = false, boolean canHeal = false, boolean playSound = true)` -
+- `Player.SetMaxHPShift(number shift, number invulnerabilitySeconds = 1.7f, boolean set = false, boolean canHeal = false, boolean playSound = true)` -
   Lets you set the Player's MaxHP, relative to their normal MaxHP. If the total MaxHP is
   negative or nil, it causes a GameOver. The max value for the Player's MaxHP is 999.
 
@@ -124,7 +124,7 @@ vertical position to get the edges of the player's hitbox, if you need that for 
     function as normal (yellow) health. Does not apply for losing health.
   - `playSound` = true if you want to play the heal or hurt sound when the operation is
     done.
-- `<CYF>` `Player.ResetStats(boolean resetMHP = true, boolean resetATK = true, boolean resetDEF = false)` -
+- `Player.ResetStats(boolean resetMHP = true, boolean resetATK = true, boolean resetDEF = false)` -
   Resets the player's Max HP, ATK and/or DEF to their original values based on the player's
   LV.
 
@@ -139,19 +139,19 @@ vertical position to get the edges of the player's hitbox, if you need that for 
 
   The values set through this function are chosen according to
   [this chart](https://undertale.fandom.com/wiki/Stats#Stat_Chart).
-- `<CYF>` `Player.SetAttackAnim({table of string} anim, number frequency, string prefix = "")` -
+- `Player.SetAttackAnim({table of string} anim, number frequency, string prefix = "")` -
   Sets the animation used when attacking an enemy. Use it like `sprite.SetAnimation()`.
-- `<CYF>` `Player.ResetAttackAnim()` - Resets the animation of the player's attack to the
+- `Player.ResetAttackAnim()` - Resets the animation of the player's attack to the
   default slashing animation.
-- `<CYF>` `Player.ChangeTarget(number targetNumber)` - Changes the target of the Player's
+- `Player.ChangeTarget(number targetNumber)` - Changes the target of the Player's
   attack while in `ATTACKING`. Does nothing outside of the state `ATTACKING`. It should be
   used in `BeforeDamageCalculation()` or `BeforeDamageValues()`.
-- `<CYF>` `Player.ForceAttack(number enemyID, number damage = normal_damage_values)` -
+- `Player.ForceAttack(number enemyID, number damage = normal_damage_values)` -
   Forces an attack towards the enemy number `enemyID`. If you want to, you can choose the
   attack's damage, too, but otherwise damage will be calculated normally.
 
   If you want enemies to be able to die this way, you MUST check with `Player.CheckDeath`.
-- `<CYF>` `Player.MultiTarget({table of number} targetIDs = all, {table of number} OR number damage = normal_damage_values)` -
+- `Player.MultiTarget({table of number} targetIDs = all, {table of number} OR number damage = normal_damage_values)` -
   The next attack the player executes will attack the enemies contained in `targetIDs` and
   deal `damage` damage. If you want to, you can choose the attack's damage, too, but
   otherwise damage will be calculated normally. If you put nothing as a parameter, this
@@ -160,9 +160,9 @@ vertical position to get the edges of the player's hitbox, if you need that for 
   Each target needs to have one damage value if you use a `table of numbers` for the
   `damage` value, or all targets can share the same damage value if the `damage` value is
   a simple `number`.
-- `<CYF>` `Player.MultiTarget(number damage)` - The next attack the player executes will
+- `Player.MultiTarget(number damage)` - The next attack the player executes will
   attack all enemies and deals `damage` damage.
-- `<CYF>` `Player.ForceMultiAttack({table of number} targetIDs = all, {table of number} OR number damage = normal_damage_values)` -
+- `Player.ForceMultiAttack({table of number} targetIDs = all, {table of number} OR number damage = normal_damage_values)` -
   Forces an attack towards the enemies contained in `targetIDs` and deals `damage` damage.
   If you want to, you can choose the attack's damage, too, but otherwise damage will be
   calculated normally. If you put nothing as a parameter, this will attack all enemies with
@@ -173,10 +173,10 @@ vertical position to get the edges of the player's hitbox, if you need that for 
   a simple `number`.
 
   If you want enemies to be able to die this way, you MUST check with `Player.CheckDeath`.
-- `<CYF>` `Player.ForceMultiAttack(number damage)` - Forces an attack that deals `damage`
+- `Player.ForceMultiAttack(number damage)` - Forces an attack that deals `damage`
   damage to all enemies.
 
   If you want enemies to be able to die this way, you MUST check with `Player.CheckDeath`.
-- `<CYF>` `Player.CheckDeath()` - Checks if the enemies are dead after a forced attack.
+- `Player.CheckDeath()` - Checks if the enemies are dead after a forced attack.
   Enemies are not killed by forced attacks because death texts are easier to implement if
   you use `ForceAttack` or `ForceMultiAttack` in the middle of text.

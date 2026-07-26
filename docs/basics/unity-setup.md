@@ -1,4 +1,4 @@
-# `<CYF>` Unity setup (optional)
+# Unity setup (optional)
 
 This page covers how to set up Create Your Frisk in the Unity editor, which is necessary
 for setting up shaders. It is also helpful for seeing the way encounters work from the

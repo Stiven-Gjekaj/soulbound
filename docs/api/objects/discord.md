@@ -1,6 +1,6 @@
-# `<CYF>` The Discord object
+# The Discord object
 
-### `<CYF>` The Discord object [E/M/W]
+### The Discord object [E/M/W]
 
 This class is used to manipulate the data the `Discord Rich Presence Status` bar displays,
 if Discord is open and if this feature is enabled. This feature can be customized in

@@ -13,7 +13,7 @@ Write text to the debug console (toggleable with `F9`). It will appear automatic
 first time you write text to it. You can use this to check values in your code, or make
 sure some pieces of code are actually running.
 
-### `<CYF>` `EnableDebugger(boolean bool)` [E/M/W]
+### `EnableDebugger(boolean bool)` [E/M/W]
 
 Forcefully allows and disallows the showing of the debugger. If you enter `false`, the
 debugger will be immediately hidden if it is open, and will no longer show itself for any
@@ -39,7 +39,7 @@ An alternative to setting variables in the Encounter script to be accessed from 
 
 Gets a Global Variable that you previously set using `SetGlobal()`.
 
-### `<CYF>` `SetRealGlobal(string your_variable_name, value)` [E/M/W]
+### `SetRealGlobal(string your_variable_name, value)` [E/M/W]
 
 Sets a Global variable that any script can read. After setting it, you can retrieve it
 from all of your scripts at any time with `GetRealGlobal(variable_name)`.
@@ -53,11 +53,11 @@ or AlMighty globals.
 Also note: as Real and AlMighty Globals persist across mods, it is possible for mods to
 read each others' globals. Be careful when choosing global names.
 
-### `<CYF>` `GetRealGlobal(string your_variable_name)` returns variable [E/M/W]
+### `GetRealGlobal(string your_variable_name)` returns variable [E/M/W]
 
 Gets a Global that you previously set using `SetRealGlobal()`.
 
-### `<CYF>` `SetAlMightyGlobal(string your_variable_name, value)` [E/M/W]
+### `SetAlMightyGlobal(string your_variable_name, value)` [E/M/W]
 
 *AlMighty Globals* are globals that are instantly saved into a file when set: these globals
 **persist through sessions**.
@@ -70,11 +70,11 @@ or AlMighty globals.
 Also note: as Real and AlMighty Globals persist across mods, it is possible for mods to
 read each others' globals. Be careful when choosing global names.
 
-### `<CYF>` `GetAlMightyGlobal(string your_variable_name)` returns variable [E/M/W]
+### `GetAlMightyGlobal(string your_variable_name)` returns variable [E/M/W]
 
 Gets an AlMighty Global that you previously set using `SetAlMightyGlobal()`.
 
-### `<CYF>` `SetFrameBasedMovement(boolean bool)` [E/M/W]
+### `SetFrameBasedMovement(boolean bool)` [E/M/W]
 
 Set to `true` if you want frame-based player movement (2px/frame) instead of time based
 player movement (120px/s). Set it to `false` if you already are in frame-based movement and
@@ -86,7 +86,7 @@ called.
 Note that this function only controls the player's movement with the default control
 scheme (see `Player.SetControlOverride` in [The Player object](player.md)).
 
-### `<CYF>` `SetAction(string "FIGHT", "ACT", "ITEM" or "MERCY")` [E/M/W]
+### `SetAction(string "FIGHT", "ACT", "ITEM" or "MERCY")` [E/M/W]
 
 Used alongside `State("ENEMYSELECT")`, or `EnteringState` when entering the same state, to
 force the player to choose FIGHT or ACT. This controls whether you'll see the enemy's
@@ -96,7 +96,7 @@ health bar in the menu and whether the next state upon pressing Z is `ATTACKING`
 If used in the state `ACTIONSELECT`, this function will move the player over the specified
 button.
 
-### `<CYF>` `AllowPlayerDef(boolean bool)` [E/M/W]
+### `AllowPlayerDef(boolean bool)` [E/M/W]
 
 If the given value is true, all damage that the player will take will be reduced, like in
 Undertale, by 1 point for each 5 defense, with the player's defense at LV1 not affecting
@@ -104,13 +104,13 @@ the damage.
 
 Damage taken can not be fully blocked and will always be at least 1. False by default.
 
-### `<CYF>` `SetPPCollision(boolean bool)` [E/M/W]
+### `SetPPCollision(boolean bool)` [E/M/W]
 
 Setting this to true will force all bullets that don't have a specified collision type to
 use the Pixel-Perfect collision system. If you want to use it, see
 [The Pixel-Perfect Collision System](../pixel-perfect-collision.md). False by default.
 
-### `BattleDialogue({table of string} list_of_strings)` [E/M/W] `<CYF>` or `BattleDialog`
+### `BattleDialogue({table of string} list_of_strings)` [E/M/W] or `BattleDialog`
 
 This makes the list of strings you give to the function appear in the UI dialog box. After
 skipping through them, you will automatically go to the monster dialogue step by default.
@@ -136,12 +136,12 @@ function HandleCustomCommand(command)
 end
 ```
 
-### `<CYF>` `CreateState(string name)` [E/M/W]
+### `CreateState(string name)` [E/M/W]
 
 This function creates a custom state with the name `name`, which will function like the
 NONE state. You cannot have two states with the same name.
 
-### `<CYF>` `UnloadSprite(string path)` [E/M/W]
+### `UnloadSprite(string path)` [E/M/W]
 
 This function removes the sprite loaded through `path` from CYF's internal cache, allowing
 you to load it from your folder again.
@@ -214,11 +214,11 @@ Finally, there are two "special" states that evoke behavior in the engine itself
 - `NONE` - This state does nothing. It is entered for the first frame of the encounter, but
   entering it manually will completely freeze your encounter. It might be useful if you
   want to disable all of Unitale/CYF's basic functionality.
-- `<0.2.1a>` `RESETTING` - DEPRECATED, DO NOT USE. Only listed for completion purposes. It
+- `RESETTING` - DEPRECATED, DO NOT USE. Only listed for completion purposes. It
   only exists in Unitale 0.2.1a, so trying to use it in CYF won't work. It was removed in
   the Github release of Unitale 0.2.1a, and seemed to be only for testing.
 
-### `<CYF>` Freezing states
+### Freezing states
 
 As of CYF v0.6.2.1, calling `State("PAUSE")` will perfectly "pause" an encounter. The last
 active state will remain active, but in a frozen state, until you call `State` again.
@@ -228,7 +228,7 @@ Only the `Update` function of the Encounter script will remain active here.
 To unfreeze a state, you must use `State` to switch to another state, preferably the last
 active state. `GetCurrentState()` will tell you the name of the frozen state.
 
-### `<CYF>` `GetCurrentState()` returns **string** [E/M/W]
+### `GetCurrentState()` returns **string** [E/M/W]
 
 Returns the name of the current state (see above for all states).
 
@@ -246,7 +246,7 @@ function DefenseEnding() --This built-in function fires after the defense round 
 end
 ```
 
-### `<CYF>` `SetButtonLayer(string layer)` [E]
+### `SetButtonLayer(string layer)` [E]
 
 Changes the `layer` of the FIGHT, ACT, ITEM and MERCY buttons **and the Player's name, lv
 and hp**.
@@ -262,7 +262,7 @@ The usable layers are created sprite layers and these base layers:
 
 Note: Enter `"default"` to reset the Buttons and UI.
 
-### `<CYF>` `CreateEnemy(string scriptName, number x, number y)` [E]
+### `CreateEnemy(string scriptName, number x, number y)` [E]
 
 This function creates an `enemy script` using the script `scriptName` in the
 `Lua/Monsters` folder of your mod, which will act as a new enemy in battle, and returns a
@@ -276,7 +276,7 @@ Be aware that creating an enemy this way will NOT add it to the Encounter script
 `enemies` table, so you have to manage the table yourself by adding this new enemy script
 to it.
 
-### `<CYF>` `Flee()` [E]
+### `Flee()` [E]
 
 This function runs the fleeing sequence.
 
@@ -295,7 +295,7 @@ an encounter at a later point. The battle will end when a monster is killed or s
 there are no active monsters left. Having no active monsters at all will likely cause a
 bunch of errors right now.
 
-### `<CYF>` `SetDamage(number amount)` [M]
+### `SetDamage(number amount)` [M]
 
 Set the amount of damage the monster will take the next time it is attacked. Can be
 negative.
@@ -324,18 +324,18 @@ Does NOT call the [Game event](../game-events.md) `OnSpare`.
 
 If `playSound` is set to `false`, the sparing sound will not be played.
 
-### `<CYF>` `Move(number x, number y)` [M]
+### `Move(number x, number y)` [M]
 
 Moves the enemy's sprite relative to its current position.
 
-### `<CYF>` `MoveTo(number x, number y)` [M]
+### `MoveTo(number x, number y)` [M]
 
 Moves the enemy's sprite relative to the bottom left corner of the screen.
 
 This is effectively the same as setting `enemypositions` again, except `x` is 320px left
 and `y` is 231px down.
 
-### `<CYF>` `BindToArena(boolean bind, boolean isUnderArena = false)` [M]
+### `BindToArena(boolean bind, boolean isUnderArena = false)` [M]
 
 Controls whether the enemy's sprite will follow the Arena's movements.
 
@@ -343,22 +343,22 @@ If `bind` is true, the enemy will be parented to the Arena and follow all of its
 Otherwise, it will be either behind or in front of the arena, depending on the value of
 `isUnderArena`.
 
-### `<CYF>` `SetBubbleOffset(number x, number y)` [M]
+### `SetBubbleOffset(number x, number y)` [M]
 
 Makes the enemy's dialogue bubble appear `x` pixels horizontally and `y` pixels vertically
 relative to its original position.
 
-### `<CYF>` `SetDamageUIOffset(number x, number y)` [M]
+### `SetDamageUIOffset(number x, number y)` [M]
 
 Changes the offset of the enemy's damage UI (the enemy's health bar and the red numbers).
 Note that the damage UI is on a layer above that of the arena.
 
-### `<CYF>` `SetSliceAnimOffset(number x, number y)` [M]
+### `SetSliceAnimOffset(number x, number y)` [M]
 
 Changes the offset of the attack animation (the red slice by default) for when the player
 attacks this monster.
 
-### `<CYF>` `Remove()` [M]
+### `Remove()` [M]
 
 This function immediately removes this enemy from the encounter, including the script it's
 been called from.

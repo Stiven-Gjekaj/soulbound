@@ -6,7 +6,7 @@ Script objects are a bit of a special case. They're used to refer to other scrip
 were loaded by the engine itself.
 
 In the encounter script, the `enemies` table is filled with Script objects after the
-encounter starts, `<CYF>` and the `Wave` table is filled with Script objects when entering
+encounter starts, and the `Wave` table is filled with Script objects when entering
 the state `DEFENDING`.
 
 The variable `Encounter` is also a script object that refers to the current encounter, and
@@ -20,7 +20,7 @@ of your encounter file*, it will always just be `Encounter`. Case-sensitive.
 - `script.Call(string function_name)` - runs `function_name` from within the target script.
 - `script.Call(string function_name, argument)` - runs `function_name` from within the
   target script with one argument.
-- `<CYF>` `script.Call(string function_name, {table of any types} arguments)` - runs
+- `script.Call(string function_name, {table of any types} arguments)` - runs
   `function_name` from within the target script with all arguments in `arguments` as the
   arguments.
 
@@ -32,7 +32,7 @@ of your encounter file*, it will always just be `Encounter`. Case-sensitive.
   ```
 
   and the two arguments given can be any variable types.
-- `<CYF>` **string** `script.scriptname` - this is equal to the file name of the script in
+- **string** `script.scriptname` - this is equal to the file name of the script in
   question.
 
 ## Examples

@@ -22,7 +22,7 @@ a wave. Papyrus' special Cool Dude attack would also count as a wave. Unitale wo
 "wave scripts" for attacks; you can use multiple wave scripts at the same time for when
 you have various monsters.
 
-`<CYF>` `modDev` - This is a feature exclusive to CYF. In CYF, you can access some extra
+`modDev` - This is a feature exclusive to CYF. In CYF, you can access some extra
 options from the Mod Selection screen. These mainly include the options to wipe
 `RealGlobals` and `AlMightyGlobals`, as well as toggle `safe mode` and
 `retrocompatibilty mode`.
@@ -30,10 +30,10 @@ options from the Mod Selection screen. These mainly include the options to wipe
 In CYF v0.6.2.1 and beyond, the modDev screen is located in an "options menu" accessible
 by clicking "Options" from within the Mod Selection screen.
 
-`<CYF>` `retrocompatibilty mode` - This CYF feature is designed in such a way where, if
+`retrocompatibilty mode` - This CYF feature is designed in such a way where, if
 it's enabled, functions from 0.2.1a that were changed in CYF will function exactly as
 they did in 0.2.1a.
 
-`<CYF>` `safe mode` - This is a CYF-mode that removes swear words found in CYF. Mod
+`safe mode` - This is a CYF-mode that removes swear words found in CYF. Mod
 authors can also use this to do the same in their mods, maybe even also using this to
 remove blood or mature content.
