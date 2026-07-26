@@ -115,9 +115,17 @@ and on macOS the instructions for getting past Gatekeeper.
 
 Five things worth knowing:
 
-- **Releases are marked pre-release.** The workflow always passes `--prerelease`. There is
-  no finished game to ship yet, and the flag keeps that clear on the releases page. Remove
-  the flag when that stops being true.
+- **The tag's shape decides whether it is a pre-release.** A plain version tag such as
+  `v0.4.0` publishes as a full release and becomes the repository's latest. A tag carrying
+  a semver pre-release identifier, `v0.9.0-rc1` or `v1.0.0-beta.2`, publishes with
+  `--prerelease`.
+
+  This matters more than it looks. GitHub excludes pre-releases from "latest", and the
+  Releases panel on the repository front page shows the latest release, so a pre-release
+  does not appear there at all: the panel falls back to a tag count. Marking every build
+  before v1.0 a pre-release would leave that panel empty for years. The 0.x version number
+  and the warning at the top of each release's notes are the honest signals about maturity;
+  the flag is kept for the case it was designed for.
 - **The notes come from the changelog.** The workflow pulls the section matching the tag's
   version out of [`CHANGELOG.md`](../../CHANGELOG.md). Write that section before tagging.
   If no section matches, the release still publishes, with a pointer to the changelog
