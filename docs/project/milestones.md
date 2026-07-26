@@ -122,8 +122,25 @@ named them.
 
 ## v0.2: clean up after the overworld
 
-Remove what the strip left behind. Nothing here changes behavior, because every
-branch being deleted is already unreachable.
+Complete. The engine no longer asks what mode it is in, and nothing observable
+changed, because every branch deleted was already unreachable. The engine is 111 C#
+files and 19,283 lines. See the [changelog](../../CHANGELOG.md).
+
+Three things were deliberately left alone, and are worth knowing about:
+
+- The `"event"` sprite tag in `LuaSpriteController` and `UnitaleUtil`. It is assigned
+  to any sprite backed by a `SpriteRenderer` rather than an `Image`, so it may still be
+  reachable in battle. Proving that either way costs more than the tidiness is worth,
+  so the logic and its error messages stay as they are.
+- The retro-mode flee lines in `UIController`, which joke about the overworld being
+  missing. They are Unitale's original text and remain literally true here.
+- The boot chain. Trimming it would change what the player sees, and the menus want
+  designing properly in v0.3 alongside boss select.
+
+The save path is also kept on purpose. `SaveLoad.Save()` has one caller, name entry,
+and may briefly have none after v0.3 replaces the menus. It is not dead code: a
+checkpoint feature, such as saving between phases of a multi-phase boss, would be
+built on `GameState` plus session or AlMighty globals rather than on anything new.
 
 The counts below are recounted from the tree after v0.1, not estimated before it.
 v0.1 consumed 8 of the branches and all 17 `audioKept` uses on its way past.
