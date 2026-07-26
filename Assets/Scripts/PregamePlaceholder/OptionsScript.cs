@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
@@ -205,7 +205,7 @@ public class OptionsScript : MonoBehaviour {
                 return !LocalCrate ? response : Temmify.Convert(response);
             case "ClearSave":
                 response = "Clears your save file.\n\n"
-                         + "This is the save file used for CYF's Overworld.\n\n"
+                         + "This holds your name, stats and inventory between sessions.\n\n"
                          + "Your save file is located at:\n\n";
                 if (!LocalCrate)
                     // return response + Application.persistentDataPath + "/save.gd</size></b>";
