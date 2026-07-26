@@ -14,11 +14,13 @@ _A Lua-moddable battle engine, running on Unity. Made by PaperTrail._
 
 <p align="center">
   <a href="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml"><img src="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml/badge.svg" alt="Build"/></a>
-  <img src="https://img.shields.io/badge/version-0.3-blue?style=flat-square" alt="Version 0.3"/>
+  <a href="https://github.com/Stiven-Gjekaj/soulbound/releases/latest"><img src="https://img.shields.io/github/v/release/Stiven-Gjekaj/soulbound?style=flat-square" alt="Latest release"/></a>
+  <a href="https://github.com/Stiven-Gjekaj/soulbound/releases"><img src="https://img.shields.io/github/downloads/Stiven-Gjekaj/soulbound/total?style=flat-square" alt="Total downloads"/></a>
   <img src="https://img.shields.io/badge/license-GPL--3.0-green?style=flat-square" alt="GPL-3.0 License"/>
 </p>
 
 <p align="center">
+  <a href="#download"><b>Download</b></a> |
   <a href="#quick-start"><b>Quick Start</b></a> |
   <a href="#status"><b>Status</b></a> |
   <a href="#project-structure"><b>Structure</b></a> |
@@ -122,6 +124,25 @@ the player naming their own character, and the product renamed to Soulbound. The
 </td>
 </tr>
 </table>
+
+---
+
+## Download
+
+Builds for Windows, macOS and Linux are on the
+[releases page](https://github.com/Stiven-Gjekaj/soulbound/releases/latest). Unzip
+anywhere and run `Soulbound-<platform>`. On macOS, read
+`How to run Soulbound on Mac.txt` inside the zip first, or Gatekeeper will refuse to
+open the app.
+
+Every release also carries a `SHA256SUMS.txt`. Put it in the same folder as the zips
+and run `sha256sum -c SHA256SUMS.txt` to check you got the real files.
+
+The current build is placeholder content: three bosses that are a 10 HP monster with
+no sprite and a wave that fires nothing. It is the loop, not the game. See
+[Status](#status).
+
+To build from source instead, carry on below.
 
 ---
 
