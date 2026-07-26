@@ -26,7 +26,7 @@ functions.
 - **number** `Misc.cameraY` - Gets or sets the current y position of the bottom-left corner
   of the camera.
 - **boolean** `Misc.FullScreen` - Gets or sets whether the user is in fullscreen mode.
-- **boolean** `Misc.ResizeWindow(number width, number height)` - Resizes CYF's window to
+- **boolean** `Misc.ResizeWindow(number width, number height)` - Resizes the engine's window to
   the given width and height, in pixels. The parameters `width` and `height` must both be
   positive, and the function will return `true` if the window was successfully resized,
   false otherwise. The window will not be resized if the requested width or height are
@@ -39,14 +39,14 @@ functions.
 - **number** `Misc.WindowWidth` - Returns the width of the game window when running in
   windowed mode, even in fullscreen.
 
-  If set, it will set the width of CYF's window in pixels. CYF's default width is 640
+  If set, it will set the width of the engine's window in pixels. the engine's default width is 640
   pixels. Will do nothing if the player's screen's width is lower than the requested width.
 
   Note: Only allowed during battles.
 - **number** `Misc.WindowHeight` - Returns the height of the game window when running in
   windowed mode, even in fullscreen.
 
-  If set, it will set the height of CYF's window in pixels. CYF's default height is 480
+  If set, it will set the height of the engine's window in pixels. the engine's default height is 480
   pixels. Will do nothing if the player's screen's height is lower than the requested
   height.
 
@@ -179,7 +179,7 @@ Returns `true` if the operation was successful, `false` otherwise.
 
 ### `Misc.OpenFile(string path, string mode = "rw")` returns **File**
 
-This function opens a file in CYF's Mods folder ONLY for writing, and anywhere for reading.
+This function opens a file in the engine's Mods folder ONLY for writing, and anywhere for reading.
 
 - `path`: Path to the file to open, relative to your Mod folder. Can enter subfolders such
   as `Lua`.

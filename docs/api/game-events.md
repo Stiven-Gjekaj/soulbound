@@ -1,7 +1,7 @@
 # Game events
 
 This section is all about game events. Game events are functions in your scripts that the
-Unitale engine runs at various points in the game. By changing up your behaviour depending
+engine runs at various points in the game. By changing up your behaviour depending
 on the actions the player takes, you can go beyond a basic encounter and make it great.
 
 ## Script-specific events
@@ -56,7 +56,7 @@ Happens when you select an item from the item menu.
   number 1.
 - `silent`: If this is true, avoid doing things like writing battle text.
 
-In CYF, you can use the Inventory object to edit the player's inventory. The
+In the engine, you can use the Inventory object to edit the player's inventory. The
 items' names will be in caps, like with `HandleCustomCommand()`.
 
 ```lua

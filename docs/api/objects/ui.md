@@ -2,7 +2,7 @@
 
 ### The UI object [E/M/W]
 
-This section details the various elements you can use to manipulate CYF's internal user
+This section details the various elements you can use to manipulate the engine's internal user
 interface.
 
 If you want to manipulate UI elements related to the enemy (attack animation, health bar,
@@ -193,7 +193,7 @@ related to button manipulation.
 This separate section lists the various functions and variables usable when dealing with a
 bar object, which can be used for life bars, for example.
 
-These objects are used in CYF as life bars, whether it's the Player's, the life bars
+These objects are used in the engine as life bars, whether it's the Player's, the life bars
 appearing next to the enemy's names after selecting the `FIGHT` button, or the life bar
 appearing after attacking an enemy.
 

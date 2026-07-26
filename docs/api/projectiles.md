@@ -18,7 +18,7 @@ otherwise it will be above it.
 
 Creates a bullet that you can store and modify, with its spawn position relative to the
 center of the arena. The hitbox of the bullet is a rectangle around the sprite, unless you
-use CYF's PP mode.
+use the engine's PP mode.
 
 You can specify a layer if you want, otherwise the bullet will be in the normal
 bullet layer.
@@ -27,7 +27,7 @@ bullet layer.
 
 Same as `CreateProjectile`, but the bullet's spawn position is relative to the bottom left
 of the screen instead of the arena's center. The hitbox of the bullet is a rectangle around
-the sprite, unless you use CYF's PP mode.
+the sprite, unless you use the engine's PP mode.
 
 You can specify a layer if you want, otherwise the bullet will be in the normal
 bullet layer.
@@ -38,7 +38,7 @@ This is what you use to move around the arena and store values in. You can store
 bullets in a table and modify them. The functions and variables you can use on a Bullet are
 as follows.
 
-New in v0.6.6: As this object exists in CYF's hierarchy, it's possible to manipulate its
+New in v0.6.6: As this object exists in the engine's hierarchy, it's possible to manipulate its
 parent and children. See the [General objects](objects/general-objects.md) page for more
 information.
 
@@ -50,7 +50,7 @@ section for usage details.
 Note: In 0.2.1a, modifying the sprite does not change the bullet's hitbox yet, it's always
 the original square of the bullet when it was created.
 
-But, in CYF, changing the bullet's sprite *does* modify the bullet's hitbox.
+But, in the engine, changing the bullet's sprite *does* modify the bullet's hitbox.
 
 ### **number** `Bullet.x`
 

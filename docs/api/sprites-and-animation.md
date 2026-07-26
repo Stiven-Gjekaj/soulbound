@@ -36,7 +36,7 @@ You can add a layer if you want, otherwise the sprite will be below the arena.
 Enter `"none"` to spawn your sprite outside of any layers, in the same way that the player
 is by default, although this doesn't have much use.
 
-In CYF, you can provide a number argument for `childNumber` if you want. Leave it as
+In the engine, you can provide a number argument for `childNumber` if you want. Leave it as
 `-1` to have it move to the top of whatever layer it's placed on (default behavior), or
 choose a numbered index you want it to appear in, with `1` being the very bottom-most in
 the layer, and higher numbers moving it above other elements in sequence.
@@ -55,7 +55,7 @@ child number. Uses the default layer `"BelowArena"`.
 
 The Sprite object has many controls intended for animation.
 
-New in v0.6.6: As this object exists in CYF's hierarchy, it's possible to manipulate its
+New in v0.6.6: As this object exists in the engine's hierarchy, it's possible to manipulate its
 parent and children. See the [General objects](objects/general-objects.md) page for more
 information.
 
@@ -344,7 +344,7 @@ sprite rather than the parent sprite.
 The shader object linked to this sprite object.
 
 Be aware that due to the nature of shaders, it is possible for some shaders to break
-certain Create Your Frisk properties, such as sprite layering and sprite masking. It is
+certain engine properties, such as sprite layering and sprite masking. It is
 recommended that shaders used be based on the template shader provided in
 [Coding a shader](../shaders/coding-a-shader.md).
 

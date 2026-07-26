@@ -1,6 +1,6 @@
 # Misc. functions
 
-This section details functions Unitale adds to your Lua scripts to interact with the game
+This section details the global functions available to your Lua scripts to interact with the game
 in various ways. All functions will have a suffix in square brackets to denote in which
 scripts they may be used. See [How to read this documentation](../../how-to-read.md) for
 more details.
@@ -116,7 +116,7 @@ This makes the list of strings you give to the function appear in the UI dialog 
 skipping through them, you will automatically go to the monster dialogue step by default.
 Below is a working example of how you could use it for a Vegetoid encounter.
 
-As of CYF v0.6.4, if you end up with 4 or more lines of battle dialog displayed at once,
+if you end up with 4 or more lines of battle dialog displayed at once,
 the text will move up (9 pixels, one time) to compensate and try to fit your text inside
 the box.
 
@@ -143,10 +143,10 @@ NONE state. You cannot have two states with the same name.
 
 ### `UnloadSprite(string path)` [E/M/W]
 
-This function removes the sprite loaded through `path` from CYF's internal cache, allowing
+This function removes the sprite loaded through `path` from the engine's internal cache, allowing
 you to load it from your folder again.
 
-Usually, CYF keeps all sprites it loads in an encounter in memory so the engine does not
+Usually, the engine keeps all sprites it loads in an encounter in memory so the engine does not
 have to load it again, which may create a lag spike. However, if the sprite is changed
 during the mod, the file will not be reloaded, and only its first version will be kept
 until the encounter is over.
@@ -213,14 +213,14 @@ Finally, there are two "special" states that evoke behavior in the engine itself
   player to the mod selection screen.
 - `NONE` - This state does nothing. It is entered for the first frame of the encounter, but
   entering it manually will completely freeze your encounter. It might be useful if you
-  want to disable all of Unitale/CYF's basic functionality.
+  want to disable all of the engine's basic functionality.
 - `RESETTING` - DEPRECATED, DO NOT USE. Only listed for completion purposes. It
-  only exists in Unitale 0.2.1a, so trying to use it in CYF won't work. It was removed in
+  only exists in Unitale 0.2.1a, so trying to use it in the engine won't work. It was removed in
   the Github release of Unitale 0.2.1a, and seemed to be only for testing.
 
 ### Freezing states
 
-As of CYF v0.6.2.1, calling `State("PAUSE")` will perfectly "pause" an encounter. The last
+calling `State("PAUSE")` will perfectly "pause" an encounter. The last
 active state will remain active, but in a frozen state, until you call `State` again.
 
 Only the `Update` function of the Encounter script will remain active here.

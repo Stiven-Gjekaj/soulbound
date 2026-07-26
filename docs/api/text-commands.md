@@ -265,7 +265,7 @@ monster's dialogue.
 ### `[speed:x]`
 
 Makes the text handler print `x` characters over every 4 frames. The default text speed in
-CYF (`[speed:1]`) is 1 character every 4 frames.
+the engine (`[speed:1]`) is 1 character every 4 frames.
 
 For example, `[speed:4]` will type text at 4x the regular speed: 4 characters every 4
 frames, or 1 per frame.

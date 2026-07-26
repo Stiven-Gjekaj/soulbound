@@ -1,6 +1,6 @@
 # The Pixel-Perfect Collision System
 
-Instead of Unitale's default rectangular collisions and having to use thousands of lines of
+Instead of the engine's default rectangular collisions and having to use thousands of lines of
 `if` statements in `OnHit` just to get precise collisions, you can use the Pixel-Perfect
 Collision System.
 
@@ -24,7 +24,7 @@ debugger open.
 
 Call this to set the encounter's **default** collision system.
 
-Enter `false` for the regular "Unitale" system, or `true` for PPCollision.
+Enter `false` for the regular rectangular system, or `true` for PPCollision.
 
 Calling this will force all bullets with `Bullet.ppchanged` as `false` to use the collision
 system you enter here (see below). `Bullet.ppchanged` will remain `false`.

@@ -4,7 +4,7 @@
 
 This class is used to manipulate the data the `Discord Rich Presence Status` bar displays,
 if Discord is open and if this feature is enabled. This feature can be customized in
-Create Your Frisk's options screen, accessible from the mod selection screen. This object
+the engine's options screen, accessible from the mod selection screen. This object
 *cannot* override the user's settings for Discord Rich Presence.
 
 - `Discord.SetName(string name)`: Sets the top row of the `Discord Rich Presence Status`

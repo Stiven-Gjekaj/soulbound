@@ -10,7 +10,7 @@ By default, a Text Object has a bubble with an automatically-set height, with no
 speech thing. Plus, the object is hidden when you enter or come out of `ENEMYDIALOGUE`. If
 you want to change this, there are a lot of functions to do so.
 
-New in v0.6.6: As this object exists in CYF's hierarchy, it's possible to manipulate its
+New in v0.6.6: As this object exists in the engine's hierarchy, it's possible to manipulate its
 parent. See the [General objects](general-objects.md) page for more information.
 
 ### `CreateText({table of string} / string text, {table of number, number} position, number width, string layer = "BelowPlayer", number bubbleHeight = -1)` returns **textObject** [E/M/W]
@@ -61,7 +61,7 @@ player close it or by closing automatically if `progressmode` is `"auto"`.
 ### New in v0.6.6. **{table of string}** `Text.text`
 
 Returns all lines of text the text object is holding. The texts might be different to how
-you added them to the text object because of how CYF handles text.
+you added them to the text object because of how the engine handles text.
 
 For example, if your text is too long to be held within one line, the text object will
 replace spaces with newline characters when needed. This change will be visible on the
@@ -191,7 +191,7 @@ It's clamped between 0 and 360, so if you set it to 365, it will become 5.
 
 ### New in v0.6.6. **number** `Text.adjustTextDisplay`
 
-False by default. If set to true, CYF will try to adjust the text's position and scale to
+False by default. If set to true, the engine will try to adjust the text's position and scale to
 prevent jagged lines appearing if the text's scale or position is slightly off.
 
 Only taken into account if set, otherwise the global value set through the
@@ -214,7 +214,7 @@ a given text object.
 
 ### New in v0.6.6. **number** `Text.columnNumber`
 
-Represents the number of columns used by some texts in CYF, such as the ITEM and ACT menu.
+Represents the number of columns used by some texts in the engine, such as the ITEM and ACT menu.
 If this value is set, you should also consider changing `Text.columnShift`.
 
 This value is only ever used by the engine, so setting it to a specific value doesn't

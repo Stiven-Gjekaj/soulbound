@@ -57,7 +57,7 @@ Don't forget that the Arena's position is reset at the end of the wave.
   moved *or* resized, false otherwise.
 - `Arena.Resize(number width, number height)` - Resizes the arena to the new size.
   Currently, monsters stay on top of the arena. This was going to be changed around the
-  animation update. But, in CYF, you can use `BindToArena` to control that.
+  animation update. But, in the engine, you can use `BindToArena` to control that.
 - `Arena.ResizeImmediate(number width, number height)` - Resizes the arena instantly,
   without the animation.
 - `Arena.Move(number x, number y, boolean movePlayer = true, boolean immediate = false)` -

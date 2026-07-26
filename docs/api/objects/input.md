@@ -68,7 +68,7 @@ list of most available keys within the engine.
 - New in v0.6.6. `Input.RemoveKeybind(string name)` - Completely removes an
   existing keybind.
 
-  Note that base CYF keybinds cannot be deleted, as it would cause errors when the engine
+  Note that the engine's default keybinds cannot be deleted, as it would cause errors when the engine
   tries to fetch them.
 - New in v0.6.6. `Input.SetKeybindKeys(string name, {table of string} keys)` OR
   `Input[string name] = {table of string} keys` - Replaces a keybind's list of bound keys

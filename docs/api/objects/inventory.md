@@ -6,13 +6,13 @@ Items can be deleted and the Inventory System has been simplified. Here are the 
 created to help you with items.
 
 Note: All of Undertale's consumable items, weapons and armors are already implemented in
-CYF. You can use them in your mod if you want to, all you need to do is:
+the engine. You can use them in your mod if you want to, all you need to do is:
 
 - Add an item using its long name. You have to add an item with the name
   `"Butterscotch Pie"` if you want the Player to have one, not `"ButtsPie"`.
 - Avoid running the `BattleDialog` function in `HandleCustomCommand` for these items.
 
-This system extends to any item added to Create Your Frisk's internals.
+This system extends to any item added to the engine's internals.
 
 Some of these functions can only be used in `HandleItem`. Examples are included at the
 bottom of this page.

@@ -1,6 +1,6 @@
 # General object functions and the CYFObject object
 
-Usually, in CYF, you handle given objects such as text objects, sprites and the like.
+Usually, in the engine, you handle given objects such as text objects, sprites and the like.
 
 However, in certain situations, you may have to manipulate some elements which you can't
 normally use, such as internal elements used by Unity.

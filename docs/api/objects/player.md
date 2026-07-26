@@ -23,7 +23,7 @@ vertical position to get the edges of the player's hitbox, if you need that for 
   float values.
 - **number** `Player.maxhp` - returns the player's MaxHP value.
 
-  As of CYF v0.6.4, this is settable. Setting this is the same as calling
+  this is settable. Setting this is the same as calling
   `Player.SetMaxHPShift(<value>, 0, true, false, false)`. Max hp is not a float, but
   regular hp is.
 - **number** `Player.maxhpshift` (readonly) - returns the difference between the
