@@ -14,6 +14,27 @@ ones.
 
 ## 0.3 (2026-07-26)
 
+**This is a technical pre-release. There is no game in it yet.**
+
+What works is the loop: name your character, pick one of three placeholder bosses,
+fight it, and come back to the list with it marked CLEARED. The bosses are a 10 HP
+monster with no sprite and a wave that fires nothing, so a fight is over in seconds.
+That is deliberate. v0.3 was about building the loop; v0.6 is the first real boss.
+
+### Running it
+
+Download the zip for your platform, unzip it anywhere, and run `Soulbound-<platform>`.
+On macOS, read `How to run Soulbound on Mac.txt` inside the zip first, or Gatekeeper
+will refuse to open the app.
+
+Save data lives in `PaperTrail/Soulbound/` under your platform's application data
+folder. Nothing from an earlier build carries over: v0.3 renamed the product, which
+moved that folder.
+
+Bug reports are welcome. The rest of this section is the engineering detail.
+
+### What this milestone was
+
 The boss rush loop: pick a boss, fight it, come back to the list. That is the loop
 the whole game hangs off, so it lands before anything decorative. Alongside it, the
 three things that had to happen before a first release: a way to cut one, an engine
