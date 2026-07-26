@@ -12,14 +12,10 @@ using UnityEngine.UI;
 /// </summary>
 public class GameOverBehavior : MonoBehaviour {
     private GameObject brokenHeartPrefab;
-    private GameObject utHeart;
     private Transform playerParent;
     public static GameObject battleCamera;
     public static GameObject battleContainer;
     public static GameObject gameOverContainer;
-    public static GameObject gameOverContainerOw;
-    private GameObject canvasOW;
-    private GameObject canvasTwo;
     private readonly string[] heartShardAnim = { "UI/Battle/heartshard_0", "UI/Battle/heartshard_1", "UI/Battle/heartshard_2", "UI/Battle/heartshard_3" };
     private TextManager gameOverTxt;
     private TextManager reviveText;
@@ -63,8 +59,6 @@ public class GameOverBehavior : MonoBehaviour {
 
     public void ResetGameOver() {
         // Delete instantiated objects
-        Destroy(utHeart);
-        utHeart = null;
         Destroy(brokenHeartPrefab);
         brokenHeartPrefab = null;
         for (int i = 0; i < heartShardInstances.Length; i++) {
