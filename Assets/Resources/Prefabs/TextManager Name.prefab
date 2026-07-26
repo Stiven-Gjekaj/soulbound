@@ -12,7 +12,7 @@ GameObject:
   - 82: {fileID: 8254258}
   - 114: {fileID: 11454028}
   m_Layer: 0
-  m_Name: TextManager OW
+  m_Name: TextManager Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
