@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using MoonSharp.Interpreter;
 using UnityEngine;
@@ -75,10 +75,8 @@ public class GameOverBehavior : MonoBehaviour {
         if (reviveFade2 != null)
             Destroy(reviveFade2.gameObject);
 
-        if (!UnitaleUtil.IsOverworld) {
-            UIController.instance.encounter.gameOverStance = false;
-            EnemyEncounter.script.SetVar("autolinebreak", DynValue.NewBoolean(autolinebreakstate));
-        }
+        UIController.instance.encounter.gameOverStance = false;
+        EnemyEncounter.script.SetVar("autolinebreak", DynValue.NewBoolean(autolinebreakstate));
         heartShardInstances = new RectTransform[0];
         breakHeartAfter = 1.0f;
         breakHeartReviveAfter = false;
@@ -94,7 +92,6 @@ public class GameOverBehavior : MonoBehaviour {
         done = false;
         exiting = false;
         once = false;
-        //overworld = false;
         playerIndex = -1;
         playerZ = -1;
         autolinebreakstate = false;
@@ -105,13 +102,10 @@ public class GameOverBehavior : MonoBehaviour {
     public void Revive() { revived = true; }
 
     public void StartDeath(string[] newDeathText = null, string newDeathMusic = null) {
-        if (!UnitaleUtil.IsOverworld) {
-            UIController.instance.encounter.EndWave(true);
-            autolinebreakstate = EnemyEncounter.script.GetVar("autolinebreak").Boolean;
-            EnemyEncounter.script.SetVar("autolinebreak", DynValue.NewBoolean(true));
-            transform.position = new Vector3(transform.position.x - Misc.cameraX, transform.position.y - Misc.cameraY, transform.position.z);
-        } else
-            autolinebreakstate = true;
+        UIController.instance.encounter.EndWave(true);
+        autolinebreakstate = EnemyEncounter.script.GetVar("autolinebreak").Boolean;
+        EnemyEncounter.script.SetVar("autolinebreak", DynValue.NewBoolean(true));
+        transform.position = new Vector3(transform.position.x - Misc.cameraX, transform.position.y - Misc.cameraY, transform.position.z);
 
         deathText = newDeathText;
         deathMusic = newDeathMusic;
@@ -120,33 +114,18 @@ public class GameOverBehavior : MonoBehaviour {
         Misc.MoveCameraTo(0, 0);
 
         playerZ = 130;
-        if (UnitaleUtil.IsOverworld) {
-            playerParent = transform.parent.parent;
-            playerIndex = transform.parent.GetSiblingIndex();
-            // transform.parent.SetParent(null);
-        } else {
-            playerParent = transform.parent;
-            playerIndex = transform.GetSiblingIndex();
-            transform.SetParent(null);
-        }
+        playerParent = transform.parent;
+        playerIndex = transform.GetSiblingIndex();
+        transform.SetParent(null);
 
-        if (UnitaleUtil.IsOverworld) {
+        UIController.instance.encounter.gameOverStance = true;
+        GetComponent<PlayerController>().invulTimer = 0;
+        GetComponent<Image>().enabled = true; // abort the blink animation if it was playing
+        battleCamera = GameObject.Find("Main Camera");
+        battleCamera.SetActive(false);
 
-            /* transform.parent.position = new Vector3(transform.parent.position.x - GameObject.Find("Main Camera OW").transform.position.x - 320,
-                                                    transform.parent.position.y - GameObject.Find("Main Camera OW").transform.position.y - 240, transform.parent.position.z); */
-            battleCamera = GameObject.Find("Main Camera OW");
-            battleCamera.SetActive(false);
-            GetComponent<SpriteRenderer>().enabled = true; // stop showing the player
-        } else {
-            UIController.instance.encounter.gameOverStance = true;
-            GetComponent<PlayerController>().invulTimer = 0;
-            GetComponent<Image>().enabled = true; // abort the blink animation if it was playing
-            battleCamera = GameObject.Find("Main Camera");
-            battleCamera.SetActive(false);
-
-            battleContainer = GameObject.Find("Canvas");
-            battleContainer.GetComponent<Canvas>().enabled = false;
-        }
+        battleContainer = GameObject.Find("Canvas");
+        battleContainer.GetComponent<Canvas>().enabled = false;
 
         // remove all bullets if in retrocompatibility mode
         if (GlobalControls.retroMode) {
