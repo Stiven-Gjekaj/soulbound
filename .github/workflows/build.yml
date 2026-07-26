@@ -1,10 +1,10 @@
-name: Build CYF
+name: Build
 
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
   buildWindows:
-    name: Build CYF (Windows)
+    name: Build (Windows)
     runs-on: ubuntu-latest
     steps:
       # Checkout
@@ -31,7 +31,7 @@ jobs:
         with:
           targetPlatform: StandaloneWindows64
           buildMethod: UnityBuilderAction.BuildScript.Build
-          buildName: CreateYourFrisk-win64
+          buildName: Soulbound-win64
 
       # Copy Assets to Build
       - run: sudo mkdir -v "${{ github.workspace }}/build/StandaloneWindows64/Default" "${{ github.workspace }}/build/StandaloneWindows64/Mods"
@@ -39,16 +39,16 @@ jobs:
       - run: sudo cp -Rv "${{ github.workspace }}/Assets/Mods/" "${{ github.workspace }}/build/StandaloneWindows64/"
       - run: sudo cp -Rv "${{ github.workspace }}/docs/" "${{ github.workspace }}/build"
       - run: sudo find ${{ github.workspace }}/build/StandaloneWindows64/ -name "*.meta" -type f -delete
-      - run: sudo mv ${{ github.workspace }}/build/StandaloneWindows64/ ${{ github.workspace }}/build/CreateYourFrisk/
+      - run: sudo mv ${{ github.workspace }}/build/StandaloneWindows64/ ${{ github.workspace }}/build/Soulbound/
 
       # Output
       - uses: actions/upload-artifact@v4
         with:
-          name: CreateYourFrisk-win64
+          name: Soulbound-win64
           path: build
 
   buildMacOS:
-    name: Build CYF (MacOS)
+    name: Build (MacOS)
     runs-on: ubuntu-latest
     steps:
       # Checkout
@@ -75,7 +75,7 @@ jobs:
         with:
           targetPlatform: StandaloneOSX
           buildMethod: UnityBuilderAction.BuildScript.Build
-          buildName: CreateYourFrisk-macos64
+          buildName: Soulbound-macos64
 
       # Copy Assets to Build
       - run: sudo mkdir -v "${{ github.workspace }}/build/StandaloneOSX/Default" "${{ github.workspace }}/build/StandaloneOSX/Mods"
@@ -84,16 +84,16 @@ jobs:
       - run: sudo cp -Rv "${{ github.workspace }}/docs/" "${{ github.workspace }}/build"
       - run: sudo cp "${{ github.workspace }}/How to run Soulbound on Mac.txt" "${{ github.workspace }}/build/StandaloneOSX/"
       - run: sudo find ${{ github.workspace }}/build/StandaloneOSX/ -name "*.meta" -type f -delete
-      - run: sudo mv ${{ github.workspace }}/build/StandaloneOSX/ ${{ github.workspace }}/build/CreateYourFrisk/
+      - run: sudo mv ${{ github.workspace }}/build/StandaloneOSX/ ${{ github.workspace }}/build/Soulbound/
 
       # Output
       - uses: actions/upload-artifact@v4
         with:
-          name: CreateYourFrisk-macos64
+          name: Soulbound-macos64
           path: build
 
   buildLinux:
-    name: Build CYF (Linux)
+    name: Build (Linux)
     runs-on: ubuntu-latest
     steps:
       # Checkout
@@ -120,7 +120,7 @@ jobs:
         with:
           targetPlatform: StandaloneLinux64
           buildMethod: UnityBuilderAction.BuildScript.Build
-          buildName: CreateYourFrisk-lin64
+          buildName: Soulbound-lin64
 
       # Copy Assets to Build
       - run: sudo mkdir -v "${{ github.workspace }}/build/StandaloneLinux64/Default" "${{ github.workspace }}/build/StandaloneLinux64/Mods"
@@ -128,10 +128,10 @@ jobs:
       - run: sudo cp -Rv "${{ github.workspace }}/Assets/Mods/" "${{ github.workspace }}/build/StandaloneLinux64/"
       - run: sudo cp -Rv "${{ github.workspace }}/docs/" "${{ github.workspace }}/build"
       - run: sudo find ${{ github.workspace }}/build/StandaloneLinux64/ -name "*.meta" -type f -delete
-      - run: sudo mv ${{ github.workspace }}/build/StandaloneLinux64/ ${{ github.workspace }}/build/CreateYourFrisk/
+      - run: sudo mv ${{ github.workspace }}/build/StandaloneLinux64/ ${{ github.workspace }}/build/Soulbound/
 
       # Output
       - uses: actions/upload-artifact@v4
         with:
-          name: CreateYourFrisk-lin64
+          name: Soulbound-lin64
           path: build
