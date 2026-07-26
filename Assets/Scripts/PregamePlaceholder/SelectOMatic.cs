@@ -20,7 +20,8 @@ public class SelectOMatic : MonoBehaviour {
     private float ExitButtonAlpha = 5f;         // Used to fade the "Exit" button in and out
     private float OptionsButtonAlpha = 5f;      // Used to fade the "Options" button in and out
 
-    private static int selectedItem;            // Used to let users navigate the boss and encounter menus with the arrow keys!
+    private static int selectedItem;            // Used to let users navigate the boss list with the arrow keys!
+    private bool ready;                         // False until Start finishes, so Update cannot drive a half set up screen
 
     // encounterBox is the scrolling overlay the boss list lives in. It keeps its old name
     // because it is bound by name to ModSelect.unity.
@@ -133,6 +134,8 @@ public class SelectOMatic : MonoBehaviour {
 
         // Reset it to let us accurately tell if the player just came here from the Disclaimer scene or the Battle scene
         StaticInits.ENCOUNTER = "";
+
+        ready = true;
     }
 
     private IEnumerator LaunchBoss(BossEntry boss) {
@@ -259,8 +262,9 @@ public class SelectOMatic : MonoBehaviour {
 
     // Used to animate scrolling left or right.
     private void Update() {
-        // Nothing to drive: BossRegistry sent the player to the error screen instead.
-        if (bosses == null || bosses.Count == 0)
+        // Start bailed out: either it is loading another scene, or BossRegistry sent the
+        // player to the error screen. Either way there is nothing here to drive yet.
+        if (!ready)
             return;
 
         // Animation updating section
