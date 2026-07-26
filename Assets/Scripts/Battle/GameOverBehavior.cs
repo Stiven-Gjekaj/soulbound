@@ -105,7 +105,6 @@ public class GameOverBehavior : MonoBehaviour {
     public void Revive() { revived = true; }
 
     public void StartDeath(string[] newDeathText = null, string newDeathMusic = null) {
-        PlayerOverworld.audioCurrTime = 0;
         if (!UnitaleUtil.IsOverworld) {
             UIController.instance.encounter.EndWave(true);
             autolinebreakstate = EnemyEncounter.script.GetVar("autolinebreak").Boolean;
@@ -417,44 +416,16 @@ public class GameOverBehavior : MonoBehaviour {
     }
 
     public void EndGameOver() {
-        if (!GlobalControls.modDev)
-            SaveLoad.Load(false);
+        // Death used to send the player back to their last save point, teleporting
+        // them onto the map they died on. There are no maps, so it restarts instead.
         if (!UnitaleUtil.IsOverworld) {
             UIController.EndBattle(true);
             Destroy(gameObject);
-            if (GlobalControls.modDev) {
-                // Discord Rich Presence
-                DiscordControls.StartModSelect();
-                SceneManager.LoadScene("ModSelect");
-            } else {
-                foreach (string str in NewMusicManager.audioname.Keys)
-                    if (str == "StaticKeptAudio") {
-                        NewMusicManager.Stop(str);
-                        ((AudioSource)NewMusicManager.audiolist[str]).clip = null;
-                        ((AudioSource)NewMusicManager.audiolist[str]).time = 0;
-                    }
-            }
+            // Discord Rich Presence
+            DiscordControls.StartModSelect();
+            SceneManager.LoadScene("ModSelect");
         } else
             EndGameOverRevive();
-
-        if (GlobalControls.modDev) return;
-        TPHandler tp = Instantiate(Resources.Load<TPHandler>("Prefabs/TP On-the-fly"));
-        tp.sceneName = LuaScriptBinder.GetSessionGlobal("PlayerMap").String;
-
-        if (UnitaleUtil.MapCorrespondanceList.ContainsValue(tp.sceneName)) {
-            foreach (KeyValuePair<string, string> entry in UnitaleUtil.MapCorrespondanceList) {
-                if (entry.Value != tp.sceneName) continue;
-                tp.sceneName = entry.Key;
-                break;
-            }
-        }
-
-        tp.position  = new Vector3((float)LuaScriptBinder.GetSessionGlobal("PlayerPosX").Number, (float)LuaScriptBinder.GetSessionGlobal("PlayerPosY").Number, LuaScriptBinder.GetSessionGlobal("PlayerPosZ") == null ? 0 : (float)LuaScriptBinder.GetSessionGlobal("PlayerPosZ").Number);
-        tp.direction = 2;
-        tp.noFadeIn  = true;
-        tp.noFadeOut = false;
-        DontDestroyOnLoad(tp);
-        tp.LaunchTPInternal();
     }
 
     public void EndGameOverRevive() {
@@ -474,8 +445,6 @@ public class GameOverBehavior : MonoBehaviour {
         if (UnitaleUtil.IsOverworld) {
             canvasOW.SetActive(true);
             canvasTwo.SetActive(true);
-            PlayerOverworld.instance.enabled = true;
-            PlayerOverworld.instance.RestartMusic();
             GetComponent<SpriteRenderer>().enabled = true;
         }
         ResetGameOver();
