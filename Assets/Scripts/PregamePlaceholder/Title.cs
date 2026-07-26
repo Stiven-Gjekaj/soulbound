@@ -80,11 +80,9 @@ public class Title : MonoBehaviour {
                             TextManagerName.SetHorizontalSpacing(2);
                             TextManagerLevel.SetHorizontalSpacing(2);
                             TextManagerTime.SetHorizontalSpacing(2);
-                            TextManagerMap.SetHorizontalSpacing(2);
                             TextManagerName.SetTextQueue(new[] { new TextMessage(PlayerCharacter.instance.Name, false, true) });
                             TextManagerLevel.SetTextQueue(new[] { new TextMessage((GlobalControls.crate ? "VL" : "LV") + PlayerCharacter.instance.LV, false, true) });
                             TextManagerTime.SetTextQueue(new[] {new TextMessage(UnitaleUtil.TimeFormatter(SaveLoad.savedGame.playerTime), false, true) });
-                            TextManagerMap.SetTextQueue(new[] { new TextMessage(SaveLoad.savedGame.lastScene, false, true) });
                             tmName.SetTextQueue(new[] { new TextMessage(PlayerCharacter.instance.Name, false, true) });
                             diff = calcTotalLength(tmName);
                             tmName.SetEffect(new ShakeEffect(tmName));
