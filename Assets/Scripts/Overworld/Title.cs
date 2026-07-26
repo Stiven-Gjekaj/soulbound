@@ -27,7 +27,6 @@ public class Title : MonoBehaviour {
             #endif
             SaveLoad.LoadPermanentGlobals();
             LuaScriptBinder.SetSessionGlobal("ModFolder", MoonSharp.Interpreter.DynValue.NewString("@Title"));
-            UnitaleUtil.AddKeysToMapCorrespondanceList();
         }
         GameObject firstCamera = GameObject.Find("Main Camera");
         firstCamera.SetActive(false);

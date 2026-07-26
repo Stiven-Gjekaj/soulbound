@@ -673,18 +673,6 @@ public static class UnitaleUtil {
             RemoveChildren(go, false, false);
     }
 
-    public static Dictionary<string, string> MapCorrespondanceList = new Dictionary<string, string>();
-
-    /// <summary>
-    /// Maps scene names to the map names shown to the player on the save screen.
-    /// Add one entry per overworld scene, for example:
-    /// MapCorrespondanceList.Add("SceneName", "Display name");
-    /// A scene with no entry here falls back to its own scene name.
-    /// </summary>
-    public static void AddKeysToMapCorrespondanceList() {
-        MapCorrespondanceList.Clear();
-    }
-
     public static void ExitOverworld() {
         foreach (string str in NewMusicManager.audiolist.Keys)
             if ((AudioSource)NewMusicManager.audiolist[str] != null && str != "src")

@@ -1,6 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using MoonSharp.Interpreter;
@@ -79,11 +78,9 @@ public class GameState {
             LuaScriptBinder.SetSessionGlobal("PlayerPosZ", DynValue.NewNumber(SaveLoad.savedGame.playerVariablesNum["PlayerPosZ"]));
         }
 
-        string mapName;
-        if (UnitaleUtil.MapCorrespondanceList.ContainsKey(SceneManager.GetActiveScene().name))                        mapName = UnitaleUtil.MapCorrespondanceList[SceneManager.GetActiveScene().name];
-        else if (GlobalControls.nonOWScenes.Contains(SceneManager.GetActiveScene().name) || GlobalControls.isInFight) mapName = SaveLoad.savedGame.lastScene;
-        else                                                                                                          mapName = SceneManager.GetActiveScene().name;
-        lastScene = mapName;
+        lastScene = GlobalControls.nonOWScenes.Contains(SceneManager.GetActiveScene().name) || GlobalControls.isInFight
+            ? SaveLoad.savedGame.lastScene
+            : SceneManager.GetActiveScene().name;
 
         soundDictionary = MusicManager.hiddenDictionary;
         controlpanel = ControlPanel.instance;
@@ -156,9 +153,7 @@ public class GameState {
         ControlPanel.instance = controlpanel;
         MusicManager.hiddenDictionary = soundDictionary;
 
-        string mapName = UnitaleUtil.MapCorrespondanceList.ContainsValue(lastScene) ? UnitaleUtil.MapCorrespondanceList.FirstOrDefault(x => x.Value == lastScene).Key : lastScene;
-
-        LuaScriptBinder.SetSessionGlobal("PlayerMap", DynValue.NewString(mapName));
+        LuaScriptBinder.SetSessionGlobal("PlayerMap", DynValue.NewString(lastScene));
     }
 }
 

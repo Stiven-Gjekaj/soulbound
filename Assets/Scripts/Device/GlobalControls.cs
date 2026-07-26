@@ -52,9 +52,6 @@ public class GlobalControls : MonoBehaviour {
 
         KeyboardInput.LoadPlayerKeys();
 
-        // Load map names for the overworld
-        UnitaleUtil.AddKeysToMapCorrespondanceList();
-
         // Use permanent globals to load Crate Your Frisk, Safe Mode, Retromode and Fullscreen mode preferences
         ReloadCrate();
 
