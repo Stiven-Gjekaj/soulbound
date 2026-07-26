@@ -107,13 +107,13 @@ git push origin v0.3.0
 
 That fires [`.github/workflows/release.yml`](../../.github/workflows/release.yml), which
 builds all three platforms, zips each one as `Soulbound-<version>-<platform>.zip`, and
-publishes a GitHub release with those three archives attached.
+publishes a GitHub release with those three archives and a `SHA256SUMS.txt` attached.
 
 A release zip holds what a player needs to run the game and nothing else: the player
 build, `Default/` for the assets the engine falls back to, `Mods/` for the game itself,
 and on macOS the instructions for getting past Gatekeeper.
 
-Four things worth knowing:
+Five things worth knowing:
 
 - **Releases are marked pre-release.** The workflow always passes `--prerelease`. There is
   no finished game to ship yet, and the flag keeps that clear on the releases page. Remove
@@ -122,6 +122,12 @@ Four things worth knowing:
   version out of [`CHANGELOG.md`](../../CHANGELOG.md). Write that section before tagging.
   If no section matches, the release still publishes, with a pointer to the changelog
   instead of notes.
+- **The archives are checksummed.** `SHA256SUMS.txt` is generated from the three zips
+  and attached alongside them. Downloading all four into one folder and running
+  `sha256sum -c SHA256SUMS.txt` checks them. This matters because builds get passed
+  around outside the releases page, and because an unsigned game will eventually be
+  flagged by SmartScreen or Gatekeeper: a published hash is what makes "that is our
+  build" checkable rather than a claim.
 - **The documentation is not in a release.** It is engine API reference for people
   writing bosses, it is readable in the repository, and someone who downloaded a game does
   not need 444 KB of it next to the executable.

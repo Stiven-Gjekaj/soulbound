@@ -105,6 +105,16 @@ jobs:
           path: dist
           merge-multiple: true
 
+      # Published so anyone passing a build around can check they got the real one.
+      # The paths are stripped so the file reads as three lines of "hash  filename",
+      # which is what sha256sum -c expects next to the downloaded zips.
+      - name: Checksum the archives
+        run: |
+          set -eu
+          cd dist
+          sha256sum *.zip > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
       # The changelog is the source for release notes. Pull out the section for
       # this version; fall back to a pointer if there is no matching heading.
       - name: Extract the release notes
@@ -134,4 +144,4 @@ jobs:
             --title "Soulbound $GITHUB_REF_NAME" \
             --notes-file notes.md \
             --prerelease \
-            dist/*.zip
+            dist/*.zip dist/SHA256SUMS.txt
