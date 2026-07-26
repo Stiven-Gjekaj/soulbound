@@ -1,11 +1,12 @@
 # Soulbound documentation
 
 Soulbound is built on Create Your Frisk (CYF), a Lua-moddable Undertale battle engine
-forked from Unitale. Everything below documents that engine: how it reads a mod, the
-Lua API your scripts call, and how the overworld is put together.
+forked from Unitale. Everything below documents that engine: how it reads a mod and the
+Lua API your scripts call.
 
-This is a Markdown conversion of the CYF v0.6.6 LTS 3 documentation that upstream
-shipped as an HTML site. Content is preserved; only the presentation changed.
+This started as a Markdown conversion of the CYF v0.6.6 LTS 3 documentation that upstream
+shipped as an HTML site. The overworld pages were removed in v0.1, when the feature itself
+was taken out. The rest is preserved.
 
 Note: the pages carry casual Undertale spoilers throughout.
 
@@ -68,29 +69,6 @@ CYF. Start with [How to read this documentation](how-to-read.md).
 | [Introduction](shaders/introduction.md) | what the shader system is and how to set it up |
 | [The Shader object](shaders/shader-object.md) | applying and controlling shaders from Lua |
 | [Coding a shader](shaders/coding-a-shader.md) | writing your own shaders |
-
-## Overworld
-
-`<CYF>` Added by Create Your Frisk.
-
-| Page | What it covers |
-| --- | --- |
-| [Basics](overworld/basics.md) | how the overworld is put together. Read this first |
-| [How to create a map](overworld/how-to-create-a-map.md) | building maps with Tiled2Unity |
-| [How to create an event](overworld/how-to-create-an-event.md) | objects, interactables and cutscenes |
-| [How to animate an event](overworld/how-to-animate-an-event.md) | the CYFAnimator system |
-| [How to create a shop](overworld/how-to-create-a-shop.md) | everything available inside a shop |
-
-### Overworld objects
-
-| Page | What it covers |
-| --- | --- |
-| [The General object](overworld/objects/general.md) | saving, loading and general control |
-| [The Event object](overworld/objects/event.md) | moving and controlling events |
-| [The Player object](overworld/objects/player.md) | the player in the overworld |
-| [The Screen object](overworld/objects/screen.md) | the camera and screen effects |
-| [The Inventory object](overworld/objects/inventory.md) | items in the overworld |
-| [The Map object](overworld/objects/map.md) | map data and transitions |
 
 ## Reference
 
