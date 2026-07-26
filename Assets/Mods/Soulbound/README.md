@@ -20,7 +20,7 @@ As of v0.0 the folder holds placeholders only. There is no gameplay yet.
 
 ## Placeholders
 
-`Lua/Encounters/encounter.lua`, `Lua/Monsters/placeholder.lua` and
+`Lua/Encounters/placeholder.lua`, `Lua/Monsters/placeholder.lua` and
 `Lua/Waves/placeholder.lua` exist so the engine has one selectable encounter to boot
 into. Without at least one mod containing a non-`@` encounter script, the mod selector
 stops with "Your mod folder is empty!". Delete them once real encounters exist.
