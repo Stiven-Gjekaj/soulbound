@@ -751,8 +751,7 @@ public class UIController : MonoBehaviour {
 
                         case Actions.ACT:
                             if (GlobalControls.crate)
-                                if (ControlPanel.instance.Safe) UnitaleUtil.PlaySound("MEOW", "sounds/meow" + Math.RandomRange(1, 8));
-                                else                            UnitaleUtil.PlaySound("MEOW", "sounds/meow" + Math.RandomRange(1, 9));
+                                UnitaleUtil.PlaySound("MEOW", "sounds/meow" + Math.RandomRange(1, 9));
                             else if (encounter.EnabledEnemies.Length > 0)
                                 SwitchState("ENEMYSELECT");
                             break;
@@ -1295,14 +1294,6 @@ public class UIController : MonoBehaviour {
             for (int i = 0; i < tempFleeTexts.Table.Length; i++)
                 fleeTexts.Add(tempFleeTexts.Table.Get(i + 1).String);
         else {
-            /*fleeTexts = new List<string> { "I'm outta here.",  "I've got better things to do.", "Don't waste my time.",
-                                           "Nah, I don't like you.", "I just wanted to walk\ra bit. Leave me alone.", "You're cute, I won't kill you :3",
-                                           "Better safe than sorry.", "Do as if you never saw\rthem and walk away.", "I'll kill you last.",
-                                           "Nope. [w:5]Nope. Nope. Nope. Nope.", "Wait for me, Rhenaud!", "Flee like sissy!" };
-            if (!ControlPanel.instance.Safe) {
-                fleeTexts.Add("I've got shit to do.");
-                fleeTexts.Add("Fuck this shit I'm out.");
-            }*/
             if (exp > 0 || gold > 0) {
                 string fleeString = "Ran away with " + exp + " EXP\rand " + gold + " GOLD.";
                 bool levelUp = PlayerCharacter.instance.AddBattleResults(exp, gold);

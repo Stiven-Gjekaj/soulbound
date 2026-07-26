@@ -16,10 +16,6 @@ still work. Test it with `if not isCYF then` or `if isCYF then`.
 True whenever retrocompatibility mode is active, false when it isn't. Test it with
 `if not isRetro then` or `if isRetro then`.
 
-### **boolean** `safe` [E/M/W]
-
-True if the engine's safe mode is enabled, false otherwise.
-
 ### **boolean** `windows` [E/M/W]
 
 Returns true if the user is on Windows, false otherwise.

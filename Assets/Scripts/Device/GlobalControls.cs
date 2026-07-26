@@ -45,13 +45,8 @@ public class GlobalControls : MonoBehaviour {
 
         KeyboardInput.LoadPlayerKeys();
 
-        // Use permanent globals to load Crate Your Frisk, Safe Mode, Retromode and Fullscreen mode preferences
+        // Use permanent globals to load Crate Your Frisk, Retromode and Fullscreen mode preferences
         ReloadCrate();
-
-        // Check if safe mode has a stored preference that is a boolean
-        if (LuaScriptBinder.GetPermanentGlobal("CYFSafeMode") != null
-         && LuaScriptBinder.GetPermanentGlobal("CYFSafeMode").Type == DataType.Boolean)
-            ControlPanel.instance.Safe = LuaScriptBinder.GetPermanentGlobal("CYFSafeMode").Boolean;
 
         // Check if retro mode has a stored preference that is a boolean
         if (LuaScriptBinder.GetPermanentGlobal("CYFRetroMode") != null

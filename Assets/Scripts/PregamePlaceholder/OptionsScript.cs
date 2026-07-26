@@ -19,7 +19,7 @@ public class OptionsScript : MonoBehaviour {
     private bool CrateUnlocked;
 
     // game objects
-    public GameObject ResetSG, ResetPG, ClearSave, Safe, Retro, Scale, Discord, Keys, Crate, Exit;
+    public GameObject ResetSG, ResetPG, ClearSave, Retro, Scale, Discord, Keys, Crate, Exit;
     public Text Description;
 
     // Used for controller selection
@@ -35,7 +35,6 @@ public class OptionsScript : MonoBehaviour {
             ResetSG.GetComponent<MenuButton>(),
             ResetPG.GetComponent<MenuButton>(),
             ClearSave.GetComponent<MenuButton>(),
-            Safe.GetComponent<MenuButton>(),
             Retro.GetComponent<MenuButton>(),
             Scale.GetComponent<MenuButton>(),
             Discord.GetComponent<MenuButton>(),
@@ -67,7 +66,6 @@ public class OptionsScript : MonoBehaviour {
                 ResetPG.GetComponentInChildren<Text>().text = !LocalCrate ? "Permanent Globals Erased!" : "PREMZ GOLBELZ DELEET!!!!!";
 
                 // Add useful permanent globals
-                LuaScriptBinder.SetPermanentGlobal("CYFSafeMode", DynValue.NewBoolean(ControlPanel.instance.Safe));
                 LuaScriptBinder.SetPermanentGlobal("CYFRetroMode", DynValue.NewBoolean(GlobalControls.retroMode));
                 LuaScriptBinder.SetPermanentGlobal("CYFWindowScale", DynValue.NewNumber(ScreenResolution.windowScale));
                 if (CrateUnlocked)
@@ -90,21 +88,6 @@ public class OptionsScript : MonoBehaviour {
                 ClearSave.GetComponentInChildren<Text>().text = !LocalCrate ? "Are you sure?" : "R U SUR???";
             }
         });
-
-        // toggle safe mode
-        Safe.GetComponent<Button>().onClick.AddListener(() => {
-            ControlPanel.instance.Safe = !ControlPanel.instance.Safe;
-
-            // save Safe Mode preferences to permanent globals
-            LuaScriptBinder.SetPermanentGlobal("CYFSafeMode", DynValue.NewBoolean(ControlPanel.instance.Safe));
-
-            Safe.GetComponentInChildren<Text>().text = !LocalCrate
-                ? ("Safe mode: " + (ControlPanel.instance.Safe ? "On" : "Off"))
-                : ("SFAE MDOE: " + (ControlPanel.instance.Safe ? "ON" : "OFF"));
-        });
-        Safe.GetComponentInChildren<Text>().text = !LocalCrate
-            ? ("Safe mode: " + (ControlPanel.instance.Safe ? "On" : "Off"))
-            : ("SFAE MDOE: " + (ControlPanel.instance.Safe ? "ON" : "OFF"));
 
         // toggle retrocompatibility mode
         Retro.GetComponent<Button>().onClick.AddListener(() => {
@@ -177,6 +160,8 @@ public class OptionsScript : MonoBehaviour {
             SceneManager.LoadScene("ModSelect");
         });
 
+        StackButtons();
+
         // Crate Your Frisk
         if (!LocalCrate) return;
         // labels
@@ -188,6 +173,41 @@ public class OptionsScript : MonoBehaviour {
         ResetPG.GetComponentInChildren<Text>().text   = "RESTE PERMZ GOLBALZ";
         ClearSave.GetComponentInChildren<Text>().text = "WYPE SAV";
         Exit.GetComponentInChildren<Text>().text      = "EXIT TOO BSSO SELCT";
+    }
+
+    /// <summary>
+    /// Lays the visible options out from the top down, at the spacing Options.unity uses.
+    ///
+    /// Each button carries a fixed position from the scene, so hiding one left a gap where
+    /// it used to be. Stacking them here means options can be added or retired without a
+    /// scene edit, and without the list ever having a hole in it.
+    /// </summary>
+    private void StackButtons() {
+        const float top = 160f, pitch = 40f;
+        int row = 0;
+        foreach (MenuButton button in buttons) {
+            if (!button.gameObject.activeSelf)
+                continue;
+            RectTransform rt = button.GetComponent<RectTransform>();
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, top - pitch * row);
+            row++;
+        }
+    }
+
+    /// <summary>
+    /// Which option the mouse is over, worked out from where the buttons actually are
+    /// rather than from a ladder of hardcoded bands that has to be kept in step with them.
+    /// </summary>
+    private string ButtonAt(float mouseY) {
+        foreach (MenuButton button in buttons) {
+            if (!button.gameObject.activeSelf)
+                continue;
+            // anchoredPosition is measured from the middle of the 480 tall screen
+            float centre = button.GetComponent<RectTransform>().anchoredPosition.y + 240f;
+            if (mouseY <= centre + 20f && mouseY > centre - 20f)
+                return button.name;
+        }
+        return null;
     }
 
     // Gets the text the description should use based on what button is currently being hovered over
@@ -212,10 +232,6 @@ public class OptionsScript : MonoBehaviour {
                     return response + "<b><size='14'>" + Application.persistentDataPath + "/save.gd</size></b>";
                 else
                     return Temmify.Convert(response) + "<b><size='14'>" + Application.persistentDataPath + "/save.gd</size></b>";
-            case "Safe":
-                response = "Toggles safe mode.\n\n"
-                         + "This does nothing on its own, but mod authors can detect if you have this enabled, and use it to filter unsafe content, such as blood, gore, and swear words.";
-                return !LocalCrate ? response : Temmify.Convert(response);
             case "Retro":
                 response = "Toggles retrocompatibility mode.\n\n"
                          + "This mode is designed specifically to make encounters imported from Unitale v0.2.1a act as they did on the old engine.\n\n\n\n";
@@ -298,18 +314,8 @@ public class OptionsScript : MonoBehaviour {
             // If the player is within the range of the buttons
             int mousePosX = (int)((ScreenResolution.mousePosition.x / ScreenResolution.displayedSize.x) * 640);
             int mousePosY = (int)((Input.mousePosition.y / ScreenResolution.displayedSize.y) * 480);
-            if (mousePosX >= 40 && mousePosX <= 290) {
-                if      (mousePosY <= 420 && mousePosY > 380) hoverItem = "ResetSG";
-                else if (mousePosY <= 380 && mousePosY > 340) hoverItem = "ResetPG";
-                else if (mousePosY <= 340 && mousePosY > 300) hoverItem = "ClearSave";
-                else if (mousePosY <= 300 && mousePosY > 260) hoverItem = "Safe";
-                else if (mousePosY <= 260 && mousePosY > 220) hoverItem = "Retro";
-                else if (mousePosY <= 220 && mousePosY > 180) hoverItem = "Scale";
-                else if (mousePosY <= 180 && mousePosY > 140) hoverItem = "Discord";
-                else if (mousePosY <= 140 && mousePosY > 100) hoverItem = "Keys";
-                else if (mousePosY <= 100 && mousePosY >  60 && CrateUnlocked) hoverItem = "Crate";
-                else if (mousePosY <=  60 && mousePosY >  20) hoverItem = "Exit";
-            }
+            if (mousePosX >= 40 && mousePosX <= 290)
+                hoverItem = ButtonAt(mousePosY);
 
             // Change the description to the current one
             if (hoverItem != null)        Description.GetComponent<Text>().text = GetDescription(hoverItem);
