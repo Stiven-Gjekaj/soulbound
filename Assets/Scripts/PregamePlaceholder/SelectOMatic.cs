@@ -149,7 +149,6 @@ public class SelectOMatic : MonoBehaviour {
         ModBackground.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.1875f);
 
         StaticInits.ENCOUNTER = boss.id;
-        BossRecords.FightStarting(boss.id);
 
         yield return new WaitForEndOfFrame();
         try {
@@ -158,6 +157,9 @@ public class SelectOMatic : MonoBehaviour {
                 throw new Exception();
             Debug.Log("Loading " + boss.id);
             GlobalControls.isInFight = true;
+            // Count the attempt only once the encounter has loaded. A boss whose script
+            // fails to load was never fought, and should not cost the player a try.
+            BossRecords.FightStarting(boss.id);
             DiscordControls.StartBattle(boss.name);
             SceneManager.LoadScene("Battle");
         } catch (Exception e) {
