@@ -42,10 +42,15 @@ jobs:
       - run: sudo mv ${{ github.workspace }}/build/StandaloneWindows64/ ${{ github.workspace }}/build/Soulbound/
 
       # Output
+      # The mod's Sprites, Sounds, Audio and Lua/Libraries folders are held open by
+      # .gitkeep files. upload-artifact excludes hidden files by default, which drops
+      # them, which leaves those folders empty, and empty folders are not preserved.
+      # The engine then cannot find Sprites and refuses to start a fight.
       - uses: actions/upload-artifact@v4
         with:
           name: Soulbound-win64
           path: build
+          include-hidden-files: true
 
   buildMacOS:
     name: Build (MacOS)
@@ -91,6 +96,7 @@ jobs:
         with:
           name: Soulbound-macos64
           path: build
+          include-hidden-files: true
 
   buildLinux:
     name: Build (Linux)
@@ -135,3 +141,4 @@ jobs:
         with:
           name: Soulbound-lin64
           path: build
+          include-hidden-files: true
