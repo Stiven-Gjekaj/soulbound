@@ -302,6 +302,13 @@ already known, and the rest comes from what v0.3 and v0.4 surface:
   and rotation, sprite active semantics and script call-existence checks. It is the last
   inherited mode flag. Shim to false, collapse the branches, delete the flag, in that
   order, exactly as v0.2 handled `IsOverworld`.
+- Typing your name on the keyboard. The name screen is a grid you walk with the arrow
+  keys, inherited unchanged, and Cancel is the only way to delete a letter. Letters
+  should go in as they are typed, with the grid kept beside it for pads and mice rather
+  than replaced. The catch is that the grid reads Confirm, Cancel and the four directions
+  through the rebindable keybinds, and WASD is bound to the directions by default, so
+  typing a name that contains a W would currently move the cursor. Character input has to
+  take priority over movement while that screen is up, and only on that screen.
 
 Likely additions once a real fight exists: bullet pattern performance under load, wave
 composition, and whatever the Lua API makes awkward when a fight runs long.
