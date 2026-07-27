@@ -111,7 +111,11 @@ publishes a GitHub release with those three archives and a `SHA256SUMS.txt` atta
 
 A release zip holds what a player needs to run the game and nothing else: the player
 build, `Default/` for the assets the engine falls back to, `Mods/` for the game itself,
-and on macOS the instructions for getting past Gatekeeper.
+`Read me first.txt`, and on macOS the instructions for getting past Gatekeeper.
+
+`Read me first.txt` exists because running the program from inside the zip is the one
+failure the engine cannot recover from: without `Mods` beside the executable there is no
+content to load at all. The error screen explains it, but the read me gets there first.
 
 Five things worth knowing:
 

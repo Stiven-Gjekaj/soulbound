@@ -27,9 +27,40 @@ ones.
   the honest signals about maturity.
 - The README's version badge was static and had to be edited every milestone. It reads
   the latest release now, with a download counter beside it.
+- The splash screen background is black rather than dark grey, so it runs into the
+  disclaimer screen instead of stepping to it. The Unity logo stays: the project is on a
+  Personal licence, which requires it. A Soulbound logo can sit alongside it once one
+  exists, which is recorded against v0.7.
+
+### Fixed
+
+- The error shown when the engine cannot find its `Mods` folder. It read "error in script
+  CYF's Startup", asked whether the folder exists, and told the player to press ESC to
+  restart, which reloads the title screen, runs the same lookup and returns to the same
+  screen. It now names Soulbound, says the likely cause (running the build from inside its
+  zip, which Windows allows by unpacking the program alone into a temp folder), says to
+  extract the archive, and prints the path it searched from. ESC closes the game, since
+  nothing else helps.
+
+  The v0.3.0 zips are correct. `Mods` sits beside the executable in all three.
+
+- Fourteen strings naming the fork that a player or a boss author can reach: the crash
+  handler's log pointer, the infinite loop handler, the keybind parse and load errors,
+  four item pool warnings, the item box, and four options descriptions. v0.3 cleared the
+  documentation and the menus and missed everything that only renders when something goes
+  wrong. The save incompatibility error was rewritten rather than renamed, since it ended
+  with "thanks for following my fork! ^^".
+
+  Identifiers are deliberately untouched: `CYFException`, `isCYF`, `CYFSwitch`,
+  `CYFDiscord`, `CYFRetroMode`, `CYFWindowScale`, `cyfshaders` and the two shader keywords
+  are API and storage keys that mods and shaders bind to by name.
 
 ### Added
 
+- `Read me first.txt`, shipped in every release zip. Extracting the archive before running
+  is the one thing a player has to know and the only failure the engine cannot recover
+  from, so it needs saying before they reach an error screen. It also records where saves
+  and the output log live.
 - A Download section in the README. The only instructions there were for building from
   source in Unity, with no link to the builds.
 
