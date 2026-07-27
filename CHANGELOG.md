@@ -36,6 +36,13 @@ appeared once people could download a build.
 
 ### Changed
 
+- The disclaimer screen is Soulbound's rather than the fork's. The Create Your Frisk logo
+  is hidden and the name stands in its place as text, the version reads the one the build
+  was stamped with, and the four labels under it describe this game. The credits below the
+  screen are deliberately untouched: they are the attribution the GPLv3 requires, and they
+  name the right people.
+- The options screen's last row read "Exit" and left the screen it was on ambiguous. It
+  says "Exit to Boss Select".
 - Releases are marked pre-release by the shape of the tag rather than always. A plain
   version tag such as `v0.4.0` publishes as a full release; a tag carrying a semver
   pre-release identifier, `v0.9.0-rc1`, publishes with `--prerelease`.
@@ -54,6 +61,18 @@ appeared once people could download a build.
 
 ### Fixed
 
+- Sparing a placeholder boss did nothing. All three encounters set `Encounter.Spare` aside
+  in a way that never removed the enemy, so the only way out of a fight was to kill it or
+  die, and the boss select's clear could not be reached by the route the docs describe.
+  Sparing now ends the fight and records the clear, the same as killing does.
+- The mod's empty folders were missing from the builds CI attaches to a run.
+  `actions/upload-artifact` drops dotfiles unless told otherwise, which took the `.gitkeep`
+  files with it and, since the folders held nothing else, the folders too. A build taken
+  from a run therefore started with an error about `Sprites`. Release zips were never
+  affected, because `release.yml` packs them on the runner before uploading.
+- The disclaimer's title rendered off the top of the screen. It was cloned from the version
+  label, which anchors to the top edge, and then given the logo's position, which is
+  measured from the middle of the screen.
 - The error shown when the engine cannot find its `Mods` folder. It read "error in script
   CYF's Startup", asked whether the folder exists, and told the player to press ESC to
   restart, which reloads the title screen, runs the same lookup and returns to the same
@@ -91,6 +110,11 @@ appeared once people could download a build.
   section, not a `## 0.4.1` one. That is deliberate, patch releases share their minor's
   notes, but it is surprising if you have not read
   [`release.yml`](.github/workflows/release.yml).
+- v0.4 is the first milestone whose build was played end to end before it shipped, rather
+  than reasoned about from the source. Three of the fixes above came out of that and
+  nothing else would have found them: sparing did not work, the artifacts were missing
+  folders, and the new title was drawing off the top of the screen. Reading the code had
+  said all three were fine.
 
 ## 0.3 (2026-07-26)
 
