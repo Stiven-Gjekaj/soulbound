@@ -211,11 +211,11 @@ public class OptionsScript : MonoBehaviour {
         switch(buttonName) {
             case "ResetSG":
                 response = "Resets all Session Global, also known as Real Globals.\n\n"
-                         + "Session Globals are variables that persist through battles, but are deleted when CYF is closed.";
+                         + "Session Globals are variables that persist through battles, but are deleted when the game is closed.";
                 return response;
             case "ResetPG":
                 response = "Resets all Permanent Globals, also known as AlMighty Globals.\n\n"
-                         + "Permanent Globals are variables that are saved to a file, and stay even after you close CYF.\n\n"
+                         + "Permanent Globals are variables that are saved to a file, and stay even after you close the game.\n\n"
                          + "The options on this screen are stored as Permanent Globals.";
                 return response;
             case "ClearSave":
@@ -237,11 +237,11 @@ public class OptionsScript : MonoBehaviour {
                          + "<b>Everything</b>: Everything is displayed: the mod you're playing, a timestamp and a description.\n\n"
                          + "<b>Game Only</b>: Only shows that you're playing Create Your Frisk.\n\n"
                          + "<b>Nothing</b>: Disables Discord Rich Presence entirely.\n\n"
-                         + "If CYF's connection to Discord is lost, you will have to restart CYF if you want your rich presence back.";
+                         + "If the connection to Discord is lost, you will have to restart Soulbound if you want your rich presence back.";
                 return response;
             case "Keys":
-                response = "Allows you to change the keys bound to CYF's default keybinds, such as Confirm or Cancel.\n\n"
-                         + "That way, you can make so your wild keyboard scheme still works properly (and comfortably) with CYF!";
+                response = "Allows you to change the keys bound to the game's default keybinds, such as Confirm or Cancel.\n\n"
+                         + "That way, your own keyboard scheme still works properly, and comfortably.";
                 return response;
             case "PlayerName":
                 response = "Changes your character's name.\n\n"

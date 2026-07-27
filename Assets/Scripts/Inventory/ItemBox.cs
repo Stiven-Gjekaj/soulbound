@@ -6,7 +6,7 @@ public static class ItemBox {
 
     public static void AddToBox(string name) {
         if (!Inventory.ItemExists(name)) {
-            UnitaleUtil.WriteInLogAndDebugger("The item " + name + "doesn't exist in CYF's item database.");
+            UnitaleUtil.WriteInLogAndDebugger("The item " + name + " doesn't exist in the engine's item database.");
             return;
         }
         if (items.Count == capacity) {

@@ -251,7 +251,7 @@ public class KeyboardInput : IUndertaleInput {
             foreach (string keybind in fileContents.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
                 string[] keyValue = keybind.Split(':');
                 if (keyValue.Length != 2)
-                    throw new Exception("The keybind format of the line " + keybind + " doesn't follow CYF's standard keybind format.");
+                    throw new Exception("The keybind format of the line " + keybind + " doesn't follow the standard keybind format.");
 
                 List<string> keys = keyValue[1].Split('|').Select(k => k.TrimEnd('\0')).ToList();
                 foreach (string key in keys)
@@ -261,7 +261,7 @@ public class KeyboardInput : IUndertaleInput {
                 playerKeys[keyValue[0]] = keys;
             }
         } catch (Exception e) {
-            UnitaleUtil.DisplayLuaError("keybind loading", "Error while loading the user's keybind configuration.\nPlease delete the file named \"keybinds.gd\" in CYF's save folder, in this path:\n\n<b>" + Application.persistentDataPath + "/keybinds.gd</b>\n\nActual error:\n" + e.Message, true);
+            UnitaleUtil.DisplayLuaError("keybind loading", "Error while loading the user's keybind configuration.\nPlease delete the file named \"keybinds.gd\" in the save folder, in this path:\n\n<b>" + Application.persistentDataPath + "/keybinds.gd</b>\n\nActual error:\n" + e.Message, true);
         }
         ResetEncounterInputs();
     }

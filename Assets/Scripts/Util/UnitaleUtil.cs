@@ -99,12 +99,12 @@ public static class UnitaleUtil {
         else if (e.GetType().ToString() == "System.IndexOutOfRangeException" && e.StackTrace.Contains("at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
             DisplayLuaError(scriptname + ", calling the function " + function, "<b>Possible infinite loop</b>\n\nThis is a " + e.GetType() + " error."
                                                                              + "\n\nYou almost definitely have an infinite loop in your code. A function tried to call itself infinitely. It could be a normal function or a metatable function."
-                                                                             + "\n\nFull stracktrace (see CYF output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):"
+                                                                             + "\n\nFull stracktrace (see the output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):"
                                                                              + "\n" + e.StackTrace);
         else
             DisplayLuaError(scriptname + ", calling the function " + function, "This is a " + e.GetType() + " error. Contact a dev and show them this screen, this must be an engine-side error."
                                                                              + "\n\n" + e.Message
-                                                                             + "\n\nFull stracktrace (see CYF output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):"
+                                                                             + "\n\nFull stracktrace (see the output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):"
                                                                              + "\n" + e.StackTrace + "\n");
     }
 

@@ -443,7 +443,7 @@ public static class Inventory {
                         mess = new[] { new TextMessage("Through DETERMINATION, the dream\rbecame true." + HPRecoverString(amount), true, false) };
                         break;
                     default:
-                        UnitaleUtil.Warn("The item " + name + " doesn't exist in CYF's consumable item pool.");
+                        UnitaleUtil.Warn("The item " + name + " doesn't exist in the engine's consumable item pool.");
                         break;
                 }
                 if (amount != 0)
@@ -459,7 +459,7 @@ public static class Inventory {
                     case "Empty Gun":     amount = 12; break;
                     case "Worn Dagger":   amount = 15; break;
                     case "Real Knife":    amount = 99; break;
-                    default:              UnitaleUtil.Warn("The item " + name + " doesn't exist in CYF's weapon item pool."); break;
+                    default:              UnitaleUtil.Warn("The item " + name + " doesn't exist in the engine's weapon item pool."); break;
                 }
                 break;
             case 2:
@@ -473,7 +473,7 @@ public static class Inventory {
                     case "Cowboy Hat":     amount = 12; break;
                     case "Heart Locket":   amount = 15; break;
                     case "The Locket":     amount = 99; break;
-                    default:               UnitaleUtil.Warn("The item " + name + " doesn't exist in CYF's armor item pool."); break;
+                    default:               UnitaleUtil.Warn("The item " + name + " doesn't exist in the engine's armor item pool."); break;
                 }
                 break;
             default:
@@ -485,7 +485,7 @@ public static class Inventory {
                         mess = new[] { new TextMessage("You throw the stick.[w:10]\nNothing happens.", true, false) };
                         break;
                     default:
-                        UnitaleUtil.Warn("The item " + name + " doesn't exist in CYF's miscellaneous item pool.");
+                        UnitaleUtil.Warn("The item " + name + " doesn't exist in the engine's miscellaneous item pool.");
                         break;
                 }
                 break;
