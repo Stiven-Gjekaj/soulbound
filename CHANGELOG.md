@@ -12,7 +12,7 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
-## 0.4 (unreleased)
+## 0.4 (2026-07-27)
 
 The records v0.3 wrote but did not show, plus the first-release problems that only
 appeared once people could download a build.
