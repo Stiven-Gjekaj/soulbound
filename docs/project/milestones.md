@@ -312,6 +312,13 @@ objects still named `ModTitle`, `EncounterCount` and `encounterBox`; the retired
 rows currently hidden at runtime; and the "Change name" row, which took over the one
 safe mode left behind.
 
+A Soulbound logo on the splash screen belongs here too. The project is on a Unity
+Personal licence, so the Unity logo cannot be removed, but a custom logo can sit with it:
+add the sprite to `m_SplashScreenLogos` in `ProjectSettings`, with `m_SplashScreenDrawMode`
+left at `0`, which draws the custom logo above Unity's on one screen rather than as a
+second sequential one. v0.4 already set the splash background to black so it runs into the
+disclaimer screen without a flash.
+
 Blocked on delivery, and deliberately separate from v0.6 so that engine and content work
 is never waiting on a sprite.
 
