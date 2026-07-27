@@ -109,6 +109,14 @@ That fires [`.github/workflows/release.yml`](../../.github/workflows/release.yml
 builds all three platforms, zips each one as `Soulbound-<version>-<platform>.zip`, and
 publishes a GitHub release with those three archives and a `SHA256SUMS.txt` attached.
 
+The same workflow can be run by hand instead, from the Actions tab or with
+`gh workflow run release.yml -f version=0.4.1`. It takes the version as an input and
+creates the tag itself, from inside CI. That path exists because pushing a tag is not
+always available: some environments are allowed to update branches and nothing else, and
+without it the release workflow is unreachable even when everything it needs is committed.
+Both routes resolve the version in the same job and run the same steps, so a release cut
+by hand is not a different kind of release.
+
 A release zip holds what a player needs to run the game and nothing else: the player
 build, `Default/` for the assets the engine falls back to, `Mods/` for the game itself,
 `Read me first.txt`, and on macOS the instructions for getting past Gatekeeper.
@@ -117,10 +125,17 @@ build, `Default/` for the assets the engine falls back to, `Mods/` for the game 
 failure the engine cannot recover from: without `Mods` beside the executable there is no
 content to load at all. The error screen explains it, but the read me gets there first.
 
-Five things worth knowing:
+Six things worth knowing:
 
-- **The tag's shape decides whether it is a pre-release.** A plain version tag such as
-  `v0.4.0` publishes as a full release and becomes the repository's latest. A tag carrying
+- **The release version is not the commit stamp.** Commit subjects carry `v0.X.N`, where
+  `N` counts commits within a milestone and climbs a couple of dozen times before the
+  milestone ends. A release tag is semver: `N` counts published builds and climbs once per
+  release. They share a format and mean different things, so the twenty-fifth commit of
+  0.4 is still released as `v0.4.1` if it is the second 0.4 build. Tagging the commit
+  number instead would imply two dozen releases nobody can download, and version numbers
+  only go up, so it cannot be undone.
+- **The version's shape decides whether it is a pre-release.** A plain version such as
+  `v0.4.0` publishes as a full release and becomes the repository's latest. One carrying
   a semver pre-release identifier, `v0.9.0-rc1` or `v1.0.0-beta.2`, publishes with
   `--prerelease`.
 
@@ -130,10 +145,11 @@ Five things worth knowing:
   before v1.0 a pre-release would leave that panel empty for years. The 0.x version number
   and the warning at the top of each release's notes are the honest signals about maturity;
   the flag is kept for the case it was designed for.
-- **The notes come from the changelog.** The workflow pulls the section matching the tag's
-  version out of [`CHANGELOG.md`](../../CHANGELOG.md). Write that section before tagging.
-  If no section matches, the release still publishes, with a pointer to the changelog
-  instead of notes.
+- **The notes come from the changelog.** The workflow pulls the section matching the
+  version's minor out of [`CHANGELOG.md`](../../CHANGELOG.md), so `v0.4.1` takes the
+  `## 0.4` section rather than a `## 0.4.1` one: patch releases share their minor's notes.
+  Write that section before releasing. If no section matches, the release still publishes,
+  with a pointer to the changelog instead of notes.
 - **The archives are checksummed.** `SHA256SUMS.txt` is generated from the three zips
   and attached alongside them. Downloading all four into one folder and running
   `sha256sum -c SHA256SUMS.txt` checks them. This matters because builds get passed
