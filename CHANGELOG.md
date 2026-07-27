@@ -53,7 +53,7 @@ appeared once people could download a build.
   years. The 0.x version number and the warning at the top of each release's notes are
   the honest signals about maturity.
 - The README's version badge was static and had to be edited every milestone. It reads
-  the latest release now, with a download counter beside it.
+  the latest release now.
 - The splash screen background is black rather than dark grey, so it runs into the
   disclaimer screen instead of stepping to it. The Unity logo stays: the project is on a
   Personal licence, which requires it. A Soulbound logo can sit alongside it once one

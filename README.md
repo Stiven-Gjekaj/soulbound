@@ -15,7 +15,6 @@ _A Lua-moddable battle engine, running on Unity. Made by PaperTrail._
 <p align="center">
   <a href="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml"><img src="https://github.com/Stiven-Gjekaj/soulbound/actions/workflows/build.yml/badge.svg" alt="Build"/></a>
   <a href="https://github.com/Stiven-Gjekaj/soulbound/releases/latest"><img src="https://img.shields.io/github/v/release/Stiven-Gjekaj/soulbound?style=flat-square" alt="Latest release"/></a>
-  <a href="https://github.com/Stiven-Gjekaj/soulbound/releases"><img src="https://img.shields.io/github/downloads/Stiven-Gjekaj/soulbound/total?style=flat-square" alt="Total downloads"/></a>
   <img src="https://img.shields.io/badge/license-GPL--3.0-green?style=flat-square" alt="GPL-3.0 License"/>
 </p>
 
