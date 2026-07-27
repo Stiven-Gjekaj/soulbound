@@ -1,20 +1,69 @@
 name: Release
 
-# Releases are cut by pushing a version tag, for example:
+# Releases are cut two ways, and both end in the same place.
+#
 #   git tag v0.3.0 && git push origin v0.3.0
-# The tag is the source of truth for the version. build.yml stays the per-push
-# check; this workflow only runs for tags.
+#
+# or run this workflow by hand with a version, which creates the tag from inside
+# CI rather than requiring a tag push. The second exists because pushing a tag is
+# not always available: some environments can update branches and nothing else.
+#
+# Either way the version is written in exactly one place, and build.yml stays the
+# per-push check.
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, with or without the leading v (0.4.1)"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
+  # Both triggers carry the version somewhere different, so it is read once here
+  # and every other job takes it from these outputs. Doing it per job is how the
+  # two paths drift apart.
+  version:
+    name: Resolve the version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      tag: ${{ steps.resolve.outputs.tag }}
+    steps:
+      - name: Resolve
+        id: resolve
+        # The input goes through the environment rather than straight into the
+        # script. A ${{ }} expansion is pasted in as text before bash sees the
+        # line, so a value with a quote in it would run as code.
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -eu
+          if [ -n "${INPUT_VERSION:-}" ]; then
+            VERSION="${INPUT_VERSION#v}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+
+          # This becomes a git tag, three zip file names and a shell argument, so
+          # it has to be a version and nothing else.
+          if ! printf '%s' "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "Not a version number: '$VERSION'" >&2
+            exit 1
+          fi
+
+          echo "Releasing $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
   build:
     name: Build ${{ matrix.name }}
+    needs: version
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -35,10 +84,6 @@ jobs:
         with:
           lfs: true
 
-      - name: Read the version from the tag
-        id: version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-
       - uses: actions/cache@v4
         with:
           path: Library
@@ -56,7 +101,7 @@ jobs:
           buildMethod: UnityBuilderAction.BuildScript.Build
           buildName: Soulbound-${{ matrix.suffix }}
           versioning: Custom
-          version: ${{ steps.version.outputs.version }}
+          version: ${{ needs.version.outputs.version }}
 
       # Assemble what a player needs to run the game: the player build, the engine
       # defaults it falls back to, and the mods folder that holds the game itself.
@@ -87,9 +132,9 @@ jobs:
         run: |
           set -eu
           cd "${{ github.workspace }}/build"
-          sudo mv "${{ matrix.targetPlatform }}" "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}"
-          sudo zip -qr "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}.zip" \
-            "Soulbound-${{ steps.version.outputs.version }}-${{ matrix.suffix }}"
+          sudo mv "${{ matrix.targetPlatform }}" "Soulbound-${{ needs.version.outputs.version }}-${{ matrix.suffix }}"
+          sudo zip -qr "Soulbound-${{ needs.version.outputs.version }}-${{ matrix.suffix }}.zip" \
+            "Soulbound-${{ needs.version.outputs.version }}-${{ matrix.suffix }}"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -99,7 +144,7 @@ jobs:
 
   release:
     name: Publish the release
-    needs: build
+    needs: [version, build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -125,9 +170,10 @@ jobs:
       # this version; fall back to a pointer if there is no matching heading.
       - name: Extract the release notes
         id: notes
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
         run: |
           set -eu
-          VERSION="${GITHUB_REF_NAME#v}"
           python3 - "$VERSION" <<'PY' > notes.md
           import re, sys
           version = sys.argv[1]
@@ -153,19 +199,25 @@ jobs:
       - name: Publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.version.outputs.version }}
+          TAG: ${{ needs.version.outputs.tag }}
         run: |
           set -eu
-          # A plain version tag is a real release. A tag carrying a semver pre-release
-          # identifier, v0.9.0-rc1, is not.
-          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+          # A plain version is a real release. One carrying a semver pre-release
+          # identifier, 0.9.0-rc1, is not.
+          if [[ "$VERSION" == *-* ]]; then
             RELEASE_FLAG="--prerelease"
           else
             RELEASE_FLAG="--latest"
           fi
-          echo "Publishing $GITHUB_REF_NAME with $RELEASE_FLAG"
+          echo "Publishing $TAG with $RELEASE_FLAG at $GITHUB_SHA"
 
-          gh release create "$GITHUB_REF_NAME" \
-            --title "Soulbound $GITHUB_REF_NAME" \
+          # --target creates the tag when it does not exist yet, which is the
+          # manual path. On a tag push the tag is already there and points at this
+          # same commit, so passing it changes nothing.
+          gh release create "$TAG" \
+            --target "$GITHUB_SHA" \
+            --title "Soulbound $TAG" \
             --notes-file notes.md \
             "$RELEASE_FLAG" \
             dist/*.zip dist/SHA256SUMS.txt
