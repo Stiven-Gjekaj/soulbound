@@ -18,6 +18,12 @@ public static class FileLoader {
     public static bool startupFailed;
 
     public static void calcDataRoot() {
+        // The lookup failed once already, and nothing about the filesystem has changed
+        // since. Running it again would walk to the top of the drive a second time and
+        // raise the same error over the one the player is already reading.
+        if (startupFailed)
+            return;
+
         DirectoryInfo rootInfo = new DirectoryInfo(Application.dataPath);
 
         // Mac compatibility

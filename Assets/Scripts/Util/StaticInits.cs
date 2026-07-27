@@ -27,6 +27,15 @@ public static class StaticInits {
     private static void OnDisable() { UIController.SendToStaticInit -= SendLoaded; }
 
     public static void Start() {
+        // Settle where the game's files are before touching a registry. Every registry
+        // path runs through Path.Combine(DataRoot, ...), so without a root they all throw,
+        // and this runs from GlobalControls.Awake: Unity disables a component that throws
+        // in Awake, which would take the Escape handler in GlobalControls.Update with it.
+        // The error screen tells the player to press ESC to close the game, and that is
+        // the one thing that has to keep working when there is nothing else left.
+        if (FileLoader.DataRoot == null)
+            return;
+
         if (!firstInit) {
             firstInit = true;
             SpriteRegistry.Start();
