@@ -190,11 +190,12 @@ public class SelectOMatic : MonoBehaviour {
         EncounterCount.GetComponent<Text>().text       = boss.subtitle;
         EncounterCountShadow.GetComponent<Text>().text = boss.subtitle;
 
-        // The cleared marker sits on the line the mod folder path used to occupy. Best
-        // time and attempts are recorded too, but they wait for v0.4 to give them a place.
-        string cleared = BossRecords.Cleared(boss.id) ? "CLEARED" : "";
-        FolderText.GetComponent<Text>().text       = cleared;
-        FolderTextShadow.GetComponent<Text>().text = FolderText.GetComponent<Text>().text;
+        // The records go on the line the mod folder path used to occupy. It is the only
+        // spare line ModSelect.unity has, so they share it; a purpose-built screen with
+        // room for a proper table is v0.7, alongside the art.
+        string record = RecordLine(boss);
+        FolderText.GetComponent<Text>().text       = record;
+        FolderTextShadow.GetComponent<Text>().text = record;
 
         // Update the color of the arrows
         if (bosses.Count == 1) {
@@ -204,6 +205,34 @@ public class SelectOMatic : MonoBehaviour {
             BackText.color = new Color(1f, 1f, 1f, 1f);
             NextText.color = new Color(1f, 1f, 1f, 1f);
         }
+    }
+
+    /// <summary>
+    /// What the player has done to this boss, on one line. Empty for a boss they have
+    /// never picked, so an untouched list stays clean rather than reading "0 attempts"
+    /// against every row.
+    /// </summary>
+    private string RecordLine(BossEntry boss) {
+        int attempts = BossRecords.Attempts(boss.id);
+        if (attempts == 0)
+            return "";
+
+        List<string> parts = new List<string>();
+
+        if (BossRecords.Cleared(boss.id)) parts.Add(BossRecords.NoHit(boss.id) ? "CLEARED, NO HIT" : "CLEARED");
+        else                              parts.Add("UNBEATEN");
+
+        float best = BossRecords.BestTime(boss.id);
+        if (best >= 0f)
+            parts.Add("best " + BossRecords.FormatTime(best));
+
+        parts.Add(attempts + (attempts == 1 ? " try" : " tries"));
+
+        int deaths = BossRecords.Deaths(boss.id);
+        if (deaths > 0)
+            parts.Add(deaths + (deaths == 1 ? " death" : " deaths"));
+
+        return string.Join("   ", parts.ToArray());
     }
 
     /// <summary>
