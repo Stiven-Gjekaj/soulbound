@@ -142,7 +142,8 @@ public class OptionsScript : MonoBehaviour {
         });
         Keys.GetComponentInChildren<Text>().text = "Keybinds...";
 
-        // exit
+        // exit. The label is baked into Options.unity as "Exit to Mod Select".
+        Exit.GetComponentInChildren<Text>().text = "Exit to Boss Select";
         Exit.GetComponent<Button>().onClick.AddListener(() => {
             SceneManager.LoadScene("ModSelect");
         });
