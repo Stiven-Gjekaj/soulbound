@@ -9,7 +9,15 @@ public class ErrorDisplay : MonoBehaviour {
 
     private void Start() {
         UnitaleUtil.firstErrorShown = false;
-        string mess = !GlobalControls.modDev ? "restart CYF" : "reload";
+
+        // A startup failure cannot be recovered from in place: leaving this screen returns
+        // to the title, which runs the same lookup and lands right back here. Closing is
+        // the only thing that helps, so say that instead of offering a restart.
+        string mess;
+        if (FileLoader.startupFailed) mess = "close Soulbound";
+        else if (!GlobalControls.modDev) mess = "restart Soulbound";
+        else                             mess = "reload";
+
         GetComponent<Text>().text = Message + "\n\nPress ESC to " + mess;
     }
 }

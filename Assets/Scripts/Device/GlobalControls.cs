@@ -134,6 +134,12 @@ public class GlobalControls : MonoBehaviour {
             if (isInFight && EnemyEncounter.script.GetVar("unescape").Boolean && sceneName != "Error") return;
             // The Error scene can only be exited if we entered the fight through the boss select screen
             if (sceneName == "Error" && !modDev) {
+                // The engine never found its Mods folder, so there is nothing to go back
+                // to: the title screen runs the same lookup and lands straight back here.
+                if (FileLoader.startupFailed) {
+                    Application.Quit();
+                    return;
+                }
                 ScreenResolution.ResetAfterBattle();
                 UnitaleUtil.ResetSession();
                 SceneManager.LoadScene("Disclaimer");
@@ -147,7 +153,7 @@ public class GlobalControls : MonoBehaviour {
                 else                                                      UIController.EndBattle();
             else                                                          UIController.EndBattle();
         }
-        // Wipe save and close CYF in the Error scene if save failed to load
+        // Wipe the save and close the game from the Error scene if the save failed to load
         else if (sceneName == "Error" && allowWipeSave && Input.GetKeyDown(KeyCode.R)) {
             System.IO.File.Delete(Application.persistentDataPath + "/save.gd");
             Application.Quit();
