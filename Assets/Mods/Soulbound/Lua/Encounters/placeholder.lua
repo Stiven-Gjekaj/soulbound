@@ -26,10 +26,6 @@ function DefenseEnding()
     -- Runs when a wave ends.
 end
 
-function HandleSpare()
-    State("ENEMYDIALOGUE")
-end
-
 function HandleItem(ItemID)
     -- Runs when the player uses an item.
 end

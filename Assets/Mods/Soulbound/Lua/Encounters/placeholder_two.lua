@@ -9,7 +9,3 @@ arenasize = { 155, 130 }
 
 enemies = { "placeholder" }
 enemypositions = { { 0, 0 } }
-
-function HandleSpare()
-    State("ENEMYDIALOGUE")
-end
