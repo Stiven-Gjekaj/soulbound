@@ -17,6 +17,11 @@ ones.
 The records v0.3 wrote but did not show, plus the first-release problems that only
 appeared once people could download a build.
 
+Shipped as `v0.4.0` and then `v0.4.1`. Everything in the second build came out of
+playing the first one: sparing a boss did nothing, the folders a build needs were
+missing from CI artifacts, the new title on the disclaimer screen was drawing off the
+top edge, and the startup error's ESC key did not close the game it told you to close.
+
 ### Added
 
 - Deaths per boss and overall, as `boss_<id>_deaths` and `deaths_total`. Counted when the
