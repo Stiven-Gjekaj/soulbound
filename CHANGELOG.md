@@ -14,6 +14,26 @@ ones.
 
 ## 0.4 (unreleased)
 
+The records v0.3 wrote but did not show, plus the first-release problems that only
+appeared once people could download a build.
+
+### Added
+
+- Deaths per boss and overall, as `boss_<id>_deaths` and `deaths_total`. Counted when the
+  game over runs to its end rather than at the moment the player dies, so a boss that
+  kills them as a story beat and revives them does not charge a death.
+- No-hit clears, as `boss_<id>_nohit`. Set when a boss is beaten without anything taking
+  HP off the player; healing and the `Player.Hurt(0)` call used for the invulnerability
+  flash both leave it intact. Once set it is never cleared.
+- All five records now show on the boss select, sharing the one spare line
+  `ModSelect.unity` has: cleared and clean-cleared state, best time to a tenth, tries and
+  deaths. A boss the player has never picked shows nothing rather than a row of zeroes.
+- An in-fight timer, off by default, with a toggle on the options screen. Display only:
+  the clock runs on every fight either way, so turning it off never costs a record and
+  turning it on never produces a second set of times that cannot be compared. `Battle.unity`
+  has no object for it, so the text is built at runtime from the same prefab Lua's
+  `CreateText` uses.
+
 ### Changed
 
 - Releases are marked pre-release by the shape of the tag rather than always. A plain

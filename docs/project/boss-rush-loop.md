@@ -31,11 +31,24 @@ globals so they are written to disk the moment they change:
 | `boss_<id>_cleared` | boolean | the boss has been beaten at least once |
 | `boss_<id>_attempts` | number | fights started, including the ones that went badly |
 | `boss_<id>_best` | number | fastest clear, in seconds |
+| `boss_<id>_deaths` | number | times the player died to this boss |
+| `boss_<id>_nohit` | boolean | the boss has been cleared without taking a hit |
+| `deaths_total` | number | deaths across every boss |
 
-They are AlMighty rather than session globals for two reasons. They survive a wiped save
-file, which is the right behaviour for a record of what you have done; and v0.4 hangs its
-death counts and its record display off the same mechanism, so this is the milestone that
-proves it works.
+They are AlMighty rather than session globals because they survive a wiped save file,
+which is the right behaviour for a record of what you have done.
+
+Three of them have rules worth knowing:
+
+- **Deaths are counted when the game over runs to its end**, not at the moment the player
+  dies. A boss that kills the player as a story beat and revives them does not charge a
+  death for it.
+- **A no-hit clear is one where nothing took HP off the player.** Healing does not break
+  it, and neither does the `Player.Hurt(0)` call bosses use for the invulnerability flash
+  alone. Once set it is never cleared, so a clean clear stays on the record even if the
+  next win is messier.
+- **Attempts are counted once the encounter has loaded.** A boss whose script fails to
+  compile does not cost the player a try.
 
 A boss script can read them like any other AlMighty global:
 
@@ -48,8 +61,12 @@ end
 Writing them from Lua is possible and not recommended. Nothing stops it, but a boss that
 marks itself cleared has made the record mean nothing.
 
-v0.3 shows only the cleared marker. Best time and attempts are recorded and have nowhere to
-appear until v0.4 gives them one.
+All of it appears on one line in the boss select, under the boss's name: whether it is
+beaten and whether it was beaten clean, the best time, tries, and deaths. A boss the
+player has never picked shows nothing, so an untouched list stays clean.
+
+That is one line because `ModSelect.unity` has exactly one spare. A screen with room for a
+table is v0.7, alongside the art.
 
 ## The player profile
 
@@ -82,6 +99,14 @@ same reason: it would only gate something that is always on.
 The clock is `Time.realtimeSinceStartup`, which `Time.timeScale` cannot distort, so a boss
 script cannot slow the timer down by slowing the game down. It starts after the encounter
 script has run, so loading is not counted against the player.
+
+The options screen has an in-fight timer, off by default, which shows the running time in
+the corner of the battle screen. It is a display setting, not a mode: the clock runs
+either way, so turning it off never costs a record and turning it on never produces a
+second set of times that cannot be compared with anyone else's. `Battle.unity` has no
+object for it, so `FightTimer` builds the text at runtime from the same prefab Lua's
+`CreateText` uses; it wants a proper scene object when the battle screen is rebuilt for
+art.
 
 Two questions have to be answered before times are comparable between machines, and both
 belong to v0.5:

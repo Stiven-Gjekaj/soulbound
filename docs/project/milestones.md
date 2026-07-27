@@ -260,17 +260,33 @@ removed more than that again in fork-era modes. See the
 
 ## v0.4: persistence and quality of life
 
-The records v0.3 writes but does not show, plus the counters that belong beside them.
+Complete. The records v0.3 wrote but did not show, the counters that belong beside them,
+and the first-release problems that only appeared once people could download a build.
 
-- Death count, per boss and overall. The hook is the game-over path rewired in v0.1.
-- Best time and attempts on the boss select. v0.3 stores both and displays neither.
-- An options toggle for an in-fight timer. It controls display only: timing itself is
-  unconditional, which is why there is no speedrun mode. A mode would only gate
-  something already always on.
-- Whatever else is worth keeping per boss, no-hit runs among them.
+- Deaths per boss and overall, counted when the game over runs to its end so a scripted
+  revive does not charge one.
+- No-hit clears. Healing and the invulnerability-flash `Hurt(0)` leave one intact.
+- All five records on the boss select, sharing the one spare line the scene has.
+- An in-fight timer with an options toggle, off by default. Display only: timing is
+  unconditional, which is why there is no speedrun mode. A mode would gate something
+  already always on.
+- Releases are marked pre-release by the shape of the tag. v0.3.0 published correctly and
+  then did not appear on the repository front page, because GitHub excludes pre-releases
+  from "latest" and that is what the Releases panel shows.
+- The missing-Mods error, which is what a player sees if they run the build from inside
+  its zip. It named the fork, asked a question instead of giving an instruction, and
+  offered a restart that fails identically. Every release now carries `Read me first.txt`,
+  which is the only thing that reaches a player before they hit it.
+- Fourteen more strings naming the fork, all in failure states and hover text, which v0.3
+  missed because they only render when something goes wrong.
 
-AlMighty globals are the store, proven by v0.3. A purpose-built format is worth
-revisiting only once there is more than a handful of values per boss.
+AlMighty globals are the store, proven by v0.3 and now carrying six values per player. A
+purpose-built format is still not worth it.
+
+Two things are held back by having no scene editor here, and both belong to v0.7 with the
+art: the boss select shows its records on one line because that is all `ModSelect.unity`
+has spare, and the options screen is now using all ten of its rows, two of them adopted
+from retired settings.
 
 ## v0.5: engine work for bosses
 
