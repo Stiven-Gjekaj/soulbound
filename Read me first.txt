@@ -1,0 +1,43 @@
+=========
+SOULBOUND
+=========
+
+EXTRACT THIS ARCHIVE BEFORE RUNNING THE GAME.
+
+Do not run the program from inside the zip. Windows will let you double click it there,
+but it unpacks the program on its own into a temporary folder, without the rest of the
+files, and the game stops with an error about a missing Mods folder.
+
+Extract the whole archive to a folder somewhere, then run it from there. The "Mods" and
+"Default" folders have to sit next to the program.
+
+On macOS, read "How to run Soulbound on Mac.txt" as well. The application will not open
+until it has been marked executable.
+
+
+WHAT IS IN THIS BUILD
+---------------------
+
+Not a game yet. v0.3 built the loop the game hangs off: name your character, pick a boss,
+fight it, come back to the list with it marked cleared. The three bosses in it are
+placeholders, a monster with no sprite and an attack that fires nothing, so a fight is
+over in seconds. The first real boss is v0.6.
+
+
+WHERE YOUR SAVE LIVES
+---------------------
+
+Windows   %USERPROFILE%\AppData\LocalLow\PaperTrail\Soulbound\
+macOS     ~/Library/Application Support/PaperTrail/Soulbound/
+Linux     ~/.config/unity3d/PaperTrail/Soulbound/
+
+That folder holds your name, your boss records, your settings, and output_log.txt. If you
+are reporting a crash, that log is the useful thing to attach.
+
+
+BUGS AND SOURCE
+---------------
+
+https://github.com/Stiven-Gjekaj/soulbound
+
+Soulbound is made by PaperTrail and released under the GNU General Public License v3.

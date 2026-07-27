@@ -73,6 +73,12 @@ jobs:
           sudo cp -Rv "${{ github.workspace }}/Assets/Mods/" "$OUT/"
           sudo find "$OUT" -name "*.meta" -type f -delete
 
+      # This is the only thing that reaches a player before they run the game, so it is
+      # where the "extract the archive first" warning has to live. Running the program
+      # from inside the zip is the one failure the engine cannot recover from.
+      - name: Add the read me
+        run: sudo cp "${{ github.workspace }}/Read me first.txt" "${{ github.workspace }}/build/${{ matrix.targetPlatform }}/"
+
       - name: Add the Mac instructions
         if: matrix.targetPlatform == 'StandaloneOSX'
         run: sudo cp "${{ github.workspace }}/How to run Soulbound on Mac.txt" "${{ github.workspace }}/build/${{ matrix.targetPlatform }}/"
