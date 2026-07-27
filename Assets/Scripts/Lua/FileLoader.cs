@@ -10,6 +10,13 @@ using UnityEngine.SceneManagement;
 /// Static utility class to take care of various file loading features in Unitale.
 /// </summary>
 public static class FileLoader {
+    /// <summary>
+    /// True once the engine has failed to locate its Mods folder. Nothing can run without
+    /// it, and returning to the title screen retries the same lookup, so the error screen
+    /// tells the player to close the game rather than to restart it.
+    /// </summary>
+    public static bool startupFailed;
+
     public static void calcDataRoot() {
         DirectoryInfo rootInfo = new DirectoryInfo(Application.dataPath);
 
@@ -32,7 +39,16 @@ public static class FileLoader {
                 System.Diagnostics.Debug.Assert(rootInfo.Parent != null, "rootInfo.Parent != null");
                 rootInfo = new DirectoryInfo(rootInfo.Parent.FullName);
             } catch {
-                UnitaleUtil.DisplayLuaError("CYF's Startup", "The engine detected no Mods folder in your files: are you sure it exists?");
+                // Walked to the top of the drive without finding Mods. Almost always this
+                // is a build being run from inside its zip: Windows will happily launch an
+                // executable out of a compressed folder, unpacking it alone to a temp
+                // directory where nothing else from the archive exists.
+                startupFailed = true;
+                UnitaleUtil.DisplayLuaError("Soulbound's startup",
+                    "Soulbound could not find its <b>Mods</b> folder, so there is no game content to load.\n\n"
+                  + "The usual cause is running the game from inside the zip. Extract the whole archive "
+                  + "to a folder first, then run it from there. <b>Mods</b> and <b>Default</b> have to sit "
+                  + "next to the program.\n\nIt looked upwards from:\n" + Application.dataPath);
                 return;
             }
             SysDepDataRoot = rootInfo.FullName;
