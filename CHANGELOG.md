@@ -83,6 +83,13 @@ appeared once people could download a build.
 
   The v0.3.0 zips are correct. `Mods` sits beside the executable in all three.
 
+- ESC did not close the game from that screen, which is the only thing the screen tells
+  the player to do. Failing the lookup left the data root unset, and the next registry
+  call combined a null path and threw out of `GlobalControls.Awake`. Unity disables a
+  component that throws in `Awake`, so `GlobalControls.Update` stopped running, and the
+  Escape handler lives there. `StaticInits.Start` now settles the data root before it
+  touches a registry and gives up if there is none.
+
 - Fourteen strings naming the fork that a player or a boss author can reach: the crash
   handler's log pointer, the infinite loop handler, the keybind parse and load errors,
   four item pool warnings, the item box, and four options descriptions. v0.3 cleared the
