@@ -12,17 +12,53 @@ public class DisclaimerScript : MonoBehaviour {
     private int creditsCameraSpeed = 0;
 
     private void Start() {
-        if (Random.Range(0, 1000) == 021) {
-            Logo.GetComponent<Image>().enabled              = false;
-            Version.GetComponent<Transform>().localPosition = new Vector3(0f, 160f, 0f);
-            Version.GetComponent<Text>().color              = new Color(1f, 1f, 1f, 1f);
-            Version.GetComponent<Text>().text               = "Not Unitale v0.2.1a";
-        } else if (GlobalControls.BetaVersion > 0)
-            Version.GetComponent<Text>().text = "v" + GlobalControls.CYFversion + "\nLTS " + (GlobalControls.LTSversion + 1) + "\n<color=\"#00ff00\">b" + GlobalControls.BetaVersion + "</color>";
-        else
-            Version.GetComponent<Text>().text = "v" + GlobalControls.CYFversion + "\nLTS " + GlobalControls.LTSversion;
+        Rebrand();
+        Version.GetComponent<Text>().text = "v" + Application.version;
         Camera.main.GetComponent<AudioSource>().clip = AudioClipRegistry.GetMusic("mus_barrier");
         Camera.main.GetComponent<AudioSource>().Play();
+    }
+
+    /// <summary>
+    /// Disclaimer.unity is still the fork's screen: its logo, its version, its Discord,
+    /// and prompts about writing mods. It is the first thing a player sees, and none of it
+    /// is reachable from C# by field because most of those fields were removed in v0.3, so
+    /// the objects are found by name here instead.
+    ///
+    /// The credits below this screen are deliberately untouched. They are the attribution
+    /// GPLv3 requires, and they name the right people.
+    ///
+    /// All of this wants doing properly in the scene when the menus are rebuilt for art in
+    /// v0.7, at which point this method should go.
+    /// </summary>
+    private void Rebrand() {
+        // The logo is a Create Your Frisk sprite and there is no Soulbound one yet, so the
+        // name goes in its place as text, cloned from an existing label so the font, canvas
+        // and material are guaranteed to match.
+        RectTransform logo = Logo.GetComponent<RectTransform>();
+        Logo.GetComponent<Image>().enabled = false;
+
+        Text title = Instantiate(Version.GetComponent<Text>(), Logo.transform.parent);
+        title.gameObject.name = "Title";
+        title.rectTransform.anchoredPosition = logo.anchoredPosition;
+        title.rectTransform.sizeDelta        = new Vector2(2800, 400);
+        title.color    = new Color(1f, 1f, 1f, 1f);
+        title.fontSize = 220;
+        title.text     = "SOULBOUND";
+
+        SetText("ModSelect",              "Press <color=\"#ff0\">Confirm</color>\nor <color=\"#ff0\">Click</color> to\ngo to the <color=\"#ff0\">Boss\nSelect Screen</color>");
+        SetText("TheTextNobodyReadsEver", "This is an early build.\nThere is no game in it yet.");
+        SetText("DiscordPlug",            "A boss rush based on Soultale. Made by <color=\"#ffff00\">PaperTrail</color>.");
+        SetText("LegalStuff",             "Built on Create Your Frisk, and not owned by or affiliated with Toby Fox.\nFree software under the GPLv3. Do not sell it.");
+    }
+
+    /// <summary>Sets a disclaimer label by object name, quietly if the scene lost it.</summary>
+    private void SetText(string objectName, string value) {
+        GameObject go = GameObject.Find(objectName);
+        if (go == null)
+            return;
+        Text text = go.GetComponent<Text>();
+        if (text != null)
+            text.text = value;
     }
 
     /// <summary>
