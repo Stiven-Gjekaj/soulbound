@@ -33,6 +33,18 @@ public class OptionsScript : MonoBehaviour {
             buttons.Add(playerName);
         }
 
+        // The last row Crate Your Frisk left behind. Nothing else is spare, so any option
+        // after this one needs a real object adding to Options.unity in v0.7.
+        MenuButton timer = AdoptRetiredRow("Crate", "FightTimer");
+        if (timer) {
+            timer.GetComponentInChildren<Text>().text = "In-fight timer: " + (FightTimer.Enabled ? "On" : "Off");
+            timer.GetComponent<Button>().onClick.AddListener(() => {
+                FightTimer.Enabled = !FightTimer.Enabled;
+                timer.GetComponentInChildren<Text>().text = "In-fight timer: " + (FightTimer.Enabled ? "On" : "Off");
+            });
+            buttons.Add(timer);
+        }
+
         buttons.AddRange(new MenuButton[] {
             ResetSG.GetComponent<MenuButton>(),
             ResetPG.GetComponent<MenuButton>(),
@@ -242,6 +254,12 @@ public class OptionsScript : MonoBehaviour {
             case "Keys":
                 response = "Allows you to change the keys bound to the game's default keybinds, such as Confirm or Cancel.\n\n"
                          + "That way, your own keyboard scheme still works properly, and comfortably.";
+                return response;
+            case "FightTimer":
+                response = "Shows the running time of the fight in the corner of the screen.\n\n"
+                         + "Display only. Every fight is timed whether this is on or off, so turning it "
+                         + "off never costs you a record, and turning it on never gives you a second set "
+                         + "of times that cannot be compared with anyone else's.";
                 return response;
             case "PlayerName":
                 response = "Changes your character's name.\n\n"

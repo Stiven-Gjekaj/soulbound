@@ -1195,6 +1195,10 @@ public class UIController : MonoBehaviour {
         // Everything above this line is loading, which is not the player's time.
         BossRecords.ClockStart();
 
+        // Display only, and off by default. The clock above runs either way.
+        if (FightTimer.Enabled)
+            gameObject.AddComponent<FightTimer>();
+
         if (!stateSwitched)
             SwitchState("ACTIONSELECT", true);
     }
