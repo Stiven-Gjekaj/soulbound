@@ -39,11 +39,29 @@ public class DisclaimerScript : MonoBehaviour {
 
         Text title = Instantiate(Version.GetComponent<Text>(), Logo.transform.parent);
         title.gameObject.name = "Title";
-        title.rectTransform.anchoredPosition = logo.anchoredPosition;
-        title.rectTransform.sizeDelta        = new Vector2(2800, 400);
-        title.color    = new Color(1f, 1f, 1f, 1f);
-        title.fontSize = 220;
-        title.text     = "SOULBOUND";
+
+        // Take the logo's box whole rather than just its position. Cloning the version
+        // label brings that label's anchors and pivot along, and they sit at the top of
+        // the screen where the logo's sit at the middle, so the logo's coordinates mean
+        // something else entirely once they land in them.
+        RectTransform rect    = title.rectTransform;
+        rect.anchorMin        = logo.anchorMin;
+        rect.anchorMax        = logo.anchorMax;
+        rect.pivot            = logo.pivot;
+        rect.anchoredPosition = logo.anchoredPosition;
+
+        // The size comes from the transform and not the font size, because the label is
+        // scaled down in the scene and a pixel font only stays sharp at whole multiples
+        // of the size it was drawn at. Three times the version label fills the logo's box.
+        const float scale = 0.6f;
+        rect.localScale   = new Vector3(scale, scale, 1f);
+        rect.sizeDelta    = new Vector2(logo.sizeDelta.x / scale, logo.sizeDelta.y / scale);
+
+        title.color              = Color.white;
+        title.alignment          = TextAnchor.MiddleCenter;
+        title.horizontalOverflow = HorizontalWrapMode.Overflow;
+        title.verticalOverflow   = VerticalWrapMode.Overflow;
+        title.text               = "SOULBOUND";
 
         SetText("ModSelect",              "Press <color=\"#ff0\">Confirm</color>\nor <color=\"#ff0\">Click</color> to\ngo to the <color=\"#ff0\">Boss\nSelect Screen</color>");
         SetText("TheTextNobodyReadsEver", "This is an early build.\nThere is no game in it yet.");
