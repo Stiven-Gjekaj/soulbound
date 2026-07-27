@@ -346,6 +346,8 @@ public class GameOverBehavior : MonoBehaviour {
     }
 
     public void EndGameOver() {
+        // Before EndBattle, which forgets which boss the fight belonged to.
+        BossRecords.Died();
         // Death used to send the player back to their last save point, teleporting
         // them onto the map they died on. There are no maps, so it restarts instead.
         UIController.EndBattle(true);

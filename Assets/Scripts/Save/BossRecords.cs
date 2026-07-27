@@ -17,6 +17,7 @@ public static class BossRecords {
     private static string currentId = "";
     private static float clockStart;
     private static bool clockRunning;
+    private static bool tookAHit;
 
     /// <summary>Seconds the fight in progress has been running, or 0 if none is.</summary>
     public static float Elapsed {
@@ -31,6 +32,7 @@ public static class BossRecords {
     public static void FightStarting(string id) {
         currentId    = id;
         clockRunning = false;
+        tookAHit     = false;
         SetNumber(id, "attempts", Attempts(id) + 1);
     }
 
@@ -56,12 +58,65 @@ public static class BossRecords {
         float best = BestTime(currentId);
         if (best < 0f || time < best)
             SetNumber(currentId, "best", time);
+
+        // Only ever set, never cleared: a clean clear stays on the record even if the
+        // player takes a hit off the boss the next time they beat it.
+        if (!tookAHit && !NoHit(currentId))
+            SetBool(currentId, "nohit", true);
     }
 
     /// <summary>The fight ended without a win: the player died, fled or gave up.</summary>
     public static void FightEnded() {
         clockRunning = false;
         currentId    = "";
+        tookAHit     = false;
+    }
+
+    /// <summary>
+    /// The player died and the game over ran to its end. Called before EndBattle, which
+    /// clears the boss this was counted against.
+    ///
+    /// A scripted revive does not reach here, so a boss that kills the player as a story
+    /// beat and brings them back does not cost them a death.
+    /// </summary>
+    public static void Died() {
+        if (currentId == "")
+            return;
+        SetNumber(currentId, "deaths", Deaths(currentId) + 1);
+        LuaScriptBinder.SetPermanentGlobal(TotalDeathsKey, DynValue.NewNumber(TotalDeaths + 1));
+    }
+
+    /// <summary>The player took damage during the fight in progress.</summary>
+    public static void PlayerHit() { tookAHit = true; }
+
+    public static int Deaths(string id) {
+        DynValue v = Get(id, "deaths");
+        return v != null && v.Type == DataType.Number ? (int)v.Number : 0;
+    }
+
+    /// <summary>Whether the boss has ever been cleared without taking a hit.</summary>
+    public static bool NoHit(string id) {
+        DynValue v = Get(id, "nohit");
+        return v != null && v.Type == DataType.Boolean && v.Boolean;
+    }
+
+    public const string TotalDeathsKey = "deaths_total";
+
+    /// <summary>Deaths across every boss, which is the number the player quotes.</summary>
+    public static int TotalDeaths {
+        get {
+            DynValue v = LuaScriptBinder.GetPermanentGlobal(TotalDeathsKey);
+            return v != null && v.Type == DataType.Number ? (int)v.Number : 0;
+        }
+    }
+
+    /// <summary>A record time as m:ss.d. Tenths matter when a fight lasts seconds.</summary>
+    public static string FormatTime(float seconds) {
+        if (seconds < 0)
+            return "";
+        int minutes = (int)(seconds / 60f);
+        float rest  = seconds - minutes * 60f;
+        return minutes + ":" + rest.ToString("00.0", System.Globalization.CultureInfo.InvariantCulture);
     }
 
     public static bool Cleared(string id) {

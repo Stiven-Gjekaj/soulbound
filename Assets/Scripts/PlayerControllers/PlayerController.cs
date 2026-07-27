@@ -152,7 +152,13 @@ public class PlayerController : MonoBehaviour {
             }
 
             if (invulnerabilitySeconds >= 0) invulTimer = invulnerabilitySeconds;
-            if (damage != 0)                 SetHP(HP - damage, true);
+            if (damage != 0) {
+                SetHP(HP - damage, true);
+                // Damage only. Healing, and a Hurt(0) called for the invulnerability
+                // flash alone, leave a no-hit run intact.
+                if (damage > 0)
+                    BossRecords.PlayerHit();
+            }
         } else if (damage < 0) {
             if (playSound)
                 PlaySound("healsound");
