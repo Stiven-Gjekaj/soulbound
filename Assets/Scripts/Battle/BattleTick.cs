@@ -33,9 +33,19 @@ public static class BattleTick {
 
     private static float accumulator;
     private static int   ticks;
+    private static int   dropped;
 
     /// <summary>Steps run since the fight began.</summary>
     public static int Ticks { get { return ticks; } }
+
+    /// <summary>
+    /// Steps thrown away by the catch-up ceiling since the fight began, rounded down.
+    ///
+    /// Anything above zero means the machine could not keep up and the fight skipped
+    /// forward rather than running every step. It is the one number that says the ceiling
+    /// was reached, and without it that can only be inferred from a frame rate.
+    /// </summary>
+    public static int Dropped { get { return dropped; } }
 
     /// <summary>
     /// Game time since the fight began. This is what a fight is timed by: it counts what
@@ -48,6 +58,7 @@ public static class BattleTick {
     public static void Reset() {
         accumulator = 0f;
         ticks       = 0;
+        dropped     = 0;
     }
 
     /// <summary>
@@ -63,6 +74,7 @@ public static class BattleTick {
         int ran = 0;
         while (accumulator >= Step) {
             if (ran >= MaxCatchUp) {
+                dropped    += (int)(accumulator / Step);
                 accumulator = 0f;
                 break;
             }

@@ -17,11 +17,14 @@ local SLOT    = math.floor(tonumber(GetGlobal("stress_slot")) or 1)
 local updates   = 0
 local startTime = -1
 local worstMult = 0
+local startDrop = 0
 local bullets   = {}
 
 function Update()
     if startTime < 0 then
         startTime = Time.time
+        -- Time.dropped counts from the start of the fight, not the start of the wave.
+        startDrop = Time.dropped
         for i = 1, BULLETS do
             local col = (i - 1) % 24
             local row = math.floor((i - 1) / 24)
@@ -53,9 +56,12 @@ function Update()
             -- Short on purpose. The encounter text box fits about thirty characters a line
             -- and clips the rest with no wrap, so the long form lost the frame rate, which
             -- is the number that says whether the renderer was struggling at all.
-            -- g is game time, w is wall clock, both in seconds.
-            string.format("t%d %db  g%.1fs w%.1fs %.0ffps",
-                          SLOT, BULLETS, game, wall, 60 / math.max(worstMult, 0.0001)))
+            -- g is game time in seconds, w is wall clock in seconds, d is steps the
+            -- catch-up ceiling threw away. d above zero is the machine failing to
+            -- keep up, and is the only direct evidence the ceiling was ever reached.
+            string.format("t%d %db g%.1f w%.1f %.0ffps d%d",
+                          SLOT, BULLETS, game, wall, 60 / math.max(worstMult, 0.0001),
+                          Time.dropped - startDrop))
         EndWave()
     end
 end

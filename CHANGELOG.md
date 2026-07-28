@@ -40,6 +40,11 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   running a fixed number of wave updates before ending itself, differing only in how many
   bullets they push. Each reports the game time it took, the wall clock it actually took and
   the worst frame it saw, so the claim above can be measured rather than argued.
+- **`Time.dropped`**, the number of steps the catch-up ceiling has thrown away. Above zero
+  means the machine could not keep up and the fight skipped forward rather than running
+  every step: bullets did not move for those steps and no collision was tested for them.
+  It was added because the first stress run could only infer whether the ceiling had been
+  reached, from a frame rate, and inference is not measurement.
 
 ### Removed
 
