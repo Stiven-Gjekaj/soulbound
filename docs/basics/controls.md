@@ -40,10 +40,11 @@ Type your name. There is no letter grid to walk any more.
 
 `Any letter key` - Types. Letters only, up to nine of them.
 
-`Backspace` - Deletes the last letter.
+`Backspace, or X` - Deletes the last letter. There is no on-screen button for this; the
+keyboard does it.
 
 `Enter, or a mouse click` - Presses the highlighted button. `Left and Right` move between
-`Quit`, `Backspace` and `Done`, and the mouse highlights whichever button it is over.
+`Quit` and `Done`, and the mouse highlights whichever button it is over.
 
 Typed characters are taken before anything else reads the keyboard, which is what makes
 this work at all: `W`, `A`, `S` and `D` are bound to the four directions by default, so

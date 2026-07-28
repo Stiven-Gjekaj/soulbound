@@ -57,6 +57,12 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
 - **The letter grid on the name screen.** It existed because there was no other way to enter
   a name, and once letters could be typed it only created an argument over the Z key, which
   is a letter and Confirm at once. With nothing to confirm into, Z is only ever a letter.
+- **The Backspace button** on the same screen, which the grid needed for the same reason.
+  The Backspace key deletes a letter and so does X, so the button was a third way to do one
+  thing sitting in the middle of the row. `Quit` and `Done` are the whole screen now, and
+  they move up under the name while it is being typed rather than sitting at the bottom of
+  an empty screen. They drop back down for the confirm screen, where the name is scaled up
+  and takes the middle.
 
 ### Changed
 
