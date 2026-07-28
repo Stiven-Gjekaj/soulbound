@@ -18,10 +18,15 @@ until it has been marked executable.
 WHAT IS IN THIS BUILD
 ---------------------
 
-Not a game yet. v0.3 built the loop the game hangs off: name your character, pick a boss,
-fight it, come back to the list with it marked cleared. The three bosses in it are
-placeholders, a monster with no sprite and an attack that fires nothing, so a fight is
-over in seconds. The first real boss is v0.6.
+Not a game yet. What exists is the loop the game hangs off: name your character, pick a
+boss, fight it, and come back to the list with it marked cleared and your time recorded.
+
+The bosses are placeholders, a monster with no sprite and an attack that fires nothing, so
+a fight is over in seconds. The last entry in the list, "Stress Test", is not a boss at
+all. It is a measuring instrument: three turns of fixed length that report how long they
+took, used to check the fight keeps its own time on slow hardware. Escape leaves it.
+
+Every screen is rebuilt at v0.6, and the first real boss is v0.7.
 
 
 WHERE YOUR SAVE LIVES
@@ -31,8 +36,14 @@ Windows   %USERPROFILE%\AppData\LocalLow\PaperTrail\Soulbound\
 macOS     ~/Library/Application Support/PaperTrail/Soulbound/
 Linux     ~/.config/unity3d/PaperTrail/Soulbound/
 
-That folder holds your name, your boss records, your settings, and output_log.txt. If you
-are reporting a crash, that log is the useful thing to attach.
+That folder holds your name, your boss records and your settings.
+
+If you are reporting a crash, the engine log is the useful thing to attach. Unity does not
+put it in the same place on every system:
+
+Windows   the folder above, as output_log.txt
+Linux     the folder above, as Player.log
+macOS     ~/Library/Logs/PaperTrail/Soulbound/Player.log
 
 
 BUGS AND SOURCE
