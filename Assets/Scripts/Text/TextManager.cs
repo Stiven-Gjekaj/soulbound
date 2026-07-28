@@ -623,8 +623,7 @@ public class TextManager : MonoBehaviour {
                                     }
                             } else if (command.Length < 7 || command.Substring(0, 7) != "instant")
                                 PreCreateControlCommand(command);
-                        } else
-                            PreCreateControlCommand(command);
+                        }
                         continue;
                     }
                     break;
