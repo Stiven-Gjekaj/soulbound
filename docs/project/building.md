@@ -28,7 +28,9 @@ to the project root.
 Before running it:
 
 1. Set `unityPath` to your Unity installation if the paths already listed do not match.
-2. Set `CYFversion` if you want different output folder and executable names.
+2. Set `version` if you want different output folder names. It names the folders under
+   `bin/` and nothing else. The version the game shows on screen and reports to Discord is
+   `Application.version`, which comes from Unity, not from here. See below.
 3. Make sure this project was the last one opened in Unity, then close Unity.
 
 Then run it:
@@ -170,3 +172,21 @@ The version reaches the executable through `versioning: Custom`, which passes th
 
 `Build.py` at the repository root is the local equivalent for producing builds by hand. It
 does not tag or publish anything.
+
+## What version a build reports
+
+`Application.version` is the number on the disclaimer screen, in the Windows title bar and
+in Discord Rich Presence. Where it comes from depends on how the build was made, and the
+three answers do not agree:
+
+- **A release build** carries the tag it was cut from, because `release.yml` passes it
+  explicitly. This is the only one that is right by construction.
+- **A `build.yml` artifact** carries the last tag in the repository's history, not the code
+  it was built from. `unity-builder` is left on its default versioning, which derives the
+  number from `git describe`. An artifact built from a v0.5 commit reports `v0.4.1`.
+- **A local `Build.py` build or the editor** carries `bundleVersion` out of
+  `ProjectSettings/ProjectSettings.asset`, which is only ever whatever it was last saved
+  as. It is not kept in step with anything.
+
+Only the first is a number to quote. When playtesting an artifact, identify it by the
+commit it was built from rather than by what it says on screen.
