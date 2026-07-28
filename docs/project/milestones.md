@@ -359,8 +359,9 @@ has the detail.
   commands, so it wants settling before then.
 - **Whatever else the stress encounter exposes.** Bullet performance, wave composition, and
   whatever the Lua API makes awkward when a fight runs long are all expected to land here.
-- **Thirteen remaining TODOs**, none of which name a version any more, to be triaged into a
-  v0.5 item or an explicit decision not to do them.
+- **Ten remaining TODOs** in our own code, none of which name a version any more, to be
+  triaged into a v0.5 item or an explicit decision not to do them. Two more sit in the
+  vendored MoonSharp interpreter under `Assets/Plugins` and are not ours to answer.
 - **Anything only visible off Linux.** The Discord leak was invisible to every playtest here
   and sat in people's friends lists. Windows-only and macOS-only paths need reading, and
   anything found there needs a human on that platform to confirm.
