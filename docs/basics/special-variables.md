@@ -114,6 +114,11 @@ but since this example only contains Vegetoid you only really need one position.
 auto linebreak system will automatically add line breaks (`\r`) to the text. No need to
 use `\r` or `\n` anymore.
 
+Worth knowing what false means, because it is silent: the battle text box does not wrap.
+A line wider than the box carries straight through its right-hand border and is clipped by
+the edge of the screen, rather than continuing on the next line. Nothing warns you. Put
+your own `\n` in, or set this to true.
+
 **boolean** `playerskipdocommand` - False by default. If this value is set to
 true, text commands will be called even if the player skips the text, except for `[w]`
 and `[letters]` commands, and commands with the tag "`skipover`".

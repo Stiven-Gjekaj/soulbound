@@ -328,6 +328,12 @@ has the detail.
 - **Names are typed.** The letter grid is gone and the screen is a text field with two
   buttons, worked by keyboard or mouse. A controller cannot type, so `Done` accepts an empty
   name and falls back to the default rather than trapping a pad player.
+- **Text typing was checked against the tick and needs nothing.** It was recorded here as
+  frame-based and it is not. `TextManager` accumulates `Time.deltaTime` against a constant
+  named `singleFrameTiming` that holds a twentieth of a **second**, and catches up the
+  letters a long frame owed, so `[speed:x]`, `[w:x]` and `[waitall:x]` already measure real
+  time on any frame rate and already follow `Time.timeScale`. The name of that constant, and
+  documentation describing those commands in frames, is what made it look otherwise.
 - **The Time page stopped contradicting the tick.** It told authors to multiply movement by
   `Time.mult`, which was right when a wave's `Update` ran once per rendered frame and is
   backwards now that it runs sixty times a second everywhere.
@@ -350,13 +356,6 @@ has the detail.
   288-bullet turn in the largest arena saw a worst frame of 48fps, better than the same
   wave in a smaller arena that had to compile it. Nothing here has produced a machine that
   is slow for a whole wave, which is the condition a real player on old hardware is in.
-- **Text still types per rendered frame.** `TextManager` has its own `Update` and is not on
-  the battle tick, so `[speed:x]`, `[w:x]` and `[waitall:x]` are counted in rendered frames:
-  dialogue types at half speed on a 30fps machine and double on a 120fps one. The
-  documentation is accurate about this, which is how it was found. It was left alone rather
-  than fixed quietly, because `TextManager` also runs on screens that have no battle tick
-  and moving it is a decision rather than a repair. v0.7 is a boss written largely in text
-  commands, so it wants settling before then.
 - **Whatever else the stress encounter exposes.** Bullet performance, wave composition, and
   whatever the Lua API makes awkward when a fight runs long are all expected to land here.
 - Nothing from the inherited TODOs. All ten are answered: four implemented, one deferred to

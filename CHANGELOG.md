@@ -220,6 +220,21 @@ that caused them:
 
 ### Notes
 
+- **Text typing is already frame-rate independent**, which is the opposite of what the
+  milestone recorded for a while. `TextManager` accumulates `Time.deltaTime` against a
+  constant named `singleFrameTiming` holding a twentieth of a **second**, and catches up the
+  letters a long frame owed rather than losing them, so `[speed:x]`, `[w:x]` and
+  `[waitall:x]` measure real time on any frame rate and follow `Time.timeScale` already.
+  Nothing needed moving onto the battle tick.
+
+  It was written down wrong because the constant is named after frames and the API page
+  describes those commands in frames. Reading the names rather than the arithmetic is what
+  produced the mistake, and the same wording is still on the page for whoever writes v0.7.
+- **The battle text box does not wrap.** A line wider than the box crosses its border and is
+  clipped by the screen rather than continuing underneath. This is the inherited default and
+  it stays: `autolinebreak` exists to turn wrapping on per encounter, and encounters place
+  their own `\n` otherwise. Recorded because the failure is silent and looks like a rendering
+  bug rather than a setting.
 - **The ten inherited TODOs are answered.** Four became the changes above: game events
   reaching monster scripts, the attack instance lifetime, `Text.GetTextHeight` prediction,
   and the duplicated command stripper, which was three of the ten describing one problem.
