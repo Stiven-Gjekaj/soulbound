@@ -24,11 +24,7 @@ you have various monsters.
 
 `modDev` - This is a feature specific to this engine. In the engine, you can access some extra
 options from the boss select screen. These mainly include the options to wipe
-`RealGlobals` and `AlMightyGlobals`, as well as toggle `retrocompatibilty mode`.
+`RealGlobals` and `AlMightyGlobals`, and to change your name.
 
 the modDev screen is located in an "options menu" accessible
 by clicking "Options" from within the boss select screen.
-
-`retrocompatibilty mode` - This feature is designed in such a way where, if
-it's enabled, functions from 0.2.1a that were changed in the engine will function exactly as
-they did in 0.2.1a.

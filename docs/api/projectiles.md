@@ -191,8 +191,8 @@ The bullet and its `OnHit` function must both be created in the same script.
 
 ### **boolean** `Bullet.isPersistent = false`
 
-Set this to true and, if you're not in retrocompatibility mode, this will make the bullet
-stay loaded even after the wave ends.
+Set this to true and the bullet will stay loaded after the wave ends. Bullets without it
+are removed when their wave does.
 
 ## Examples
 

@@ -11,11 +11,6 @@ examples' code or write your own. This section serves to explain the variables y
 True on this engine, nil on original Unitale. Kept so that mods written to branch on it
 still work. Test it with `if not isCYF then` or `if isCYF then`.
 
-### **boolean** `isRetro` [E/M/W]
-
-True whenever retrocompatibility mode is active, false when it isn't. Test it with
-`if not isRetro then` or `if isRetro then`.
-
 ### **boolean** `windows` [E/M/W]
 
 Returns true if the user is on Windows, false otherwise.
