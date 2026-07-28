@@ -299,50 +299,42 @@ until the list is empty and has stopped growing. Everything deferred, worked aro
 noticed and never written down belongs here, because everything after this is screens,
 content and art, and none of those should be built on top of a known defect.
 
-- **The fight's clock and the record's clock disagree, and neither survives a slow
-  machine.** Wave duration is wall-clock, `waveTimer = Time.time + wavetimer`, but wave
-  content ticks once per rendered frame: `UIController.Update` calls
-  `EnemyEncounter.UpdateWave`, which calls every wave script's `Update`. A machine holding
-  30fps runs a four second wave 120 times instead of 240, so a bullet written as movement
-  per update travels half as far and the fight is measurably easier. `Time.time` also obeys
-  `Time.timeScale`, which Lua can set through `LuaUnityTime`, while the record clock uses
-  `realtimeSinceStartup` and cannot be slowed. v0.4 put best times on the boss select.
-  Until this is fixed that number is not comparable between two machines, and the game
-  presents it as though it is.
-- **Retro mode.** 53 references across 18 files, concentrated in `UIController`,
-  `TextManager` and `EnemyEncounter`. It changes gameplay semantics rather than appearance:
-  enemy HP clamping, wave argument parsing, state transition rules, projectile positioning
-  and rotation, sprite active semantics, and script call-existence checks. It is the last
-  inherited mode flag. Shim to false, collapse the branches, delete the flag, in that
-  order, exactly as v0.2 handled `IsOverworld`.
-- **Typing your name on the keyboard.** The name screen is a grid walked with the arrow
-  keys, inherited unchanged, and Cancel is the only way to delete a letter. Letters should
-  go in as they are typed, with the grid kept beside it for pads and mice rather than
-  replaced. The catch is that the grid reads Confirm, Cancel and the four directions
-  through the rebindable keybinds, and WASD is bound to the directions by default, so a
-  name containing a W would currently move the cursor. Character input has to win on that
-  screen, and only on that screen.
-- **Whatever else the list grows.** This milestone exists to be added to. Bullet pattern
-  performance under load, wave composition, and whatever the Lua API makes awkward when a
-  fight runs long are all expected to land here once there is a fight long enough to find
-  them.
+Still open. What follows is what has been closed so far; the [changelog](../../CHANGELOG.md)
+has the detail.
 
-### The timing decision
+### Done
 
-Framerate independence has two shapes and they are not interchangeable:
+- **The fight runs on its own clock.** `BattleTick` advances the battle in whole steps of a
+  sixtieth of a second: arena, attack bar, player, encounter and wave scripts, then
+  projectile movement and collision, in that order. It used to run once per rendered frame
+  while the player moved by elapsed time, so a slow machine gave the player full speed
+  against half-speed bullets. The timing decision was settled as a fixed step rather than
+  delta-time scaling, because the Lua API is public and its patterns are written as movement
+  per `Update`.
+- **A fight is timed in steps rather than seconds**, so a stutter cannot inflate a record.
+- **Retro mode is gone.** 53 references across 18 files, the flag, the `isRetro` Lua global,
+  the options row, and the warning banner. Four of its branches turned out to be behaviour
+  rather than appearance and were fixes rather than deletions.
+- **Names are typed.** The letter grid is gone and the screen is a text field with three
+  buttons, worked by keyboard or mouse. A controller cannot type, so `Done` accepts an empty
+  name and falls back to the default rather than trapping a pad player.
+- **Bad text commands report** instead of failing silently, across 14 sites.
+- **Twenty inherited notes** stopped citing Create Your Frisk's 0.7, which collides with our
+  own. Two of them were design questions and are recorded as open rather than settled.
+- **The window title and Discord** stopped naming the fork. One part of this cannot be fixed
+  from code and is recorded against v0.9.
 
-- **Delta-time scaling.** Wave logic still runs once per frame, and movement is multiplied
-  by elapsed time so bullets travel per second rather than per frame. Every existing Lua
-  pattern silently changes speed, and anything written against frame counts needs
-  rewriting.
-- **A fixed logic tick.** The engine runs wave `Update` a set number of times per second
-  regardless of rendering, catching up or dropping frames as needed. Existing patterns keep
-  their exact current meaning and the Lua API does not change.
+### Open
 
-The second is the safer default for a project whose Lua API is public and whose patterns
-are about to be written in volume. This has to be settled before v0.7, because every
-pattern in the first boss is tuned against whichever model exists when it is written, and
-changing it afterwards means retuning the boss rather than fixing the engine.
+- **Whatever the stress encounter exposes.** It is in the registry and measures whether a
+  fixed amount of fight logic takes a fixed amount of game time under load. Bullet
+  performance, wave composition, and whatever the Lua API makes awkward when a fight runs
+  long are all expected to land here.
+- **Thirteen remaining TODOs**, none of which name a version any more, to be triaged into a
+  v0.5 item or an explicit decision not to do them.
+- **Anything only visible off Linux.** The Discord leak was invisible to every playtest here
+  and sat in people's friends lists. Windows-only and macOS-only paths need reading, and
+  anything found there needs a human on that platform to confirm.
 
 ### Ending it
 
