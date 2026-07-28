@@ -48,3 +48,9 @@ screen.
 Typing takes priority over the grid while this screen is up, and only here. It has to:
 `W`, `A`, `S` and `D` are bound to the four directions by default, so without that a name
 with a `W` in it would walk the cursor around while spelling itself.
+
+`Z` and `X` are the exception, because they are letters and controls at once. Which one
+they mean depends on where the cursor is sitting. On a letter they type, so `z` and `x` can
+be typed like anything else. On `Quit`, `Backspace` or `Done` they press the button, so
+walking to `Done` and pressing `Z` finishes the name as it always has. `Enter` confirms
+from anywhere.

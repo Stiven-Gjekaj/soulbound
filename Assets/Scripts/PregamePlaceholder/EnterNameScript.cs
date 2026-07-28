@@ -194,6 +194,16 @@ public class EnterNameScript : MonoBehaviour {
     /// that works if the player has no keyboard in front of them.
     /// </summary>
     private bool HandleTypedCharacters() {
+        // Z and X are letters and they are also Confirm and Cancel, so on a screen that
+        // does both there is no reading of a Z keypress that is right everywhere. It is
+        // settled by where the cursor is. On Quit, Backspace or Done the player is working
+        // the grid and needs Z to press the button, so nothing is typed; without this a
+        // player who walks to Done and presses Z as the whole game has taught them just
+        // gets another z in their name and cannot finish. On a letter, typing wins, so
+        // every letter including z and x can be typed.
+        if (choiceLetter.Length != 1)
+            return false;
+
         string typed = Input.inputString;
         if (typed.Length == 0)
             return false;
