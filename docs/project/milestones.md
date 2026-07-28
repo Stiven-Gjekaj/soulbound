@@ -315,9 +315,17 @@ has the detail.
 - **Retro mode is gone.** 53 references across 18 files, the flag, the `isRetro` Lua global,
   the options row, and the warning banner. Four of its branches turned out to be behaviour
   rather than appearance and were fixes rather than deletions.
-- **Names are typed.** The letter grid is gone and the screen is a text field with three
+- **The fight keeps its own time, measured.** The stress encounter's three turns each run
+  600 wave updates: 12 bullets, then 288, then 288 in an arena more than twice the size.
+  All three took 10.0s of game time and 10.0s of wall clock, with worst frames of 11, 17
+  and 14fps. `Time.dropped` was added afterwards, because the report could only infer
+  whether the catch-up ceiling had been reached and inference is not measurement.
+- **Names are typed.** The letter grid is gone and the screen is a text field with two
   buttons, worked by keyboard or mouse. A controller cannot type, so `Done` accepts an empty
   name and falls back to the default rather than trapping a pad player.
+- **The Time page stopped contradicting the tick.** It told authors to multiply movement by
+  `Time.mult`, which was right when a wave's `Update` ran once per rendered frame and is
+  backwards now that it runs sixty times a second everywhere.
 - **Bad text commands report** instead of failing silently, across 14 sites.
 - **Twenty inherited notes** stopped citing Create Your Frisk's 0.7, which collides with our
   own. Two of them were design questions and are recorded as open rather than settled.
@@ -326,10 +334,13 @@ has the detail.
 
 ### Open
 
-- **Whatever the stress encounter exposes.** It is in the registry and measures whether a
-  fixed amount of fight logic takes a fixed amount of game time under load. Bullet
-  performance, wave composition, and whatever the Lua API makes awkward when a fight runs
-  long are all expected to land here.
+- **A load heavy enough to reach the catch-up ceiling.** The stress encounter has run and
+  the fight held its time, but 288 bullets on a software renderer stayed near 60fps, so the
+  ceiling was barely touched and what happens past it is still argument. Either the
+  encounter gets a turn heavy enough to force drops, or the ceiling's value is chosen on
+  reasoning and that is written down as a decision rather than left as an untested five.
+- **Whatever else the stress encounter exposes.** Bullet performance, wave composition, and
+  whatever the Lua API makes awkward when a fight runs long are all expected to land here.
 - **Thirteen remaining TODOs**, none of which name a version any more, to be triaged into a
   v0.5 item or an explicit decision not to do them.
 - **Anything only visible off Linux.** The Discord leak was invisible to every playtest here
@@ -338,10 +349,15 @@ has the detail.
 
 ### Ending it
 
-v0.5 is done when the list is empty and a throwaway stress encounter, never shipped, plays
-correctly: several phases, a few hundred simultaneous projectiles, a fight long enough to
-drift, and dialogue between waves. If it does not hold up, the gap it exposes is v0.5 work
-that was not on the list, which is the reason for building it.
+v0.5 is done when the list is empty and the stress encounter plays correctly: several
+phases, a few hundred simultaneous projectiles, a fight long enough to drift, and dialogue
+between waves. If it does not hold up, the gap it exposes is v0.5 work that was not on the
+list, which is the reason for building it.
+
+It was meant to be thrown away rather than shipped. It ships: it is in the registry and a
+player sees it at the end of the boss list, labelled as not a boss. A measuring instrument
+that only exists on a developer's machine cannot be pointed at the machine that is actually
+having the problem, which is the case for keeping it. It leaves when it stops earning that.
 
 ## v0.6: wireframe
 
