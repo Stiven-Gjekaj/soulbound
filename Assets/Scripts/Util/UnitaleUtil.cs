@@ -200,6 +200,63 @@ public static class UnitaleUtil {
     /// <param name="countEOLSpace">True if we count spaces (spaces are usually skipped)</param>
     /// <param name="getLastSpace">True if we count the letter spacing after the last letter of the text</param>
     /// <returns>The length of the text in pixels</returns>
+    /// <summary>
+    /// Works out how tall a text will be from the font and the string, without needing the
+    /// letters to have been created yet.
+    ///
+    /// The counterpart to PredictTextWidth, which existed while this did not, so
+    /// Text.GetTextHeight returned zero on a text that had not started typing. Both are
+    /// documented as giving the same answer before and after typing finishes, and screens
+    /// that size themselves to their content have to ask before they draw.
+    /// </summary>
+    public static float PredictTextHeight(TextManager txtmgr, int fromLetter = -1, int toLetter = -1, bool countEOLSpace = false) {
+        if (txtmgr.textQueue == null)                     return 0;
+        if (txtmgr.textQueue[txtmgr.currentLine] == null) return 0;
+
+        string text = txtmgr.textQueue[txtmgr.currentLine].Text;
+        if (fromLetter == -1)                                                  fromLetter = 0;
+        if (toLetter == -1)                                                    toLetter   = text.Length - 1;
+        if (fromLetter > toLetter || fromLetter < 0 || toLetter > text.Length) return -1;
+
+        // The distance between two lines, the same sum TextManager uses when it places them.
+        float lineAdvance = txtmgr.vSpacing + txtmgr.font.LineSpacing;
+        float lineHeight = 0, totalHeight = 0;
+        bool sawALetter = false;
+
+        for (int i = fromLetter; i <= toLetter; i++) {
+            switch (text[i]) {
+                case '[':
+                    string str = ParseCommandInline(text, ref i);
+                    if (str == null) {
+                        // Not a command after all, so the bracket is a letter like any other.
+                        if (txtmgr.font.Letters.ContainsKey(text[i])) {
+                            lineHeight = Mathf.Max(lineHeight, txtmgr.font.Letters[text[i]].textureRect.size.y);
+                            sawALetter = true;
+                        }
+                    } else if (str.Split(':')[0] == "linespacing")
+                        lineAdvance = str.Split(':')[1].ToLower().Trim() == "default"
+                                    ? txtmgr.font.LineSpacing
+                                    : ParseUtil.GetFloat(str.Split(':')[1]);
+                    break;
+                case '\r':
+                case '\n':
+                    totalHeight += lineHeight + lineAdvance;
+                    lineHeight   = 0;
+                    break;
+                default:
+                    if (text[i] == ' ' && !countEOLSpace)
+                        break;
+                    if (txtmgr.font.Letters.ContainsKey(text[i])) {
+                        lineHeight = Mathf.Max(lineHeight, txtmgr.font.Letters[text[i]].textureRect.size.y);
+                        sawALetter = true;
+                    }
+                    break;
+            }
+        }
+        totalHeight += lineHeight;
+        return sawALetter ? Mathf.Max(totalHeight, 0) : 0;
+    }
+
     public static float PredictTextWidth(TextManager txtmgr, int fromLetter = -1, int toLetter = -1, bool countEOLSpace = false) {
         float totalWidth = 0, totalWidthSpaceTest = 0, totalMaxWidth = 0, hSpacing = txtmgr.font.CharSpacing, columns = 0;
         List<float> columnsMaxWidth = new List<float>();

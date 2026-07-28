@@ -771,7 +771,8 @@ public class LuaTextManager : TextManager {
         if (firstLetter >= textQueue[currentLine].Text.Length) firstLetter = textQueue[currentLine].Text.Length - 1;
         if (lastLetter >= textQueue[currentLine].Text.Length) lastLetter = textQueue[currentLine].Text.Length - 1;
 
-        // TODO: Add text height prediction if not yet set
+        if (letters.Count == 0)
+            return (int)UnitaleUtil.PredictTextHeight(this, firstLetter, lastLetter);
         return (int)UnitaleUtil.CalcTextHeight(this, firstLetter, lastLetter);
     }
 

@@ -136,6 +136,11 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   without killing or sparing is not in `EnabledEnemies`, so its instances survived the
   sweep. The two index-0 reads are guarded, because killing the last enemy mid-attack empties
   the list while the state is still `ATTACKING`.
+- **`Text.GetTextHeight` works before the text has typed.** It is documented as giving the
+  same answer whether or not typing has finished, which is what `Text.GetTextWidth` does
+  through `PredictTextWidth`. There was no `PredictTextHeight`, so height returned zero
+  until the letters existed. Screens that size themselves to their content have to ask
+  before they draw, which is v0.6's whole job.
 - **A bad text command says so.** Fourteen of them caught their own errors, wrote a
   well-phrased usage message to a console nobody reads, and carried on as if nothing had
   happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.
