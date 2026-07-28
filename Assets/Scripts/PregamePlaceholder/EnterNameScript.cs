@@ -10,7 +10,9 @@ public class EnterNameScript : MonoBehaviour {
     private bool isNewGame = true;
     private bool confirm;
     private bool hackFirstString;
-    private string choiceLetter = "A", playerName = "";
+    // Which of Quit, Backspace and Done is highlighted. It used to be able to hold a single
+    // letter too, when the grid existed; setColor still branches on the length for that.
+    private string choiceLetter = "Done", playerName = "";
     private readonly Dictionary<string, string> specialNameDict = new Dictionary<string, string>();
     private readonly string[] ForbiddenNames = { "lukark", "rtl", "rhenaud" };
     private string confirmText;
@@ -25,7 +27,7 @@ public class EnterNameScript : MonoBehaviour {
         isNewGame = SaveLoad.savedGame == null;
         try { GameObject.Find("textframe_border_outer").SetActive(false); }
         catch { /* ignored */ }
-        tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human."), false, true) });
+        tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human.\nType it."), false, true) });
         tmInstr.SetHorizontalSpacing(2);
         tmName.SetHorizontalSpacing(2);
         GameObject firstCamera = GameObject.Find("Main Camera");
@@ -40,15 +42,25 @@ public class EnterNameScript : MonoBehaviour {
             Camera.main.GetComponent<AudioSource>().Play();
         }
         tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
-        tmLettersMaj.SetTextQueue(new[] { new TextMessage("[charspacing:52.2][linespacing:-1]ABCDEFG\nHIJKLMN\nOPQRSTU\nVWXYZ", false, true) });
-        tmLettersMaj.SetEffect(new ShakeEffect(tmLettersMaj));
-        tmLettersMin.SetTextQueue(new[] { new TextMessage("[charspacing:52.2][linespacing:-1]abcdefg\nhijklmn\nopqrstu\nvwxyz", false, true) });
-        tmLettersMin.SetEffect(new ShakeEffect(tmLettersMin));
-        for (int i = 0; i < tmLettersMaj.GetComponentsInChildren<Image>().Length; i ++)
-            tmLettersMaj.GetComponentsInChildren<Image>()[i].name = tmLettersMaj.GetComponentsInChildren<Image>()[i].sprite.name;
-        for (int i = 0; i < tmLettersMin.GetComponentsInChildren<Image>().Length; i ++)
-            tmLettersMin.GetComponentsInChildren<Image>()[i].name = tmLettersMaj.GetComponentsInChildren<Image>()[i].sprite.name.ToLower();
-        GameObject.Find("A").GetComponent<Image>().color = new Color(1, 1, 0, 1);
+
+        // The letter grid is gone. It was never scene content: these two text objects were
+        // filled with the alphabet at runtime and their letters renamed so the cursor could
+        // find them, so leaving them empty and switched off is the whole removal.
+        //
+        // It existed because there was no other way to enter a name. Now that letters can be
+        // typed it only created an argument over the Z key, which is both a letter and
+        // Confirm, and which the grid needed and typing wanted. With nothing to confirm into,
+        // Z is only ever a letter.
+        //
+        // Taking the objects out of EnterName.unity needs the Unity editor, so it happens at
+        // v0.6 along with the rest of this screen.
+        tmLettersMaj.gameObject.SetActive(false);
+        tmLettersMin.gameObject.SetActive(false);
+
+        // Highlighted directly rather than through setColor, which starts by un-highlighting
+        // whatever was selected before and would go looking for a grid letter that is no
+        // longer there.
+        GameObject.Find(choiceLetter).GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 1);
     }
 
     // Update is called once per frame
@@ -59,82 +71,27 @@ public class EnterNameScript : MonoBehaviour {
             tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
             tmName.MoveTo(-calcTotalLength(tmName) / 2, tmName.transform.localPosition.y);
         }
-        // Typing has to be handled before the grid, and has to stop the grid seeing the
-        // keystroke. W, A, S and D are bound to the four directions by default, so a name
-        // with a W in it would otherwise walk the cursor while spelling itself.
+        // Typed characters are consumed before anything else looks at the keyboard. W, A, S
+        // and D are bound to the four directions by default, so without this a name with a W
+        // in it would move the cursor between buttons while spelling itself.
         if (HandleTypedCharacters()) return;
 
-        if (GlobalControls.input.Down == ButtonState.PRESSED) {
+        if (HandleMouse()) return;
+
+        // Up and Down did nothing but walk in and out of the grid, so with the grid gone
+        // they have nowhere to go. Left and Right cycle the three buttons, which is what
+        // their Quit/Backspace/Done cases already did.
+        if (GlobalControls.input.Right == ButtonState.PRESSED) {
             switch (choiceLetter) {
-                case "Quit":      setColor("A");                  break;
-                case "Backspace": setColor("D");                  break;
-                case "Done":      setColor("G");                  break;
-                case "T":
-                case "U":         setColor(choiceLetter[0] + 18); break;
-                case "V":
-                case "W":
-                case "X":
-                case "Y":
-                case "Z":         setColor(choiceLetter[0] + 11); break;
-                case "t":
-                case "u":         setColor("Done");               break;
-                case "v":
-                case "w":         setColor("Quit");               break;
-                case "x":
-                case "y":
-                case "z":         setColor("Backspace");          break;
-                default:          setColor(choiceLetter[0] + 7);  break;
-            }
-        } else if (GlobalControls.input.Up == ButtonState.PRESSED) {
-            switch (choiceLetter) {
-                case "Quit":      setColor("v");                  break;
-                case "Backspace": setColor("y");                  break;
-                case "Done":      setColor("u");                  break;
-                case "a":
-                case "b":
-                case "c":
-                case "d":
-                case "e":         setColor(choiceLetter[0] - 11); break;
-                case "f":
-                case "g":         setColor(choiceLetter[0] - 18); break;
-                case "A":
-                case "B":         setColor("Quit");               break;
-                case "C":
-                case "D":
-                case "E":         setColor("Backspace");          break;
-                case "F":
-                case "G":         setColor("Done");               break;
-                default:          setColor(choiceLetter[0] - 7);  break;
-            }
-        } else if (GlobalControls.input.Right == ButtonState.PRESSED) {
-            switch (choiceLetter) {
-                case "Quit":      setColor("Backspace");         break;
-                case "Backspace": setColor("Done");              break;
-                case "Done":      setColor("Quit");              break;
-                case "G":
-                case "N":
-                case "U":
-                case "g":
-                case "n":
-                case "u":         setColor(choiceLetter[0] - 6); break;
-                case "Z":
-                case "z":         setColor(choiceLetter[0] - 4); break;
-                default:          setColor(choiceLetter[0] + 1); break;
+                case "Quit":      setColor("Backspace"); break;
+                case "Backspace": setColor("Done");      break;
+                default:          setColor("Quit");      break;
             }
         } else if (GlobalControls.input.Left == ButtonState.PRESSED) {
             switch (choiceLetter) {
-                case "Quit":      setColor("Done");              break;
-                case "Backspace": setColor("Quit");              break;
-                case "Done":      setColor("Backspace");         break;
-                case "A":
-                case "H":
-                case "O":
-                case "a":
-                case "h":
-                case "o":         setColor(choiceLetter[0] + 6); break;
-                case "V":
-                case "v":         setColor(choiceLetter[0] + 4); break;
-                default:          setColor(choiceLetter[0] - 1); break;
+                case "Quit":      setColor("Done");      break;
+                case "Backspace": setColor("Quit");      break;
+                default:          setColor("Backspace"); break;
             }
         } else if (GlobalControls.input.Cancel == ButtonState.PRESSED) {
             weirdBackspaceShift = true;
@@ -145,40 +102,7 @@ public class EnterNameScript : MonoBehaviour {
             tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
             tmName.MoveTo(-calcTotalLength(tmName) / 2, tmName.transform.localPosition.y);
         } else if (GlobalControls.input.Confirm == ButtonState.PRESSED) {
-            switch (choiceLetter) {
-                case "Quit":
-                    GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
-                    SceneManager.LoadScene("TitleScreen");
-                    break;
-                case "Backspace": {
-                    weirdBackspaceShift = true;
-                    if (playerName.Length > 0)
-                        playerName = playerName.Substring(0, playerName.Length - 1);
-                    else
-                        weirdBackspaceShift = false;
-                    break;
-                }
-                case "Done": {
-                    if (playerName.Length > 0) {
-                        weirdBackspaceShift = false;
-                        confirm             = true;
-                        specialNameDict.TryGetValue(playerName.ToLower(), out confirmText);
-                        StartCoroutine(waitConfirm(ForbiddenNames.Contains(playerName.ToLower())));
-                        textObjFolder.SetActive(false);
-                    }
-
-                    break;
-                }
-                default: {
-                    if (playerName.Length < 9) playerName += choiceLetter;
-                    else                       playerName = playerName.Substring(0, 8) + choiceLetter;
-                    weirdBackspaceShift = false;
-                    break;
-                }
-            }
-            tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
-            tmName.MoveTo(-calcTotalLength(tmName) / 2, tmName.transform.localPosition.y);
-            uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menuconfirm"));
+            PressSelected();
             return;
         } else
             return;
@@ -186,24 +110,98 @@ public class EnterNameScript : MonoBehaviour {
     }
 
     /// <summary>
-    /// Takes whatever was typed on the keyboard this frame and puts it in the name.
-    /// Returns true if anything was consumed, which tells Update to leave the grid alone
-    /// for this frame.
-    ///
-    /// The grid stays. It is how a pad or a mouse enters a name, and it is the only thing
-    /// that works if the player has no keyboard in front of them.
+    /// Does whatever the highlighted button does. Confirm, Enter and a mouse click all come
+    /// through here, so there is one answer to what pressing a button means.
     /// </summary>
-    private bool HandleTypedCharacters() {
-        // Z and X are letters and they are also Confirm and Cancel, so on a screen that
-        // does both there is no reading of a Z keypress that is right everywhere. It is
-        // settled by where the cursor is. On Quit, Backspace or Done the player is working
-        // the grid and needs Z to press the button, so nothing is typed; without this a
-        // player who walks to Done and presses Z as the whole game has taught them just
-        // gets another z in their name and cannot finish. On a letter, typing wins, so
-        // every letter including z and x can be typed.
-        if (choiceLetter.Length != 1)
+    private void PressSelected() {
+        switch (choiceLetter) {
+            case "Quit":
+                GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
+                SceneManager.LoadScene("TitleScreen");
+                break;
+            case "Backspace": {
+                weirdBackspaceShift = true;
+                if (playerName.Length > 0)
+                    playerName = playerName.Substring(0, playerName.Length - 1);
+                else
+                    weirdBackspaceShift = false;
+                break;
+            }
+            case "Done": {
+                // An empty name is accepted and becomes the default. Letters can only be
+                // typed now, so a player on a controller can reach this button and has no
+                // way to put anything in front of it; refusing them would leave them on a
+                // screen with no way out.
+                if (playerName.Length == 0)
+                    playerName = ControlPanel.instance.BasisName;
+
+                weirdBackspaceShift = false;
+                confirm             = true;
+                specialNameDict.TryGetValue(playerName.ToLower(), out confirmText);
+                StartCoroutine(waitConfirm(ForbiddenNames.Contains(playerName.ToLower())));
+                textObjFolder.SetActive(false);
+                break;
+            }
+        }
+        tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
+        tmName.MoveTo(-calcTotalLength(tmName) / 2, tmName.transform.localPosition.y);
+        uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menuconfirm"));
+    }
+
+    private static readonly string[] buttonNames = { "Quit", "Backspace", "Done" };
+
+    /// <summary>
+    /// Highlights whichever button the pointer is over, and presses it on a click.
+    /// Returns true if a click was handled.
+    ///
+    /// The three buttons are bare sprites with no colliders, so Unity's OnMouseDown never
+    /// fires on them and adding colliders would mean editing the scene. Their world-space
+    /// bounds are tested directly instead, which is exact: every scene in this game runs on
+    /// the same orthographic camera at a fixed 640x480.
+    /// </summary>
+    private bool HandleMouse() {
+        Camera cam = Camera.main;
+        if (cam == null)
             return false;
 
+        Vector3 point = cam.ScreenToWorldPoint(Input.mousePosition);
+        point.z = 0;
+
+        foreach (string name in buttonNames) {
+            GameObject go = GameObject.Find(name);
+            if (go == null)
+                continue;
+            SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
+            if (sr == null)
+                continue;
+
+            Bounds b = sr.bounds;
+            if (point.x < b.min.x || point.x > b.max.x || point.y < b.min.y || point.y > b.max.y)
+                continue;
+
+            if (choiceLetter != name) {
+                setColor(name);
+                uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menumove"));
+            }
+            if (Input.GetMouseButtonDown(0)) {
+                PressSelected();
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Takes whatever was typed on the keyboard this frame and puts it in the name.
+    /// Returns true if anything was consumed, so Update leaves the buttons alone this frame.
+    ///
+    /// Every letter types, z and x included. They used to be ambiguous because they are also
+    /// Confirm and Cancel and the grid needed them; with no grid to confirm into, the only
+    /// thing Confirm can mean here is "press the highlighted button", and Enter and the
+    /// mouse both do that.
+    /// </summary>
+    private bool HandleTypedCharacters() {
         string typed = Input.inputString;
         if (typed.Length == 0)
             return false;

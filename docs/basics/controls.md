@@ -36,21 +36,19 @@ the Options menu, found in the boss select screen.
 
 ## Name entry
 
-`Any letter key` - Type your name straight in. Letters only, which is the same set the
-grid on screen offers, and the same nine character limit.
+Type your name. There is no letter grid to walk any more.
 
-`Backspace` - Delete the last letter.
+`Any letter key` - Types. Letters only, up to nine of them.
 
-`Arrow keys, Z, X` - The grid still works exactly as it did, so a pad or a mouse can enter
-a name without a keyboard. `X` also deletes a letter, and so does the Backspace button on
-screen.
+`Backspace` - Deletes the last letter.
 
-Typing takes priority over the grid while this screen is up, and only here. It has to:
-`W`, `A`, `S` and `D` are bound to the four directions by default, so without that a name
-with a `W` in it would walk the cursor around while spelling itself.
+`Enter, or a mouse click` - Presses the highlighted button. `Left and Right` move between
+`Quit`, `Backspace` and `Done`, and the mouse highlights whichever button it is over.
 
-`Z` and `X` are the exception, because they are letters and controls at once. Which one
-they mean depends on where the cursor is sitting. On a letter they type, so `z` and `x` can
-be typed like anything else. On `Quit`, `Backspace` or `Done` they press the button, so
-walking to `Done` and pressing `Z` finishes the name as it always has. `Enter` confirms
-from anywhere.
+Typed characters are taken before anything else reads the keyboard, which is what makes
+this work at all: `W`, `A`, `S` and `D` are bound to the four directions by default, so
+without it a name with a `W` in it would move the cursor while spelling itself. For the
+same reason `Z` and `X` type rather than acting as Confirm and Cancel on this screen only.
+
+**On a controller there is no way to type**, so `Done` accepts an empty name and gives you
+the default one rather than refusing to move on.
