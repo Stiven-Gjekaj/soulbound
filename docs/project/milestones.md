@@ -339,6 +339,13 @@ has the detail.
   ceiling was barely touched and what happens past it is still argument. Either the
   encounter gets a turn heavy enough to force drops, or the ceiling's value is chosen on
   reasoning and that is written down as a decision rather than left as an untested five.
+- **Text still types per rendered frame.** `TextManager` has its own `Update` and is not on
+  the battle tick, so `[speed:x]`, `[w:x]` and `[waitall:x]` are counted in rendered frames:
+  dialogue types at half speed on a 30fps machine and double on a 120fps one. The
+  documentation is accurate about this, which is how it was found. It was left alone rather
+  than fixed quietly, because `TextManager` also runs on screens that have no battle tick
+  and moving it is a decision rather than a repair. v0.7 is a boss written largely in text
+  commands, so it wants settling before then.
 - **Whatever else the stress encounter exposes.** Bullet performance, wave composition, and
   whatever the Lua API makes awkward when a fight runs long are all expected to land here.
 - **Thirteen remaining TODOs**, none of which name a version any more, to be triaged into a
