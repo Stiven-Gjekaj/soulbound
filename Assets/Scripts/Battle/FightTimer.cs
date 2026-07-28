@@ -9,7 +9,7 @@ using UnityEngine;
 ///
 /// The text object is built at runtime from the same prefab Lua's CreateText uses, because
 /// Battle.unity has no object for it and adding one needs the Unity editor. When the battle
-/// screen is rebuilt for art in v0.7 this wants a proper scene object instead.
+/// screen is rebuilt at v0.6 this wants a proper scene object instead.
 /// </summary>
 public class FightTimer : MonoBehaviour {
     public const string SettingKey = "show_fight_timer";

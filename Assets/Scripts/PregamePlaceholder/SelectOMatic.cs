@@ -192,7 +192,7 @@ public class SelectOMatic : MonoBehaviour {
 
         // The records go on the line the mod folder path used to occupy. It is the only
         // spare line ModSelect.unity has, so they share it; a purpose-built screen with
-        // room for a proper table is v0.7, alongside the art.
+        // room for a proper table is v0.6, when every screen is rebuilt unskinned.
         string record = RecordLine(boss);
         FolderText.GetComponent<Text>().text       = record;
         FolderTextShadow.GetComponent<Text>().text = record;

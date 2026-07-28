@@ -66,7 +66,7 @@ beaten and whether it was beaten clean, the best time, tries, and deaths. A boss
 player has never picked shows nothing, so an untouched list stays clean.
 
 That is one line because `ModSelect.unity` has exactly one spare. A screen with room for a
-table is v0.7, alongside the art.
+table is v0.6, when every screen is rebuilt unskinned.
 
 ## The player profile
 
@@ -105,18 +105,26 @@ the corner of the battle screen. It is a display setting, not a mode: the clock 
 either way, so turning it off never costs a record and turning it on never produces a
 second set of times that cannot be compared with anyone else's. `Battle.unity` has no
 object for it, so `FightTimer` builds the text at runtime from the same prefab Lua's
-`CreateText` uses; it wants a proper scene object when the battle screen is rebuilt for
-art.
+`CreateText` uses; it wants a proper scene object when the battle screen is rebuilt at
+v0.6.
 
-Two questions have to be answered before times are comparable between machines, and both
-belong to v0.5:
+Times are not yet comparable between two machines, and fixing that is v0.5 work. The cause
+is one disagreement with two faces: the fight's clock and the record's clock are not the
+same clock.
 
-- **Framerate drops.** The game caps at 60 with vsync off in `ScreenResolution.Start`, which
-  settles high-refresh displays, but a slow machine still ticks per-frame wave logic fewer
-  times per second.
-- **`Time.timeScale` during a timed fight.** The timer is immune to it, but the fight is
-  not. A boss that halves time scale halves how much the player has to do per wall-clock
-  second.
+- **Wave duration is wall-clock. Wave content is per frame.** A wave ends at
+  `Time.time + wavetimer`, but its script's `Update` runs once per rendered frame, through
+  `UIController.Update` calling `EnemyEncounter.UpdateWave`. A machine holding 30fps runs a
+  four second wave 120 times instead of 240, so a bullet written as movement per update
+  covers half the distance. The wave still lasts four seconds and is half as hard. The 60
+  cap with vsync off in `ScreenResolution.Start` settles high-refresh displays; it does
+  nothing for slow ones.
+- **`Time.timeScale` moves one clock and not the other.** Lua can set it through
+  `LuaUnityTime`. `Time.time` obeys it, so a boss at half time scale doubles the real
+  length of every wave, while the record clock keeps counting real seconds it cannot slow.
+
+Until both are settled, the best time on the boss select is an honest measurement of
+something that is not the same task on every machine.
 
 ## What is not here
 

@@ -72,7 +72,8 @@ in [Adding a boss](../basics/adding-a-boss.md).
 `SelectOMatic` binds to `ModSelect.unity` entirely through inspector fields, so changing
 what it lists needs no scene edit. That is why the screen is still built out of objects
 named `ModTitle`, `EncounterCount` and `encounterBox`: renaming them would mean editing the
-scene, and a purpose-built boss select is v0.7 work, to be done alongside the art.
+scene, and a purpose-built boss select is v0.6 work, done before the art rather than with
+it.
 
 Starting a fight is four lines, at the end of `SelectOMatic.LaunchBoss`:
 

@@ -27,8 +27,8 @@ public class DisclaimerScript : MonoBehaviour {
     /// The credits below this screen are deliberately untouched. They are the attribution
     /// GPLv3 requires, and they name the right people.
     ///
-    /// All of this wants doing properly in the scene when the menus are rebuilt for art in
-    /// v0.7, at which point this method should go.
+    /// All of this wants doing properly in the scene when the menus are rebuilt at v0.6, at
+    /// which point this method should go.
     /// </summary>
     private void Rebrand() {
         // The logo is a Create Your Frisk sprite and there is no Soulbound one yet, so the

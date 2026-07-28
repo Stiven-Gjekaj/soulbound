@@ -34,7 +34,7 @@ public class OptionsScript : MonoBehaviour {
         }
 
         // The last row Crate Your Frisk left behind. Nothing else is spare, so any option
-        // after this one needs a real object adding to Options.unity in v0.7.
+        // after this one needs a real object adding to Options.unity in v0.6.
         MenuButton timer = AdoptRetiredRow("Crate", "FightTimer");
         if (timer) {
             timer.GetComponentInChildren<Text>().text = "In-fight timer: " + (FightTimer.Enabled ? "On" : "Off");
