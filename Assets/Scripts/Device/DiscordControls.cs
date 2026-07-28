@@ -25,6 +25,15 @@ public static class DiscordControls {
     // Use this for initialization
     public static void Start() {
         // Creates the object that manages the Rich Presence Commands. The first argument is the APPID, the second tells the libraries if Discord must be started or not.
+        //
+        // This APPID is Create Your Frisk's, and it is the one thing about this game's
+        // identity that cannot be fixed from here. Discord takes the displayed game name and
+        // the icon below from whatever is registered against the ID on its developer portal,
+        // so a player with Discord open is telling their friends list they are playing
+        // Create Your Frisk, whatever this code sets. Soulbound needs its own application
+        // registered, and its ID pasted here, before anyone outside the team plays it.
+        // Recorded against v0.9 in the milestones, which is when a demo puts this in front
+        // of real people.
         try {
             discord = new Discord.Discord(711497963771527219, (ulong)CreateFlags.NoRequireDiscord);
             activityManager = discord.GetActivityManager();

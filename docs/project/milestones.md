@@ -423,6 +423,14 @@ Players will have records on disk, and from that point renaming an AlMighty glob
 bumping `GlobalControls.SaveVersion` orphans real progress rather than test data. Any
 change to what v0.3 and v0.4 wrote has to land before this ships, not after.
 
+**Soulbound needs its own Discord application before this ships**, and that is an action on
+Discord's developer portal rather than a code change. `DiscordControls.Start` connects with
+Create Your Frisk's application ID, and Discord draws the game name and the icon from
+whatever is registered against that ID, so a player with Discord open currently announces to
+their friends list that they are playing Create Your Frisk. v0.5 fixed everything about this
+that code can reach, which is the window title and the icon tooltip; the name and the icon
+itself need the new ID pasted into `DiscordControls.cs`.
+
 What the demo contains is a decision for the start of this milestone rather than now. The
 one constraint worth setting in advance is that it should not be all of v1.0.
 
