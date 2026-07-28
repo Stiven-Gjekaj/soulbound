@@ -100,6 +100,14 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
 - **A wave script's `Update` runs exactly 60 times a second.** It used to run once per
   rendered frame, which the documentation described as "usually at 60FPS, depends on the
   player's framerate". Patterns can be written against that number now.
+- **`Time.mult` stopped being advice and became a reading.** The API page told authors to
+  multiply movement by it "so your waves will be consistent on lower framerates", which was
+  true while a wave's `Update` ran once per rendered frame and is now backwards: `Update`
+  runs sixty times a second everywhere, so movement per `Update` is already equal and
+  scaling it makes a pattern *faster* on a slow machine. The same page now separates what
+  follows the fight from what follows the renderer, because `Time.dt`, `Time.mult` and
+  `Time.frameCount` are all the second kind and none of them said so. This matters before
+  v0.7 rather than after: every pattern in the first boss gets written against this page.
 - **A bad text command says so.** Fourteen of them caught their own errors, wrote a
   well-phrased usage message to a console nobody reads, and carried on as if nothing had
   happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.
