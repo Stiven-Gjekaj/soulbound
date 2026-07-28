@@ -21,7 +21,12 @@ public class GlobalControls : MonoBehaviour {
     public static LuaInputBinding luaInput = new LuaInputBinding(input);    // Input Lua object, usable on the Lua side
 
     public static bool modDev;          // True if we reached a battle through the boss select screen
-    public static bool retroMode;       // True if the Unitale 0.2.1a retrocompatibility mode is active, false otherwise
+
+    // Retro mode is being removed. This is the shim step: the flag is a constant so every
+    // branch that consults it collapses on its own and the project keeps compiling while
+    // the branches come out one file at a time. It goes when the last one has.
+    public const bool retroMode = false;
+
     public static bool stopScreenShake; // Used to stop any screenshake currently ongoing
     public static bool isInFight;       // True if we're in a battle, false otherwise
     public static bool allowWipeSave;   // Allows you to wipe your save in the Error scene if it couldn't load properly
@@ -47,11 +52,6 @@ public class GlobalControls : MonoBehaviour {
         #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             Misc.WindowName = ControlPanel.instance.WindowBasisName;
         #endif
-
-        // Check if retro mode has a stored preference that is a boolean
-        if (LuaScriptBinder.GetPermanentGlobal("CYFRetroMode") != null
-         && LuaScriptBinder.GetPermanentGlobal("CYFRetroMode").Type == DataType.Boolean)
-            retroMode = LuaScriptBinder.GetPermanentGlobal("CYFRetroMode").Boolean;
 
         // Check if window scale has a stored preference that is a number
         if (LuaScriptBinder.GetPermanentGlobal("CYFWindowScale") != null

@@ -14,7 +14,10 @@ public class OptionsScript : MonoBehaviour {
     // used to update the Description periodically
     private int DescriptionTimer;
 
-    // game objects
+    // game objects. Retro is bound so Options.unity keeps resolving the field, but it is no
+    // longer in the button list and so no longer drawn: retro mode is gone. It is a spare
+    // row now, adoptable by name through AdoptRetiredRow the way "Crate" was, which is what
+    // the in-fight timer is sitting in.
     public GameObject ResetSG, ResetPG, ClearSave, Retro, Scale, Discord, Keys, Exit;
     public Text Description;
 
@@ -33,8 +36,8 @@ public class OptionsScript : MonoBehaviour {
             buttons.Add(playerName);
         }
 
-        // The last row Crate Your Frisk left behind. Nothing else is spare, so any option
-        // after this one needs a real object adding to Options.unity in v0.6.
+        // A row Crate Your Frisk left behind. Retro mode's row is spare too now, so there is
+        // one more after this before an option needs a real object adding to Options.unity.
         MenuButton timer = AdoptRetiredRow("Crate", "FightTimer");
         if (timer) {
             timer.GetComponentInChildren<Text>().text = "In-fight timer: " + (FightTimer.Enabled ? "On" : "Off");
@@ -49,7 +52,6 @@ public class OptionsScript : MonoBehaviour {
             ResetSG.GetComponent<MenuButton>(),
             ResetPG.GetComponent<MenuButton>(),
             ClearSave.GetComponent<MenuButton>(),
-            Retro.GetComponent<MenuButton>(),
             Scale.GetComponent<MenuButton>(),
             Discord.GetComponent<MenuButton>(),
             Keys.GetComponent<MenuButton>(),
@@ -78,7 +80,6 @@ public class OptionsScript : MonoBehaviour {
                 ResetPG.GetComponentInChildren<Text>().text = "Permanent Globals Erased!";
 
                 // Add useful permanent globals
-                LuaScriptBinder.SetPermanentGlobal("CYFRetroMode", DynValue.NewBoolean(GlobalControls.retroMode));
                 LuaScriptBinder.SetPermanentGlobal("CYFWindowScale", DynValue.NewNumber(ScreenResolution.windowScale));
             } else {
                 PermanentGlobalResetCooldown = 60 * 2;
@@ -98,17 +99,6 @@ public class OptionsScript : MonoBehaviour {
             }
         });
 
-        // toggle retrocompatibility mode
-        Retro.GetComponent<Button>().onClick.AddListener(() => {
-            GlobalControls.retroMode =!GlobalControls.retroMode;
-
-            // save RetroMode preferences to permanent globals
-            LuaScriptBinder.SetPermanentGlobal("CYFRetroMode", DynValue.NewBoolean(GlobalControls.retroMode));
-
-            Retro.GetComponentInChildren<Text>().text = ("Retrocompatibility Mode: " + (GlobalControls.retroMode ? "On" : "Off"));
-        });
-        Retro.GetComponentInChildren<Text>().text = ("Retrocompatibility Mode: " + (GlobalControls.retroMode ? "On" : "Off"));
-
         // change window scale
         Scale.GetComponent<Button>().onClick.AddListener(() => {
             #if UNITY_EDITOR
@@ -123,7 +113,7 @@ public class OptionsScript : MonoBehaviour {
             ScreenResolution.tempWindowScale = ScreenResolution.windowScale;
             ScreenResolution.SetFullScreen(Screen.fullScreen);
 
-            // save RetroMode preferences to permanent globals
+            // save the window scale preference to permanent globals
             LuaScriptBinder.SetPermanentGlobal("CYFWindowScale", DynValue.NewNumber(ScreenResolution.windowScale));
 
             Scale.GetComponentInChildren<Text>().text = "Window Scale: "  + ScreenResolution.windowScale + "x";
@@ -236,10 +226,6 @@ public class OptionsScript : MonoBehaviour {
                          + "This holds your name, stats and inventory between sessions.\n\n"
                          + "Your save file is located at:\n\n";
                 return response + "<b><size='14'>" + Application.persistentDataPath + "/save.gd</size></b>";
-            case "Retro":
-                response = "Toggles retrocompatibility mode.\n\n"
-                         + "This mode is designed specifically to make encounters imported from Unitale v0.2.1a act as they did on the old engine.\n\n\n\n";
-                return response + "<b>CAUTION!\nDISABLE</b> this unless you are running an encounter written for\n<b>Unitale v0.2.1a</b>.";
             case "Scale":
                 response = "Scales the window in Windowed mode.\n\n"
                          + "This is useful for especially large screens (such as 4k monitors).\n\n"
