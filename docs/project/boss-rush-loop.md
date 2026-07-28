@@ -96,9 +96,14 @@ that a setting would produce two sets of times that cannot be compared with each
 a way to lose a personal best by forgetting a toggle. There is no speedrun mode for the
 same reason: it would only gate something that is always on.
 
-The clock is `Time.realtimeSinceStartup`, which `Time.timeScale` cannot distort, so a boss
-script cannot slow the timer down by slowing the game down. It starts after the encounter
-script has run, so loading is not counted against the player.
+The clock counts battle steps. A fight advances in whole steps of a sixtieth of a second
+(see [the battle tick](#the-battle-tick) below), and a time is the number of steps the
+fight took divided by sixty. On a machine holding 60fps that is the same number a
+stopwatch would give. Where it differs, the step count is the honest one: it measures what
+the fight actually did rather than how long the player sat in front of it, so a stutter, a
+slow machine, or a boss slowing time down cannot inflate a record for the same work. The
+clock starts after the encounter script has run, so loading is not counted against the
+player.
 
 The options screen has an in-fight timer, off by default, which shows the running time in
 the corner of the battle screen. It is a display setting, not a mode: the clock runs
@@ -108,23 +113,39 @@ object for it, so `FightTimer` builds the text at runtime from the same prefab L
 `CreateText` uses; it wants a proper scene object when the battle screen is rebuilt at
 v0.6.
 
-Times are not yet comparable between two machines, and fixing that is v0.5 work. The cause
-is one disagreement with two faces: the fight's clock and the record's clock are not the
-same clock.
+## The battle tick
 
-- **Wave duration is wall-clock. Wave content is per frame.** A wave ends at
-  `Time.time + wavetimer`, but its script's `Update` runs once per rendered frame, through
-  `UIController.Update` calling `EnemyEncounter.UpdateWave`. A machine holding 30fps runs a
-  four second wave 120 times instead of 240, so a bullet written as movement per update
-  covers half the distance. The wave still lasts four seconds and is half as hard. The 60
-  cap with vsync off in `ScreenResolution.Start` settles high-refresh displays; it does
-  nothing for slow ones.
-- **`Time.timeScale` moves one clock and not the other.** Lua can set it through
-  `LuaUnityTime`. `Time.time` obeys it, so a boss at half time scale doubles the real
-  length of every wave, while the record clock keeps counting real seconds it cannot slow.
+The fight advances on its own clock rather than on the frame rate. `BattleTick` accumulates
+elapsed time and runs whole steps of `1/60` of a second, and every part of the fight that
+decides what happens advances one step at a time, in this order:
 
-Until both are settled, the best time on the boss select is an honest measurement of
-something that is not the same task on every machine.
+| Order | What | Why here |
+| --- | --- | --- |
+| 1 | the arena | it is the boundary everything else is measured inside |
+| 2 | the attack bar | so the state machine reads where it is when Confirm is pressed |
+| 3 | the player | the soul moves |
+| 4 | the encounter and wave scripts | the boss's `Update` hooks, which move bullets |
+| 5 | projectiles | hitboxes and collision, against where everything ended up |
+
+Rendering still happens every frame and shows the last step's state.
+
+This exists because the fight used to advance once per rendered frame while the player
+moved by elapsed time. A machine holding 30fps ran a four second wave 120 times instead of
+240, so every bullet written as movement per update covered half the ground while the soul
+kept its full speed. The fight was not slower on slow hardware, it was easier.
+
+Two consequences worth knowing:
+
+- **A wave script's `Update` runs exactly 60 times a second.** It used to run once per
+  frame, "usually 60, depending on the player's framerate". Patterns can be written against
+  that number now.
+- **A frame that owes more than five steps drops the backlog** instead of repaying it.
+  Catching up without a ceiling turns one slow frame into a slower one, which owes more
+  steps again.
+
+A fixed step was chosen over scaling movement by elapsed time because the Lua API is public
+and its patterns are written as movement per `Update`. Scaling would have silently changed
+the speed of every pattern ever written; this leaves them meaning exactly what they meant.
 
 ## What is not here
 

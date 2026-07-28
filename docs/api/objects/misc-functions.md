@@ -74,18 +74,6 @@ read each others' globals. Be careful when choosing global names.
 
 Gets an AlMighty Global that you previously set using `SetAlMightyGlobal()`.
 
-### `SetFrameBasedMovement(boolean bool)` [E/M/W]
-
-Set to `true` if you want frame-based player movement (2px/frame) instead of time based
-player movement (120px/s). Set it to `false` if you already are in frame-based movement and
-you want to go back to the time based movement.
-
-By default, time-based movement is used, same as if `SetFrameBasedMovement(false)` were
-called.
-
-Note that this function only controls the player's movement with the default control
-scheme (see `Player.SetControlOverride` in [The Player object](player.md)).
-
 ### `SetAction(string "FIGHT", "ACT", "ITEM" or "MERCY")` [E/M/W]
 
 Used alongside `State("ENEMYSELECT")`, or `EnteringState` when entering the same state, to

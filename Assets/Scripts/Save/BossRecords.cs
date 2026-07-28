@@ -12,16 +12,22 @@ using UnityEngine;
 /// Timing is unconditional. Every fight is timed whether or not anything displays it,
 /// because making that a setting would produce two sets of times that cannot be compared,
 /// and a way to lose a personal best by forgetting a toggle.
+///
+/// A fight is timed in battle steps rather than wall-clock seconds. On a machine holding
+/// 60fps the two are the same number. Where they differ, the step count is the honest one:
+/// it measures what the fight actually did rather than how long the player sat in front of
+/// it, so a stutter, a slow machine, or a boss slowing time down cannot inflate a record
+/// for the same amount of work.
 /// </summary>
 public static class BossRecords {
     private static string currentId = "";
-    private static float clockStart;
+    private static int  clockStart;
     private static bool clockRunning;
     private static bool tookAHit;
 
     /// <summary>Seconds the fight in progress has been running, or 0 if none is.</summary>
     public static float Elapsed {
-        get { return clockRunning ? Time.realtimeSinceStartup - clockStart : 0f; }
+        get { return clockRunning ? (BattleTick.Ticks - clockStart) * BattleTick.Step : 0f; }
     }
 
     /// <summary>
@@ -38,7 +44,7 @@ public static class BossRecords {
 
     /// <summary>The fight is actually under way. Starts the clock.</summary>
     public static void ClockStart() {
-        clockStart   = Time.realtimeSinceStartup;
+        clockStart   = BattleTick.Ticks;
         clockRunning = true;
     }
 

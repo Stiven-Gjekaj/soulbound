@@ -111,7 +111,7 @@ end
 
 ### `Update()`
 
-This function runs for every frame (usually at 60FPS, depends on the player's framerate)
+This function runs once per battle step, which is exactly 60 times a second
 for all of the encounter, even during waves. This is an extremely powerful function, as it
 can run any code at any time, no matter what. The only exception is the game over state,
 if the player dies, no code from within this function will be run.
@@ -217,7 +217,7 @@ end
 
 ### `Update()`
 
-This function is called every frame (usually at 60FPS) while monsters are attacking, the
+This function is called once per battle step, 60 times a second, while monsters are attacking, the
 defense step.
 
 That's pretty much it. Update your bullets here, more on bullet creation and control is on
