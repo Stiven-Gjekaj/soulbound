@@ -108,6 +108,11 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   follows the fight from what follows the renderer, because `Time.dt`, `Time.mult` and
   `Time.frameCount` are all the second kind and none of them said so. This matters before
   v0.7 rather than after: every pattern in the first boss gets written against this page.
+- The bullet tutorial stopped counting in frames. Its `Update` comments said "every frame"
+  and "every 30 frames", which was the truth when a wave ran once per rendered frame and is
+  now both wrong and vaguer than the code deserves: 30 iterations is exactly half a second
+  on every machine. It is the example boss authors copy from, so its vocabulary is the
+  vocabulary they learn.
 - **A bad text command says so.** Fourteen of them caught their own errors, wrote a
   well-phrased usage message to a console nobody reads, and carried on as if nothing had
   happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.

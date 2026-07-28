@@ -235,12 +235,12 @@ bounce back up. Otherwise it'll continue falling off the screen.
 spawntimer = 0
 bullets = {}
 
--- This happens every frame while you're defending. --
+-- This runs 60 times a second while you're defending, whatever the frame rate. --
 function Update()
-    spawntimer = spawntimer + 1 --Add 1 to the counter every frame
+    spawntimer = spawntimer + 1 --Add 1 to the counter each time
 
     -- This part takes care of bullet spawning. --
-    if spawntimer%30 == 0 then  --This happens every 30 frames.
+    if spawntimer%30 == 0 then  --Every 30 steps, which is every half second.
         local posx = 30 - math.random(60) --Set a random X position between -30 and 30
         local posy = 65 --and set the Y position to 65, on the top edge of the arena.
         local bullet = CreateProjectile('hOI!!!!', posx, posy) -- Create projectile with sprite hOI!!!!.png
