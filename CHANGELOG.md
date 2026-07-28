@@ -17,6 +17,47 @@ ones.
 Tying off every loose end before the game gets screens, a real boss and art. The
 milestone has no fixed end: it runs until its list is empty and has stopped growing.
 
+### Added
+
+- **The battle tick.** The fight advances in whole steps of a sixtieth of a second rather
+  than once per rendered frame. Each step runs the arena, the attack bar, the player, the
+  encounter and wave scripts, then projectile movement and collision, in that order.
+
+  Before this the fight ran once per frame while the player moved by elapsed time, so a
+  machine holding 30fps ran a four second wave 120 times instead of 240. Every bullet
+  written as movement per update covered half the ground while the soul kept its full
+  speed. The fight was not slower on slow hardware, it was easier.
+
+  A fixed step rather than scaling movement by elapsed time, because the Lua API is public
+  and its patterns are written as movement per `Update`. Scaling would have silently
+  changed the speed of every pattern ever written; this leaves them meaning what they meant.
+  The order was previously undefined: `PlayerController` and `Projectile` each had their own
+  `Update` with no execution order between them, so whether a bullet was tested against this
+  step's or last step's player position was decided by nothing.
+- **Typing your name.** The name screen takes letters from the keyboard, up to nine, with
+  Backspace to delete. The three buttons respond to the mouse as well as to Enter.
+- **A stress encounter**, listed in the registry. Three turns of identical length, each
+  running a fixed number of wave updates before ending itself, differing only in how many
+  bullets they push. Each reports the game time it took, the wall clock it actually took and
+  the worst frame it saw, so the claim above can be measured rather than argued.
+
+### Removed
+
+- **Retro mode**, the last inherited mode flag: 53 references across 18 files, the flag, the
+  options row and its description, the `isRetro` Lua global, and the warning banner. It
+  changed gameplay semantics rather than appearance, which is why it went in its own pass
+  with the same shim-collapse-delete order v0.2 used on `IsOverworld`.
+
+  The retro flee lines go with it. v0.2 kept them on the grounds that jokes about a missing
+  overworld were literally true here, which held while retro mode still existed to reach
+  them. Nothing reaches them now.
+- **`SetFrameBasedMovement`** and the `ControlPanel` field behind it. Both of its settings
+  mean the same thing once the fight runs on a fixed step, and a function whose two options
+  are identical is worse than no function.
+- **The letter grid on the name screen.** It existed because there was no other way to enter
+  a name, and once letters could be typed it only created an argument over the Z key, which
+  is a letter and Confirm at once. With nothing to confirm into, Z is only ever a letter.
+
 ### Changed
 
 - The roadmap from v0.5 to v1.0. Six milestones rather than five. v0.5 becomes open-ended
@@ -39,6 +80,58 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   instead of 240 and every bullet written as movement per update covers half the ground.
   `Time.timeScale` then moves `Time.time` without moving the record clock. The page names
   the line each face comes from now.
+- **A fight is timed in battle steps rather than wall-clock seconds.** On a machine holding
+  60fps that is the same number a stopwatch gives. Where they differ the step count is the
+  honest one: it measures what the fight did rather than how long the player sat in front of
+  it, so a stutter, a slow machine or a boss slowing time down cannot inflate a record for
+  the same work. Existing records were set at 60fps and stay meaningful, so no save
+  migration is needed.
+- **A wave script's `Update` runs exactly 60 times a second.** It used to run once per
+  rendered frame, which the documentation described as "usually at 60FPS, depends on the
+  player's framerate". Patterns can be written against that number now.
+- **A bad text command says so.** Fourteen of them caught their own errors, wrote a
+  well-phrased usage message to a console nobody reads, and carried on as if nothing had
+  happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.
+  They reach the error screen now, which is what `[font:x]` in the same switch always did.
+  This matters more from here on: v0.7 is a boss written largely in text commands.
+- **The window title and Discord Rich Presence stop naming Create Your Frisk.**
+  `ControlPanel.WindowBasisName` built "Create Your Frisk v0.6.6 LTS 4" out of three
+  variables, which is why v0.3's 273-marker sweep and v0.4's fourteen both missed it:
+  nothing in the file contained the fork's name to search for. It is the Windows title bar
+  and, on every platform, the game name and icon tooltip in Discord, so it was in people's
+  friends lists. It reads the build's own version now.
+- **The name screen accepts an empty name**, falling back to the default. A controller can
+  reach the buttons and cannot produce a letter, so refusing would leave a pad player on a
+  screen with no way out.
+- Twenty inherited notes stopped citing a version number that reads as ours. They said
+  "Restore in 0.7" or "Remove this for 0.7", meaning Create Your Frisk's 0.7, in a project
+  that now has its own. Each states Soulbound's decision instead. Two were design questions
+  rather than cleanups and are recorded as open: whether a boss may heal the player above
+  their maximum, and what `sprite.spritename` should report once an animation is running.
+
+### Fixed
+
+Four of these were found by collapsing retro mode's branches. They had been hiding as
+compatibility for years and none of them were cosmetic:
+
+- Enemy HP silently raised its own maximum when a script set `hp` above `maxhp`.
+- A wave script's exceptions were swallowed whole, so a broken wave failed in silence.
+- Empty dialogue tables were accepted where a non-empty array or a string was required.
+- Non-persistent bullets survived the wave that spawned them.
+
+### Notes
+
+- **The Discord application ID is still Create Your Frisk's**, and no change here can alter
+  it. Discord draws the displayed game name and the icon from whatever is registered against
+  the ID on its developer portal, so a player with Discord open announces the wrong game
+  whatever this code sets. Soulbound needs its own application registered before anyone
+  outside the team plays it, which is recorded against v0.9.
+- The engine gained a local syntax check, `syntax-check.sh`. It is not a build and cannot be
+  one, since UnityEngine and MoonSharp are not on the path outside the editor, but it parses
+  every C# and Lua file and reports the mistakes that need no Unity to find. CI took three
+  minutes to say "unexpected else"; this takes four seconds.
+- v0.5 has no fixed end and is still open. This section is written as the milestone goes
+  rather than at the end of it.
 
 ## 0.4 (2026-07-27)
 
