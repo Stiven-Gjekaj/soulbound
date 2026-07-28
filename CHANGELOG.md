@@ -129,6 +129,12 @@ that caused them:
   the pointer is sitting.
 - **The name screen's instruction overlapped the name being typed.** It was two lines and
   the name is drawn just under it. One line now.
+- **The error screen sent most players to a log file that was not there.** It named
+  `output_log.txt` in the save folder, which is where Unity puts it on Windows and nowhere
+  else: Linux writes `Player.log` to that folder and macOS writes it under
+  `~/Library/Logs`. Three call sites, all of them printed at the moment someone is being
+  asked to find a log and attach it. `Read me first.txt` had the same single wrong path
+  and now lists all three.
 
 ### Notes
 

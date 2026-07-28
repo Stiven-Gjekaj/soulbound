@@ -39,7 +39,7 @@ public class ScriptWrapper {
                 + "\r\n  at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
                 UnitaleUtil.DisplayLuaError(scriptname, "<b>Possible infinite loop</b>\n\nThis is a " + ex.GetType() + " error.\n\n"
                     + "You almost definitely have an infinite loop in your code. A function tried to call itself infinitely. It could be a normal function or a metatable function."
-                    + "\n\n\nFull stracktrace (see the output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):\n\n" + ex.StackTrace);
+                    + "\n\n\nFull stracktrace (see the output log at <b>" + UnitaleUtil.LogPath + "</b>):\n\n" + ex.StackTrace);
             else
                 UnitaleUtil.DisplayLuaError(scriptname, "This is a " + ex.GetType() + " error. Contact a dev and show them this screen, this must be an engine-side error.\n\n" + ex.Message + "\n\n" + ex.StackTrace + "\n");
         }

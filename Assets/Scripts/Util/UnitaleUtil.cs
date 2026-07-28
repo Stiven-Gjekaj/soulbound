@@ -14,6 +14,27 @@ using System.IO;
 public static class UnitaleUtil {
     internal static bool firstErrorShown; //Keeps track of whether an error already appeared, prevents subsequent errors from overriding the source.
     public static string printDebuggerBeforeInit = "";
+
+    /// <summary>
+    /// Where Unity writes the player log on this platform.
+    ///
+    /// The error screen used to name persistentDataPath/output_log.txt for everyone, which
+    /// is the Windows answer. Linux writes Player.log to that folder instead, and macOS
+    /// writes it somewhere else entirely, so two players out of three were being sent to a
+    /// file that was not there at the one moment they needed it.
+    /// </summary>
+    public static string LogPath {
+        get {
+            #if UNITY_STANDALONE_OSX
+                return Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+                     + "/Library/Logs/" + Application.companyName + "/" + Application.productName + "/Player.log";
+            #elif UNITY_STANDALONE_WIN
+                return Application.persistentDataPath + "/output_log.txt";
+            #else
+                return Application.persistentDataPath + "/Player.log";
+            #endif
+        }
+    }
     /*internal static string fileName = Application.dataPath + "/Logs/log-" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '-') + ".txt";
     internal static StreamWriter sr;
 
@@ -97,12 +118,12 @@ public static class UnitaleUtil {
         } else if (e.GetType().ToString() == "System.IndexOutOfRangeException" && e.StackTrace.Contains("at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
             DisplayLuaError(scriptname + ", calling the function " + function, "<b>Possible infinite loop</b>\n\nThis is a " + e.GetType() + " error."
                                                                              + "\n\nYou almost definitely have an infinite loop in your code. A function tried to call itself infinitely. It could be a normal function or a metatable function."
-                                                                             + "\n\nFull stracktrace (see the output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):"
+                                                                             + "\n\nFull stracktrace (see the output log at <b>" + LogPath + "</b>):"
                                                                              + "\n" + e.StackTrace);
         else
             DisplayLuaError(scriptname + ", calling the function " + function, "This is a " + e.GetType() + " error. Contact a dev and show them this screen, this must be an engine-side error."
                                                                              + "\n\n" + e.Message
-                                                                             + "\n\nFull stracktrace (see the output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):"
+                                                                             + "\n\nFull stracktrace (see the output log at <b>" + LogPath + "</b>):"
                                                                              + "\n" + e.StackTrace + "\n");
     }
 
