@@ -141,6 +141,19 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   through `PredictTextWidth`. There was no `PredictTextHeight`, so height returned zero
   until the letters existed. Screens that size themselves to their content have to ask
   before they draw, which is v0.6's whole job.
+- **The text command stripper is written once.** `TextMessage` and `SelectMessage` each had
+  their own hand-rolled scan for the commands at the start of a line, and the copies had
+  drifted. `SelectMessage` never reset the flag meaning "I found a closing bracket", so a
+  second command without a `]` left it looping over a string it had stopped changing: an
+  unclosed bracket at the start of a menu option **hung the game**. It also indexed the line
+  without rechecking it was non-empty. Neither fault was in the other copy, which is what
+  two copies of a parser buys you.
+
+  Both call `UnitaleUtil.ExtractLeadingCommands` now. It also fixes an inconsistency both
+  shared: `[starcolor]` and `[letters]` are meant to stay where they are, but the check for
+  them required ten characters for both names, so the nine-character line `[letters]` failed
+  it and was stripped while `[letters]x` was kept. This matters before v0.7, a boss written
+  largely in text commands.
 - **A bad text command says so.** Fourteen of them caught their own errors, wrote a
   well-phrased usage message to a console nobody reads, and carried on as if nothing had
   happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.

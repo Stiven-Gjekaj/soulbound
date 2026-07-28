@@ -201,6 +201,45 @@ public static class UnitaleUtil {
     /// <param name="getLastSpace">True if we count the letter spacing after the last letter of the text</param>
     /// <returns>The length of the text in pixels</returns>
     /// <summary>
+    /// Splits the text commands off the front of a line. The commands come back as one
+    /// string and <paramref name="line"/> is left holding whatever followed them.
+    ///
+    /// `[starcolor]` and `[letters]` configure the whole message rather than a point in it,
+    /// so with <paramref name="keepStarcolorAndLetters"/> the scan stops at the first one
+    /// and leaves it in the line. A plain message wants that on every line; a select message
+    /// wants it only on the first option, because the setting applies once.
+    ///
+    /// This was written twice, in TextMessage and SelectMessage, and the copies had drifted.
+    /// SelectMessage never reset the flag that says "I found a closing bracket", so a second
+    /// command with no `]` left it looping on a string it was no longer changing: an
+    /// unclosed bracket at the start of a menu option hung the game. It also indexed the
+    /// line without checking it was still non-empty. Neither fault existed in the other copy.
+    /// </summary>
+    public static string ExtractLeadingCommands(ref string line, bool keepStarcolorAndLetters = true) {
+        string commands = "";
+        if (string.IsNullOrEmpty(line))
+            return commands;
+
+        while (line.Length > 0 && line[0] == '[') {
+            // Each of these is length-checked on its own. They used to share one check for
+            // ten characters, so the line "[letters]" was nine long, failed the check, and
+            // was stripped as an ordinary command while "[letters]x" was kept.
+            if (keepStarcolorAndLetters
+                && ((line.Length >= 10 && line.Substring(0, 10) == "[starcolor")
+                 || (line.Length >= 8  && line.Substring(0, 8)  == "[letters")))
+                break;
+
+            int close = line.IndexOf(']');
+            if (close == -1)
+                break;
+
+            commands += line.Substring(0, close + 1);
+            line      = line.Substring(close + 1);
+        }
+        return commands;
+    }
+
+    /// <summary>
     /// Works out how tall a text will be from the font and the string, without needing the
     /// letters to have been created yet.
     ///

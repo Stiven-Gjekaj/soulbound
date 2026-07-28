@@ -24,33 +24,15 @@ public class SelectMessage : TextMessage {
                 intermedPrefix = colorPrefixes[i];
                 intermedSuffix = "[color:ffffff][alpha:ff]";
             }
-            int index = 0;
+            // Only the first option keeps [starcolor] and [letters] where they are: they
+            // configure the whole message rather than one option, so on any later option
+            // they are ordinary commands to lift out with the rest.
             string commands = "";
-            bool gotIt = false;
-            bool needExit = false;
-            if (options[i] != null)
-                if (options[i].Length > 0)
-                    while (options[i][index] == '[') {
-                        if (!(i == 0 && options[i].Length >= 10 + index && (options[i].Substring(index, 10) == "[starcolor" || options[i].Substring(index, 8) == "[letters"))) {
-                            for (int j = index; j < options[i].Length; j++)
-                                if (options[i][j] == ']') { // TODO: Somehow apply UnitaleUtil.ParseCommandInLine here maybe?
-                                    commands += options[i].Substring(index, j + 1);
-                                    options[i] = options[i].Substring(index + j + 1, options[i].Length - index - j - 1);
-                                    gotIt = true;
-                                    break;
-                                }
-                            if (!gotIt)
-                                break;
-                        } else
-                            while (options[i][index] != ']') {
-                                index++;
-                                if (index != options[i].Length) continue;
-                                needExit = true;
-                                break;
-                            }
-                        if (needExit)
-                            break;
-                    }
+            if (options[i] != null) {
+                string option = options[i];
+                commands = UnitaleUtil.ExtractLeadingCommands(ref option, i == 0);
+                options[i] = option;
+            }
             // If the option is null, empty or equal to "\tPAGE 1" (used for enemy pages), there will not be any prefix
             if (options[i] == null || options[i] == "" || options[i].Contains("PAGE "))
                 prefix = "";

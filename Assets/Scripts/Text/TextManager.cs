@@ -5,7 +5,11 @@ using MoonSharp.Interpreter;
 using UnityEngine;
 using UnityEngine.UI;
 
-// TODO less code duplicate-y way of pulling commands out of the text.
+// Pulling commands out of text happens in two different senses, and they are not the same
+// job. Stripping the leading commands off a line is UnitaleUtil.ExtractLeadingCommands,
+// written once and used by TextMessage and SelectMessage, which each had their own copy.
+// Reading a command at a point in the text while rendering is ParseCommandInline and the
+// switch below, and that is only here.
 public class TextManager : MonoBehaviour {
 
     public struct LetterData {

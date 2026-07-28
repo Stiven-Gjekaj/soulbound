@@ -39,33 +39,7 @@ public class TextMessage {
         string[] linesCommands = new string[lines.Length];
         if (text.Length != 0)
             for (int i = 0; i < lines.Length; i++) {
-                bool needExit = false;
-                int index = 0;
-                if (lines[i].Length != 0)
-                    while (lines[i][index] == '[') {
-                        if (!(lines[i].Length >= 10 + index && (lines[i].Substring(index, 10) == "[starcolor" || lines[i].Substring(index, 8) == "[letters"))) {
-                            if (lines[i][index] == '[') { // TODO: Somehow apply UnitaleUtil.ParseCommandInLine here maybe?
-                                bool command = false;
-                                for (int j = index; j < lines[i].Length; j++)
-                                    if (lines[i][j] == ']') {
-                                        command = true;
-                                        linesCommands[i] += lines[i].Substring(index, j + 1);
-                                        lines[i] = lines[i].Substring(index + j + 1, lines[i].Length - index - j - 1);
-                                        break;
-                                    }
-                                if (!command || lines[i].Length == 0) break;
-                            }
-                        } else
-                            while (lines[i][index] != ']') {
-                                index++;
-                                if (index != lines[i].Length) continue;
-                                needExit = true;
-                                break;
-                            }
-
-                        if (needExit)
-                            break;
-                    }
+                linesCommands[i] = UnitaleUtil.ExtractLeadingCommands(ref lines[i]);
 
                 if (lines[i].Length != 0)
                     if (lines[i][0] == ' ')
