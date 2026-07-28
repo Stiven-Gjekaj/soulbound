@@ -50,7 +50,11 @@ function Update()
         local wall = Time.time - startTime
         local game = updates / 60
         SetGlobal("stress_report_" .. SLOT,
-            string.format("turn %d, %d bullets: %.1fs game, %.1fs wall, worst frame %.0f fps",
+            -- Short on purpose. The encounter text box fits about thirty characters a line
+            -- and clips the rest with no wrap, so the long form lost the frame rate, which
+            -- is the number that says whether the renderer was struggling at all.
+            -- g is game time, w is wall clock, both in seconds.
+            string.format("t%d %db  g%.1fs w%.1fs %.0ffps",
                           SLOT, BULLETS, game, wall, 60 / math.max(worstMult, 0.0001)))
         EndWave()
     end
