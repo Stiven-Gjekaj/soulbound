@@ -28,12 +28,13 @@ function HandleAttack(attackstatus)
     -- Unkillable on purpose. Press Escape to leave once the numbers are on screen.
 end
 
--- Called by the encounter script, not by the engine.
+-- Called by the encounter script rather than by the engine.
 --
--- This was an EnemyDialogueStarting handler and never ran once. The engine dispatches those
--- hooks through EnemyEncounter.CallOnSelfOrChildren, which returns as soon as the encounter
--- script handles one, and this encounter defines its own. A monster's copy of any hook the
--- encounter also defines is dead code, silently, so the lines below never appeared.
+-- This was an EnemyDialogueStarting handler and it never ran, back when the engine stopped
+-- dispatching a game event as soon as the encounter script handled it. Both scripts define
+-- that event, so the encounter's won and this one was dead code. The engine calls both now,
+-- but this stays an ordinary function: the encounter decides which turn it is, and the line
+-- follows from that rather than from two handlers agreeing about a counter.
 function NextLine()
     said = said + 1
     if said == 1 then

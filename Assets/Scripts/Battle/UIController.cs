@@ -305,7 +305,7 @@ public class UIController : MonoBehaviour {
 
         string oldState = state;
         state = newState;
-        //encounter.CallOnSelfOrChildren("Entered" + Enum.GetName(typeof(UIState), state).Substring(0, 1)
+        //encounter.CallOnSelfAndChildren("Entered" + Enum.GetName(typeof(UIState), state).Substring(0, 1)
         //                                         + Enum.GetName(typeof(UIState), state).Substring(1, Enum.GetName(typeof(UIState), state).Length - 1).ToLower());
         if (oldState == "DEFENDING" && state != "DEFENDING") {
             string current = state;
@@ -465,7 +465,7 @@ public class UIController : MonoBehaviour {
             case "ENEMYDIALOGUE":
                 PlayerController.instance.GetComponent<Image>().enabled = true;
                 ArenaManager.instance.Resize((int)encounter.ArenaSize.x, (int)encounter.ArenaSize.y);
-                encounter.CallOnSelfOrChildren("EnemyDialogueStarting");
+                encounter.CallOnSelfAndChildren("EnemyDialogueStarting");
                 if (state != "ENEMYDIALOGUE")
                     return;
                 monsterDialogues = new LuaTextManager[encounter.EnabledEnemies.Length];
@@ -618,7 +618,7 @@ public class UIController : MonoBehaviour {
         }
 
         if (encounter.EnabledEnemies.Length <= 0) return;
-        encounter.CallOnSelfOrChildren("EnemyDialogueEnding");
+        encounter.CallOnSelfAndChildren("EnemyDialogueEnding");
         if (state == "ENEMYDIALOGUE")
             SwitchState("DEFENDING");
     }
@@ -789,14 +789,14 @@ public class UIController : MonoBehaviour {
                                 playSound = false;
                             }
                             if (encounter.EnabledEnemies.Length > 0)
-                                encounter.CallOnSelfOrChildren("HandleSpare");
+                                encounter.CallOnSelfAndChildren("HandleSpare");
                             break;
                         }
                         case 1: {
                             {
                                 bool fleeSuccess = EnemyEncounter.script.GetVar("fleesuccess").Boolean || EnemyEncounter.script.GetVar("fleesuccess").Type != DataType.Boolean && Math.RandomRange(0, 9) + encounter.turnCount > 4;
 
-                                if (encounter.CallOnSelfOrChildren("HandleFlee", new[] { DynValue.NewBoolean(fleeSuccess) }))
+                                if (encounter.CallOnSelfAndChildren("HandleFlee", new[] { DynValue.NewBoolean(fleeSuccess) }))
                                     break;
 
                                 if (fleeSuccess) StartCoroutine(ISuperFlee());
@@ -1136,7 +1136,7 @@ public class UIController : MonoBehaviour {
         fightUI.gameObject.SetActive(false);
 
         if (UnitaleUtil.firstErrorShown) return;
-        encounter.CallOnSelfOrChildren("EncounterStarting");
+        encounter.CallOnSelfAndChildren("EncounterStarting");
 
         // Everything above this line is loading, which is not the player's time. Resetting
         // the tick here also throws away the accumulator, so however long the encounter

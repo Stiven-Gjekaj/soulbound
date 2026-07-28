@@ -11,6 +11,15 @@ specific script type.
 
 ## Encounter script events
 
+These run in the encounter script **and in every monster script**, encounter first. Both
+get called: defining `EnemyDialogueStarting` in your encounter does not stop the one in
+your monster from running.
+
+That is worth stating because it used to work the other way. The engine stopped at the
+first script that had the function, so a monster's copy of any event the encounter also
+defined never ran, and nothing reported it. If you are reading an older fight written for
+that behaviour, a handler it relied on being skipped now runs.
+
 ### `EncounterStarting()`
 
 Happens once when everything's done initializing but before any encounter actions start.

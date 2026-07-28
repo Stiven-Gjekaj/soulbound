@@ -74,11 +74,20 @@ public class EnemyEncounter : MonoBehaviour {
         StartCoroutine(UIController.instance.ISuperFlee());
     }
 
-    public bool CallOnSelfOrChildren(string func, DynValue[] param = null) {
-        // TODO: Don't stop execution if the function has been run in the Encounter script
-        if (UnitaleUtil.TryCall(script, func, param)) return true;
-
-        bool calledOne = false;
+    /// <summary>
+    /// Runs a game event in the encounter script and in every monster script, in that order.
+    /// Returns true if any of them defined it.
+    ///
+    /// This used to stop at the first script that had the function, encounter first, so a
+    /// monster's copy of any event the encounter also defined was dead code. Nothing said
+    /// so: the handler simply never ran. That is the wrong default for a boss rush, where
+    /// an encounter orchestrating phases alongside a monster owning its own behaviour is
+    /// the normal shape of a fight rather than an edge case.
+    ///
+    /// The encounter runs first, which is the same precedence the old behaviour implied.
+    /// </summary>
+    public bool CallOnSelfAndChildren(string func, DynValue[] param = null) {
+        bool calledOne = UnitaleUtil.TryCall(script, func, param);
         foreach (EnemyController enemy in enemies)
             if (UnitaleUtil.TryCall(enemy.script, func, param))
                 calledOne = true;
@@ -239,7 +248,7 @@ public class EnemyEncounter : MonoBehaviour {
     // <param name="item">Item to be checked for custom action</param>
     // <returns>true if a custom action should be executed for given item, false if the default action should happen</returns>
     /*public virtual bool CustomItemHandler(UnderItem item) {
-        UIController.instance.encounter.CallOnSelfOrChildren("HandleItem", new MoonSharp.Interpreter.DynValue[] { MoonSharp.Interpreter.DynValue.NewString(item.Name) });
+        UIController.instance.encounter.CallOnSelfAndChildren("HandleItem", new MoonSharp.Interpreter.DynValue[] { MoonSharp.Interpreter.DynValue.NewString(item.Name) });
         return false;*/
         // the following was test code that allowed you to activate dogs in order 2-3-1 to replace all bullets with dogs
         /*if (dogTest[0] && dogTest[1] && dogTest[2])
@@ -417,7 +426,7 @@ public class EnemyEncounter : MonoBehaviour {
         if (ArenaManager.instance.showWhenWaveEnds)
             ArenaManager.instance.Show();
         if (!death)
-            CallOnSelfOrChildren("DefenseEnding");
+            CallOnSelfAndChildren("DefenseEnding");
         script.SetVar("Wave", DynValue.NewTable(new Table(null)));
         // Projectile.Z_INDEX_NEXT = Projectile.Z_INDEX_INITIAL; // doesn't work yet
     }
