@@ -238,8 +238,13 @@ that caused them:
   Nothing needed moving onto the battle tick.
 
   It was written down wrong because the constant is named after frames and the API page
-  describes those commands in frames. Reading the names rather than the arithmetic is what
-  produced the mistake, and the same wording is still on the page for whoever writes v0.7.
+  described those commands in frames. Reading the names rather than the arithmetic is what
+  produced the mistake.
+
+  The page says seconds now. `[w:x]` waits `x` twentieths of a second, not `x * 4` frames,
+  and `[speed:1]` is one character every twentieth of a second rather than one every four
+  frames. `[waitall:x]` was already right, since "x times as long" is what the code does
+  whatever the unit is.
 - **The battle text box does not wrap.** A line wider than the box crosses its border and is
   clipped by the screen rather than continuing underneath. This is the inherited default and
   it stays: `autolinebreak` exists to turn wrapping on per encounter, and encounters place

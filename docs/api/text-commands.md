@@ -173,10 +173,12 @@ resumes typing.
 
 The wait command. Pauses your textbox temporarily based on the number you enter.
 
-Technically: This will pause the textbox for `x * 4` in-game frames. Calling `[w:1]` will
-freeze the textbox for 4 in-game frames.
+Technically: this pauses the textbox for `x` twentieths of a second. `[w:1]` freezes it for
+0.05 seconds.
 
-`[w:4]` is 16 in-game frames, `[w:10]` is 40, and so on.
+`[w:4]` is 0.2 seconds, `[w:10]` is half a second, and so on.
+
+This is real time rather than frames, so it lasts the same on any frame rate.
 
 ### `[waitall:x]`
 
@@ -264,11 +266,13 @@ monster's dialogue.
 
 ### `[speed:x]`
 
-Makes the text handler print `x` characters over every 4 frames. The default text speed in
-the engine (`[speed:1]`) is 1 character every 4 frames.
+Makes the text handler print `x` characters every twentieth of a second. The default text
+speed in the engine (`[speed:1]`) is 1 character every twentieth of a second, so twenty a
+second.
 
-For example, `[speed:4]` will type text at 4x the regular speed: 4 characters every 4
-frames, or 1 per frame.
+For example, `[speed:4]` will type text at 4x the regular speed: eighty characters a second.
+
+This is real time rather than frames, so text types at the same speed on any frame rate.
 
 **Supports fractional numbers.** `[speed:0.25]` writes text at 1/4th the regular speed,
 for instance.
