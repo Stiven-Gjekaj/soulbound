@@ -35,8 +35,6 @@ public class ScriptWrapper {
                     UnitaleUtil.FormatErrorSource(ex.DecoratedMessage, ex.Message) + ex.Message,
                 ex.DoNotDecorateMessage);
         } catch (Exception ex) {
-            if (GlobalControls.retroMode)
-                return d;
             if (ex.GetType().ToString() == "System.IndexOutOfRangeException" && ex.StackTrace.StartsWith("  at (wrapper stelemref) object:stelemref (object,intptr,object)"
                 + "\r\n  at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
                 UnitaleUtil.DisplayLuaError(scriptname, "<b>Possible infinite loop</b>\n\nThis is a " + ex.GetType() + " error.\n\n"
@@ -74,7 +72,7 @@ public class ScriptWrapper {
 
     public DynValue Call(DynValue function, string functionName, DynValue[] args = null, bool checkExist = false) {
         if ((function.Type & (DataType.ClrFunction | DataType.Function)) == 0) {
-            if (checkExist && !GlobalControls.retroMode)
+            if (checkExist)
                 UnitaleUtil.DisplayLuaError(scriptname, "Attempted to call the function \"" + functionName + "\", but it didn't exist.");
         } else
             try { return script.Call(function, args ?? new DynValue[0]); } catch (Exception e) {

@@ -132,7 +132,7 @@ public class LuaSpriteController {
 
     // Is the sprite active? True if the image of the sprite isn't null, false otherwise
     public bool isactive {
-        get { return !GlobalControls.retroMode ^ (removed || limbo); }
+        get { return !(removed || limbo); }
     }
 
     // The original width of the sprite
@@ -719,15 +719,14 @@ public class LuaSpriteController {
         if (removed)
             return;
 
-        if (!GlobalControls.retroMode) {
-            if (tag == "projectile") {
-                img.GetComponent<Projectile>().ctrl.Remove();
-                return;
-            }
-
-            if (img.gameObject.name == "player")
-                throw new CYFException("sprite.Remove(): You can't remove the Player's sprite!");
+        if (tag == "projectile") {
+            img.GetComponent<Projectile>().ctrl.Remove();
+            return;
         }
+
+        if (img.gameObject.name == "player")
+            throw new CYFException("sprite.Remove(): You can't remove the Player's sprite!");
+
         if (tag == "enemy")
             throw new CYFException("sprite.Remove(): You can't remove an enemy's sprite!");
 

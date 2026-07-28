@@ -169,14 +169,10 @@ public class ProjectileController {
     public void MoveTo(float newX, float newY) { MoveToAbs(ArenaManager.arenaCenter.x + newX, ArenaManager.arenaCenter.y + newY); }
 
     public void MoveToAbs(float newX, float newY) {
-        if (p == null) {
-            if (GlobalControls.retroMode)
-                return;
+        if (p == null)
             throw new CYFException("Attempted to move a removed bullet. You can use a bullet's isactive property to check if it has been removed.");
-        }
 
-        if (GlobalControls.retroMode) p.self.anchoredPosition = new Vector2(newX, newY);
-        else                          p.self.position = new Vector2(newX, newY);
+        p.self.position = new Vector2(newX, newY);
     }
 
     public void SendToTop() { p.self.SetAsLastSibling(); }
