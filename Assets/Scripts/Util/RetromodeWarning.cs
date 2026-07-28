@@ -1,30 +1,19 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine;
 
 /// <summary>
-/// Class used to draw a warning if retromode is on.
+/// Removes the retro mode warning banner, which is now unconditional.
+///
+/// Retro mode is gone, so the state this banner warned about cannot be reached. The prefab
+/// that draws it is instanced in ModSelect, TitleScreen and Error, it defaults to active,
+/// and no scene overrides that, so deleting this script outright would leave the warning
+/// permanently visible on all three screens instead of never.
+///
+/// Taking the object out of those scenes needs the Unity editor, which is v0.6 work. Until
+/// then this destroys it on load, which is what it already did whenever the flag was false.
+/// Both this script and the prefab go with that scene pass.
 /// </summary>
 public class RetromodeWarning : MonoBehaviour {
-    private float hoverTimer;
-    private bool hovered;
-
-    private void Start () {
-        if (!GlobalControls.retroMode)
-            Destroy(gameObject);
-        transform.position = new Vector3(320, -140, transform.position.z);
-    }
-
-    /// <summary>
-    /// Will move the warning and increase its alpha if the mouse hovers over it
-    /// </summary>
-    private void Update () {
-        hoverTimer = Mathf.Clamp01(hoverTimer + (hovered ? 1 : -1) * Time.deltaTime * 3);
-        transform.position = new Vector3(320, (1 - hoverTimer) * -140, transform.position.z);
-        transform.GetComponent<Image>().color = new Color(1, 1, 1, 0.5f + 0.5f * hoverTimer);
-        hovered = false;
-    }
-
-    private void OnMouseOver() {
-        hovered = true;
+    private void Start() {
+        Destroy(gameObject);
     }
 }

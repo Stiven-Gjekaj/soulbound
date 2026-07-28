@@ -37,7 +37,7 @@ public static class UnitaleUtil {
 
     public static void Warn(string line, bool show = true) {
         line = "[WARN]" + line;
-        if (!GlobalControls.retroMode && show) {
+        if (show) {
             WriteInLogAndDebugger(line);
             return;
         }
@@ -94,9 +94,7 @@ public static class UnitaleUtil {
         if (e as InterpreterException != null) {
             InterpreterException ie = e as InterpreterException;
             DisplayLuaError(scriptname, ie.DecoratedMessage == null ? ie.Message : FormatErrorSource(ie.DecoratedMessage, ie.Message) + ie.Message, ie.DoNotDecorateMessage);
-        } else if (GlobalControls.retroMode)
-            return;
-        else if (e.GetType().ToString() == "System.IndexOutOfRangeException" && e.StackTrace.Contains("at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
+        } else if (e.GetType().ToString() == "System.IndexOutOfRangeException" && e.StackTrace.Contains("at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
             DisplayLuaError(scriptname + ", calling the function " + function, "<b>Possible infinite loop</b>\n\nThis is a " + e.GetType() + " error."
                                                                              + "\n\nYou almost definitely have an infinite loop in your code. A function tried to call itself infinitely. It could be a normal function or a metatable function."
                                                                              + "\n\nFull stracktrace (see the output log at <b>" + Application.persistentDataPath + "/output_log.txt</b>):"

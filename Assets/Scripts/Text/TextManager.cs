@@ -391,7 +391,7 @@ public class TextManager : MonoBehaviour {
         rotation = rot;
 
         // Move the text up a little if there are more than 3 lines so they can possibly fit in the arena
-        if (!GlobalControls.retroMode && UIController.instance && this == UIController.instance.mainTextManager) {
+        if (UIController.instance && this == UIController.instance.mainTextManager) {
             int     lines = (textQueue[line].Text.Split('\n').Length > 3 && (UIController.instance.state == "ACTIONSELECT" || UIController.instance.state == "DIALOGRESULT")) ? 4 : 3;
             Vector3 pos   = self.localPosition;
 
@@ -426,10 +426,7 @@ public class TextManager : MonoBehaviour {
         if ((GlobalControls.isInFight && EnemyEncounter.script.GetVar("playerskipdocommand").Boolean) || !GlobalControls.isInFight)
             instantCommand = true;
 
-        if (!GlobalControls.retroMode)
-            InUpdateControlCommand(DynValue.NewString("instant"), currentCharacter);
-        else
-            SkipLine();
+        InUpdateControlCommand(DynValue.NewString("instant"), currentCharacter);
     }
 
     public virtual void SkipLine() {
@@ -549,7 +546,7 @@ public class TextManager : MonoBehaviour {
                 resultColor.a = commandColor.a;
         }
         ltrImg.color = resultColor;
-        ltrImg.enabled = textQueue[currentLine].ShowImmediate || (GlobalControls.retroMode && instantActive);
+        ltrImg.enabled = textQueue[currentLine].ShowImmediate;
 
         return letters.Count - 1;
     }
@@ -591,7 +588,7 @@ public class TextManager : MonoBehaviour {
                         i = currentChar;
                     else {
                         // Work-around for [noskip], [instant] and [instant:allowcommand]
-                        if (!GlobalControls.retroMode) {
+                        {
                             // The goal of this is to allow for commands executed "just before" [instant] on the first frame
                             // Example: "[func:test][instant]..."
 
@@ -772,7 +769,7 @@ public class TextManager : MonoBehaviour {
         if (textEffect != null)
             textEffect.UpdateEffects();
 
-        if (GlobalControls.retroMode && instantActive || currentCharacter >= textQueue[currentLine].Text.Length)
+        if (currentCharacter >= textQueue[currentLine].Text.Length)
             return;
 
         if (waitingChar != KeyCode.None) {
@@ -828,7 +825,7 @@ public class TextManager : MonoBehaviour {
             while (CheckCommand()) {
                 if ((fromOnce && lettersToDisplayOnce != oldLettersToDisplayOnce) || (!fromOnce && lettersToDisplay != oldLettersToDisplay))
                     return false;
-                if ((GlobalControls.retroMode && instantActive) || letterTimer != oldLetterTimer || waitingChar != KeyCode.None || paused)
+                if (letterTimer != oldLetterTimer || waitingChar != KeyCode.None || paused)
                     return false;
             }
             if (currentCharacter >= textQueue[currentLine].Text.Length)
@@ -852,7 +849,7 @@ public class TextManager : MonoBehaviour {
             currentReferenceCharacter++;
         }
 
-        if (!string.IsNullOrEmpty(GetVoice()) && !muted && !soundPlayed && (GlobalControls.retroMode || (currentCharacter < textQueue[currentLine].Text.Length && textQueue[currentLine].Text[currentCharacter] != ' '))) {
+        if (!string.IsNullOrEmpty(GetVoice()) && !muted && !soundPlayed && currentCharacter < textQueue[currentLine].Text.Length && textQueue[currentLine].Text[currentCharacter] != ' ') {
             soundPlayed = true;
             try { UnitaleUtil.PlayVoice("BubbleSound", GetVoice()); }
             catch (CYFException e) { UnitaleUtil.DisplayLuaError("Playing a voice", e.Message); }
@@ -917,10 +914,7 @@ public class TextManager : MonoBehaviour {
                 break;
 
             case "instant":
-                if (GlobalControls.retroMode)
-                    instantActive = true;
-                else
-                    InUpdateControlCommand(DynValue.NewString(command));
+                InUpdateControlCommand(DynValue.NewString(command));
                 break;
 
             case "noskip":

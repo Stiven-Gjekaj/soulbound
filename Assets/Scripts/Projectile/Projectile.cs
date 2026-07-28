@@ -83,7 +83,7 @@ public abstract class Projectile : MonoBehaviour {
     private void Update() {
         //ctrl.UpdatePosition();
         //OnUpdate();
-        if (!GlobalControls.retroMode && (needSizeRefresh || internalRotation != self.eulerAngles.z))
+        if (needSizeRefresh || internalRotation != self.eulerAngles.z)
             UpdateHitRect();
         internalRotation = self.eulerAngles.z;
 

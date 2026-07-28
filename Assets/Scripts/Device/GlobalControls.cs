@@ -22,11 +22,6 @@ public class GlobalControls : MonoBehaviour {
 
     public static bool modDev;          // True if we reached a battle through the boss select screen
 
-    // Retro mode is being removed. This is the shim step: the flag is a constant so every
-    // branch that consults it collapses on its own and the project keeps compiling while
-    // the branches come out one file at a time. It goes when the last one has.
-    public const bool retroMode = false;
-
     public static bool stopScreenShake; // Used to stop any screenshake currently ongoing
     public static bool isInFight;       // True if we're in a battle, false otherwise
     public static bool allowWipeSave;   // Allows you to wipe your save in the Error scene if it couldn't load properly

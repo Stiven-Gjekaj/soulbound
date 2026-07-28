@@ -169,10 +169,6 @@ public class PlayerController : MonoBehaviour {
     public void SetHP(float newhp, bool allowOverheal = false) {
         newhp = Mathf.Min(Mathf.Round(newhp * Mathf.Pow(10, ControlPanel.instance.MaxDigitsAfterComma)) / Mathf.Pow(10, ControlPanel.instance.MaxDigitsAfterComma), ControlPanel.instance.HPLimit);
 
-        // Retromode: Make Player.hp act as an integer
-        if (GlobalControls.retroMode)
-            newhp = Mathf.Floor(newhp);
-
         if (newhp <= 0 && !deathEscape)
             return;
 
@@ -420,10 +416,8 @@ public class PlayerController : MonoBehaviour {
         }
 
         // constantly update the hitbox to match the position of the sprite itself
-        if (!GlobalControls.retroMode) {
-            playerAbs.x = luaStatus.sprite.absx - HITBOX_INSET;
-            playerAbs.y = luaStatus.sprite.absy - HITBOX_INSET;
-        }
+        playerAbs.x = luaStatus.sprite.absx - HITBOX_INSET;
+        playerAbs.y = luaStatus.sprite.absy - HITBOX_INSET;
 
         soundDelay--;
     }

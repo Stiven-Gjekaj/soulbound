@@ -25,6 +25,8 @@ public class SelectOMatic : MonoBehaviour {
 
     // encounterBox is the scrolling overlay the boss list lives in. It keeps its old name
     // because it is bound by name to ModSelect.unity.
+    // retromodeWarning is bound so ModSelect.unity keeps resolving the field. Retro mode is
+    // gone, so nothing ever shows it; the object comes out of the scene at v0.6.
     public GameObject encounterBox, devMod, content, retromodeWarning;
     public GameObject btnList,              btnBack,              btnNext,              btnExit,              btnOptions;
     public Text       ListText, ListShadow, BackText, BackShadow, NextText, NextShadow, ExitText, ExitShadow, OptionsText, OptionsShadow;
@@ -111,9 +113,6 @@ public class SelectOMatic : MonoBehaviour {
         // ModSelect.unity still labels this button from when it listed mod folders.
         ListText.text   = "Boss List";
         ListShadow.text = ListText.text;
-
-        if (retromodeWarning)
-            retromodeWarning.SetActive(GlobalControls.retroMode);
 
         bossSelection();
 
