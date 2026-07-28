@@ -59,6 +59,11 @@ public class EnterNameScript : MonoBehaviour {
             tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
             tmName.MoveTo(-calcTotalLength(tmName) / 2, tmName.transform.localPosition.y);
         }
+        // Typing has to be handled before the grid, and has to stop the grid seeing the
+        // keystroke. W, A, S and D are bound to the four directions by default, so a name
+        // with a W in it would otherwise walk the cursor while spelling itself.
+        if (HandleTypedCharacters()) return;
+
         if (GlobalControls.input.Down == ButtonState.PRESSED) {
             switch (choiceLetter) {
                 case "Quit":      setColor("A");                  break;
@@ -178,6 +183,55 @@ public class EnterNameScript : MonoBehaviour {
         } else
             return;
         uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menumove"));
+    }
+
+    /// <summary>
+    /// Takes whatever was typed on the keyboard this frame and puts it in the name.
+    /// Returns true if anything was consumed, which tells Update to leave the grid alone
+    /// for this frame.
+    ///
+    /// The grid stays. It is how a pad or a mouse enters a name, and it is the only thing
+    /// that works if the player has no keyboard in front of them.
+    /// </summary>
+    private bool HandleTypedCharacters() {
+        string typed = Input.inputString;
+        if (typed.Length == 0)
+            return false;
+
+        bool changed = false;
+        foreach (char c in typed) {
+            // Return and Enter are bound to Confirm, which is what activates Done. Let them
+            // fall through to the grid rather than swallowing them here.
+            if (c == '\r' || c == '\n')
+                continue;
+
+            if (c == '\b') {
+                if (playerName.Length > 0) {
+                    playerName          = playerName.Substring(0, playerName.Length - 1);
+                    weirdBackspaceShift = true;
+                    changed             = true;
+                }
+                continue;
+            }
+
+            // Letters only, which is exactly what the grid offers. Accepting more would let
+            // a character the font cannot draw sit invisibly inside a saved name.
+            if (c < 'A' || c > 'z' || (c > 'Z' && c < 'a'))
+                continue;
+
+            if (playerName.Length < 9) playerName  = playerName + c;
+            else                       playerName  = playerName.Substring(0, 8) + c;
+            weirdBackspaceShift = false;
+            changed             = true;
+        }
+
+        if (!changed)
+            return false;
+
+        tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
+        tmName.MoveTo(-calcTotalLength(tmName) / 2, tmName.transform.localPosition.y);
+        uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menuconfirm"));
+        return true;
     }
 
     private void setColor(int a) { setColor(((char)a).ToString());  }
