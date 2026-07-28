@@ -128,11 +128,7 @@ public class EnemyController : MonoBehaviour {
     }
 
     public int HP {
-        get {
-            if (GlobalControls.retroMode && (int)script.GetVar("hp").Number > MaxHP)
-                MaxHP = (int)script.GetVar("hp").Number;
-            return (int)script.GetVar("hp").Number;
-        }
+        get { return (int)script.GetVar("hp").Number; }
         set { script.SetVar("hp", DynValue.NewNumber(value)); }
     }
 

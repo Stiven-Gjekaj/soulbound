@@ -212,7 +212,7 @@ public class EnemyEncounter : MonoBehaviour {
             TextMessage[] msgs = null;
             if (arg.Type == DataType.String)
                 msgs = new TextMessage[]{new RegularMessage(arg.String)};
-            else if (arg.Type == DataType.Table && (GlobalControls.retroMode || arg.Table.Length > 0)) {
+            else if (arg.Type == DataType.Table && arg.Table.Length > 0) {
                 // Check if the data is right
                 for (int i = 0; i < arg.Table.Length; i++)
                     if (arg.Table.Get(i + 1).Type != DataType.String)
@@ -222,11 +222,10 @@ public class EnemyEncounter : MonoBehaviour {
                 msgs = new TextMessage[arg.Table.Length];
                 for (int i = 0; i < arg.Table.Length; i++)
                     msgs[i] = new RegularMessage(arg.Table.Get(i + 1).String);
-            } else if (!GlobalControls.retroMode)
+            } else
                 throw new CYFException("BattleDialog: You need to input a non-empty array or a string here." +
                                        "\n\nIf you're sure that you've entered what's needed, you may contact the dev.");
-            if (!GlobalControls.retroMode)
-                UIController.instance.mainTextManager.SetEffect(new TwitchEffect(UIController.instance.mainTextManager));
+            UIController.instance.mainTextManager.SetEffect(new TwitchEffect(UIController.instance.mainTextManager));
 
             UIController.instance.ActionDialogResult(msgs);
         }
@@ -339,7 +338,6 @@ public class EnemyEncounter : MonoBehaviour {
                     UnitaleUtil.DisplayLuaError(currentScript, UnitaleUtil.FormatErrorSource(ex.DecoratedMessage, ex.Message) + ex.Message);
                     return;
                 } catch (Exception ex) {
-                    if (GlobalControls.retroMode) return;
                     if (waves[i].script.Globals["Update"] == null) UnitaleUtil.DisplayLuaError(currentScript, "All the wave scripts need an Update() function!");
                     else                                           UnitaleUtil.DisplayLuaError(currentScript, "This error is a " + ex.GetType() + " error.\nPlease send this error to the main dev.\n\n" + ex.Message + "\n\n" + ex.StackTrace);
                     return;
@@ -412,16 +410,13 @@ public class EnemyEncounter : MonoBehaviour {
                     ScriptWrapper.instances.Remove((ScriptWrapper)t[obj]);
                 } catch { UnitaleUtil.DisplayLuaError(StaticInits.ENCOUNTER, "You shouldn't override Wave, now you get an error :P"); }
             }
-        if (!GlobalControls.retroMode)
-            foreach (LuaProjectile p in FindObjectsOfType<LuaProjectile>())
-                if (!p.ctrl.isPersistent)
-                    p.ctrl.Remove();
+        foreach (LuaProjectile p in FindObjectsOfType<LuaProjectile>())
+            if (!p.ctrl.isPersistent)
+                p.ctrl.Remove();
         if (ArenaManager.instance.showWhenWaveEnds)
             ArenaManager.instance.Show();
         if (!death)
             CallOnSelfOrChildren("DefenseEnding");
-        if (GlobalControls.retroMode)
-            EncounterText = script.GetVar("encountertext").String;
         script.SetVar("Wave", DynValue.NewTable(new Table(null)));
         // Projectile.Z_INDEX_NEXT = Projectile.Z_INDEX_INITIAL; // doesn't work yet
     }

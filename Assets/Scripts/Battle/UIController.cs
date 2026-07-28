@@ -39,8 +39,6 @@ public class UIController : MonoBehaviour {
     public LuaTextManager[] monsterDialogues = new LuaTextManager[0]; // Enemies' dialogue bubbles' text objects appearing in the state ENEMYDIALOGUE
     public EnemyController[] monsterDialogueEnemy;                     // Stores the enemies associated with the dialogue bubbles
 
-    private bool musicPausedFromRunning;    // Used to pause the BGM when trying to flee in retromode for a comedic effect
-    private int runAwayAttempts;            // Amount of times the Player tried to flee unsuccessfully in this encounter
 
     private int selectedAction; // Act option chosen by the Player
     private int selectedEnemy;  // Enemy chosen by the Player
@@ -196,12 +194,6 @@ public class UIController : MonoBehaviour {
             childStateCalled = true;
         }
 
-        // Quick and dirty addition to add some humor to the Run away command.
-        if (musicPausedFromRunning) {
-            Camera.main.GetComponent<AudioSource>().UnPause();
-            musicPausedFromRunning = false;
-        }
-        // END DEBUG
         // below: actions based on ending a previous state, or actions that affect multiple states
 
         // PAUSE can freeze states
@@ -318,7 +310,7 @@ public class UIController : MonoBehaviour {
         if (oldState == "DEFENDING" && state != "DEFENDING") {
             string current = state;
             encounter.EndWave();
-            if (state != current && !GlobalControls.retroMode)
+            if (state != current)
                 return;
         }
 
@@ -351,10 +343,8 @@ public class UIController : MonoBehaviour {
                 PlayerController.instance.setControlOverride(true);
                 PlayerController.instance.GetComponent<Image>().enabled = true;
                 mainTextManager.SetPause(ArenaManager.instance.isResizeInProgress());
-                if (!GlobalControls.retroMode) {
-                    mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
-                    encounter.EncounterText = EnemyEncounter.script.GetVar ("encountertext").String;
-                }
+                mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
+                encounter.EncounterText = EnemyEncounter.script.GetVar ("encountertext").String;
                 if (encounter.EncounterText == null) {
                     encounter.EncounterText = "";
                     UnitaleUtil.Warn("There is no encounter text!");
@@ -371,8 +361,7 @@ public class UIController : MonoBehaviour {
 
                 selectedAction = 0;
                 SetPlayerOnSelection(selectedAction);
-                if (!GlobalControls.retroMode)
-                    mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
+                mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
                 mainTextManager.SetText(new SelectMessage(GetActPage(actions, 0, mainTextManager.columnNumber), false, mainTextManager.columnNumber));
                 break;
 
@@ -384,8 +373,7 @@ public class UIController : MonoBehaviour {
                 else {
                     string[] items = GetInventoryPage(0, mainTextManager.columnNumber);
                     selectedItem = 0;
-                    if (!GlobalControls.retroMode)
-                        mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
+                    mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
                     mainTextManager.SetText(new SelectMessage(items, false, mainTextManager.columnNumber));
                     SetPlayerOnSelection(0);
                     /*ActionDialogResult(new TextMessage[] {
@@ -413,8 +401,7 @@ public class UIController : MonoBehaviour {
                 }
                 if (encounter.CanRun)
                     mercyOptions[1] = "Flee";
-                if (!GlobalControls.retroMode)
-                    mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
+                mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
                 mainTextManager.SetText(new SelectMessage(mercyOptions, true, mainTextManager.columnNumber));
                 SetPlayerOnSelection(0);
                 break;
@@ -424,8 +411,7 @@ public class UIController : MonoBehaviour {
                 if (encounter.EnabledEnemies.Length == 0)
                     throw new CYFException("Cannot enter state ENEMYSELECT with no active enemies.");
 
-                if (!GlobalControls.retroMode)
-                    mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
+                mainTextManager.SetEffect(new TwitchEffect(mainTextManager));
 
                 int enemyPage = encounter.EnabledEnemies.Length <= 3 ? 0 : selectedEnemy / 2;
                 string[] colors;
@@ -478,10 +464,7 @@ public class UIController : MonoBehaviour {
 
             case "ENEMYDIALOGUE":
                 PlayerController.instance.GetComponent<Image>().enabled = true;
-                if (!GlobalControls.retroMode)
-                    ArenaManager.instance.Resize((int)encounter.ArenaSize.x, (int)encounter.ArenaSize.y);
-                else
-                    ArenaManager.instance.Resize(155, 130);
+                ArenaManager.instance.Resize((int)encounter.ArenaSize.x, (int)encounter.ArenaSize.y);
                 encounter.CallOnSelfOrChildren("EnemyDialogueStarting");
                 if (state != "ENEMYDIALOGUE")
                     return;
@@ -810,7 +793,7 @@ public class UIController : MonoBehaviour {
                             break;
                         }
                         case 1: {
-                            if (!GlobalControls.retroMode) {
+                            {
                                 bool fleeSuccess = EnemyEncounter.script.GetVar("fleesuccess").Boolean || EnemyEncounter.script.GetVar("fleesuccess").Type != DataType.Boolean && Math.RandomRange(0, 9) + encounter.turnCount > 4;
 
                                 if (encounter.CallOnSelfOrChildren("HandleFlee", new[] { DynValue.NewBoolean(fleeSuccess) }))
@@ -818,28 +801,6 @@ public class UIController : MonoBehaviour {
 
                                 if (fleeSuccess) StartCoroutine(ISuperFlee());
                                 else             SwitchState("ENEMYDIALOGUE");
-                            } else {
-                                PlayerController.instance.GetComponent<Image>().enabled = false;
-                                AudioClip yay = AudioClipRegistry.GetSound("runaway");
-                                AudioSource.PlayClipAtPoint(yay, Camera.main.transform.position);
-                                string fittingLine;
-                                switch (runAwayAttempts) {
-                                    case 0:  fittingLine = "...[w:15]But you realized\rthe overworld was missing.";                               break;
-                                    case 1:  fittingLine = "...[w:15]But the overworld was\rstill missing.";                                      break;
-                                    case 2:  fittingLine = "You walked off as if there\rwere an overworld, but you\rran into an invisible wall."; break;
-                                    case 3:  fittingLine = "...[w:15]On second thought, the\rembarrassment just now\rwas too much.";              break;
-                                    case 4:  fittingLine = "But you became aware\rof the skeleton inside your\rbody, and forgot to run.";         break;
-                                    case 5:  fittingLine = "But you needed a moment\rto forget about your\rscary skeleton.";                      break;
-                                    case 6:  fittingLine = "...[w:15]You feel as if you\rtried this before.";                                     break;
-                                    case 7:  fittingLine = "...[w:15]Maybe if you keep\rsaying that, the\roverworld will appear.";                break;
-                                    case 8:  fittingLine = "...[w:15]Or not.";                                                                    break;
-                                    default: fittingLine = "...[w:15]But you decided to\rstay anyway.";                                           break;
-                                }
-
-                                ActionDialogResult(new TextMessage[] { new RegularMessage("I'm outta here."), new RegularMessage(fittingLine) });
-                                Camera.main.GetComponent<AudioSource>().Pause();
-                                musicPausedFromRunning = true;
-                                runAwayAttempts++;
                             }
 
                             break;
@@ -1153,20 +1114,6 @@ public class UIController : MonoBehaviour {
 
         KeyboardInput.ResetEncounterInputs();
 
-        // If retromode is enabled, set the inventory to the one with TESTDOGs (can be overridden)
-        if (GlobalControls.retroMode && GlobalControls.modDev) {
-            // Set the in-game names of these items to TestDogN instead of DOGTESTN
-            for (int i = 1; i <= 7; i++)
-                Inventory.NametoShortName.Add("DOGTEST" + i, "TestDog" + i);
-
-            Inventory.luaInventory.AddCustomItems(new[] {"DOGTEST1", "DOGTEST2", "DOGTEST3", "DOGTEST4", "DOGTEST5", "DOGTEST6", "DOGTEST7"},
-                                           new[] {3, 3, 3, 3, 3, 3, 3});
-            Inventory.luaInventory.SetInventory(new[] {"DOGTEST1", "DOGTEST2", "DOGTEST3", "DOGTEST4", "DOGTEST5", "DOGTEST6", "DOGTEST7"});
-
-            // Undo our changes to this table!
-            for (int i = 1; i <= 7; i++)
-                Inventory.NametoShortName.Remove("DOGTEST" + i);
-        }
 
         StaticInits.SendLoaded();
         psContainer = new GameObject("psContainer");
@@ -1289,9 +1236,6 @@ public class UIController : MonoBehaviour {
 
         if (state == "DEFENDING") {
             if (!encounter.WaveInProgress()) {
-                if (GlobalControls.retroMode)
-                    foreach (LuaProjectile p in FindObjectsOfType<LuaProjectile>())
-                            BulletPool.instance.Requeue(p);
                 SwitchState("ACTIONSELECT");
             } else if (!encounter.gameOverStance && frozenState == "PAUSE")
                 encounter.UpdateWave();
