@@ -220,9 +220,13 @@ public class UIController : MonoBehaviour {
                             textManager.SetPause(true);
                     break;
                 case "ATTACKING":
-                    FightUI fui = fightUI.boundFightUiInstances[0];
-                    if (fui.slice != null && fui.slice.keyframes != null)
-                        fui.slice.keyframes.paused = true;
+                    // The list can be empty here: killing the last enemy mid-attack destroys
+                    // its instances while the state is still ATTACKING.
+                    if (fightUI.boundFightUiInstances.Count > 0) {
+                        FightUI fui = fightUI.boundFightUiInstances[0];
+                        if (fui.slice != null && fui.slice.keyframes != null)
+                            fui.slice.keyframes.paused = true;
+                    }
 
                     if (fightUI.line != null && fightUI.line.keyframes != null)
                         fightUI.line.keyframes.paused = true;
@@ -254,9 +258,11 @@ public class UIController : MonoBehaviour {
                             textManager.SetPause(false);
                     break;
                 case "ATTACKING":
-                    FightUI fui = fightUI.boundFightUiInstances[0];
-                    if (fui.slice != null && fui.slice.keyframes != null)
-                        fui.slice.keyframes.paused = false;
+                    if (fightUI.boundFightUiInstances.Count > 0) {
+                        FightUI fui = fightUI.boundFightUiInstances[0];
+                        if (fui.slice != null && fui.slice.keyframes != null)
+                            fui.slice.keyframes.paused = false;
+                    }
 
                     if (fightUI.line != null && fightUI.line.keyframes != null)
                         fightUI.line.keyframes.paused = false;
@@ -322,11 +328,6 @@ public class UIController : MonoBehaviour {
                 // Error for no active enemies
                 if (encounter.EnabledEnemies.Length == 0)
                     throw new CYFException("Cannot enter state ATTACKING with no active enemies.");
-
-                // Disable all current attack instances otherwise they break
-                // TODO: Find the exact reason why they break
-                foreach (EnemyController enemy in encounter.EnabledEnemies)
-                    FightUIController.instance.DestroyAllAttackInstances(enemy);
 
                 mainTextManager.SetText(DynValue.NewString(""));
                 PlayerController.instance.GetComponent<Image>().enabled = false;

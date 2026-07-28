@@ -122,6 +122,20 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   encounter script handles a hook. A monster's copy of any hook the encounter also defines
   is dead code and nothing says so. The monster exposes a plainly named function that the
   encounter calls instead.
+- **The attack instances that "otherwise break" no longer needed a workaround.** The engine
+  destroyed every attack instance belonging to an active enemy immediately before starting
+  an attack, with a note saying they broke otherwise and nobody knew why. The reason is that
+  `Init` appends to the instance lists and nothing emptied them when `ATTACKING` ended, so
+  instances survived into the next turn. `ChangeTarget` destroys everything past index 0 and
+  aims index 0, so a stale entry in front meant it killed the live instances and retargeted
+  a dead one. `Finished` aggregates over the list, so a stale instance that never finishes
+  left the fight stuck in `ATTACKING`. The freeze code read index 0 with no bounds check.
+
+  Starting an attack now clears the instances itself, which is where that invariant belongs
+  and which also covers the case the workaround missed: an enemy a script deactivated
+  without killing or sparing is not in `EnabledEnemies`, so its instances survived the
+  sweep. The two index-0 reads are guarded, because killing the last enemy mid-attack empties
+  the list while the state is still `ATTACKING`.
 - **A bad text command says so.** Fourteen of them caught their own errors, wrote a
   well-phrased usage message to a console nobody reads, and carried on as if nothing had
   happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.

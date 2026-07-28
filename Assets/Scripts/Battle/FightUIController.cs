@@ -54,6 +54,22 @@ public class FightUIController : MonoBehaviour {
     }
 
     public void Init() {
+        // An attack starts with nothing left over from the last one.
+        //
+        // This is the answer to "find the exact reason why they break". Init appends to both
+        // instance lists and nothing ever emptied them when ATTACKING ended, so instances
+        // survived into the next turn. Three places then read the lists assuming they hold
+        // only the current attack: ChangeTarget destroys everything past index 0 and
+        // retargets [0], so a stale entry in front means it kills the live instances and
+        // aims the dead one; Finished aggregates over all of them, so a stale instance that
+        // never finishes leaves the fight stuck in ATTACKING forever; and the freeze and
+        // unfreeze code reads [0] with no bounds check.
+        //
+        // The old workaround swept from the caller, once per enabled enemy, immediately
+        // before calling here. That worked for the common case and missed instances
+        // belonging to an enemy a script had merely deactivated rather than killed or
+        // spared, since those are not in EnabledEnemies.
+        DestroyAllInstances();
         CommonInit();
         gameObject.GetComponent<Image>().enabled = true;
         borderX = -GetComponent<RectTransform>().rect.width / 2;
@@ -148,6 +164,18 @@ public class FightUIController : MonoBehaviour {
             gameObject.GetComponent<Image>().enabled = false;
             targetRt.GetComponent<Image>().enabled = false;
         }
+    }
+
+    /// <summary>
+    /// Destroys every attack instance, whoever it belonged to. Used when starting an attack,
+    /// where the invariant is that no instance from a previous one is still around.
+    /// </summary>
+    public void DestroyAllInstances() {
+        for (int i = allFightUiInstances.Count - 1; i >= 0; i--)
+            if (allFightUiInstances[i])
+                Destroy(allFightUiInstances[i].gameObject);
+        allFightUiInstances.Clear();
+        boundFightUiInstances.Clear();
     }
 
     public void DestroyAllAttackInstances(EnemyController enemy) {
