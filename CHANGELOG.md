@@ -220,6 +220,16 @@ that caused them:
 
 ### Notes
 
+- **The catch-up ceiling was reached and it costs a tenth of a second.** `MaxCatchUp = 5` was
+  inherited rather than chosen, and nothing had ever been slow enough to test it. The fourth
+  stress turn is: 1500 bullets in a 500x300 arena drag the software renderer to 8fps and drop
+  steps, reporting `t4 1500b g10.0 w10.1 8fps d7` and `d5` on a second run. Seven discarded
+  steps out of six hundred cost 0.1s on a ten second wave, and the soul still moved under the
+  load. The ceiling stays at five, now for a reason.
+
+  Turn two of the same run says where the line is: at 12fps a frame owes exactly five steps,
+  all five run, and nothing drops. Worse than 12fps drops. 288 bullets had been sitting on
+  that line, which is why every run before this one reported zero.
 - **Text typing is already frame-rate independent**, which is the opposite of what the
   milestone recorded for a while. `TextManager` accumulates `Time.deltaTime` against a
   constant named `singleFrameTiming` holding a twentieth of a **second**, and catches up the

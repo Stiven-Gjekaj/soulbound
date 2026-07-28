@@ -328,6 +328,20 @@ has the detail.
 - **Names are typed.** The letter grid is gone and the screen is a text field with two
   buttons, worked by keyboard or mouse. A controller cannot type, so `Done` accepts an empty
   name and falls back to the default rather than trapping a pad player.
+- **Five is the right catch-up ceiling, now that it has been measured rather than
+  inherited.** A fourth stress turn puts 1500 bullets in a 500x300 arena, which drags the
+  software renderer to 8fps and drops steps: `t4 1500b g10.0 w10.1 8fps d7`, and `d5` on a
+  second run. The cost of those dropped steps is a tenth of a second on a ten second wave.
+
+  Turn two settles where the line is. At 12fps a frame owes exactly five steps, the ceiling
+  runs all five, and `d` is zero. Anything worse than 12fps starts dropping, which is why
+  every earlier run read zero: 288 bullets sat on the line without crossing it.
+
+  The fight stays on schedule and pays for it by skipping simulation, which is the trade the
+  ceiling was built to make. It degrades gently across the range a real machine can reach: a
+  large wall-clock stretch needs frames near 1fps, not 8. The soul still moves under the
+  load, driven from the middle of the arena to the wall and held there while 1500 bullets
+  were on screen, so the load costs simulation rather than control.
 - **Text typing was checked against the tick and needs nothing.** It was recorded here as
   frame-based and it is not. `TextManager` accumulates `Time.deltaTime` against a constant
   named `singleFrameTiming` that holds a twentieth of a **second**, and catches up the
@@ -345,17 +359,6 @@ has the detail.
 
 ### Open
 
-- **Whether five is the right catch-up ceiling.** It has now been reached and measured
-  rather than argued about, but nothing has been decided. The question is what a fight
-  should do on a machine that cannot keep up: skip forward and stay in step with the wave
-  timer and the music, or run every step and fall behind them. Five is the current answer
-  by inheritance rather than by argument.
-- **A load that is slow for longer than one frame.** The stress encounter turns out to
-  measure startup cost rather than sustained load. Its worst frame is the one that compiles
-  the wave and creates every bullet, and once that is paid the renderer keeps up: the
-  288-bullet turn in the largest arena saw a worst frame of 48fps, better than the same
-  wave in a smaller arena that had to compile it. Nothing here has produced a machine that
-  is slow for a whole wave, which is the condition a real player on old hardware is in.
 - **Whatever else the stress encounter exposes.** Bullet performance, wave composition, and
   whatever the Lua API makes awkward when a fight runs long are all expected to land here.
 - Nothing from the inherited TODOs. All ten are answered: four implemented, one deferred to
