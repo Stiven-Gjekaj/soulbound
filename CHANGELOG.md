@@ -128,7 +128,13 @@ that caused them:
   only claims the selection when it has actually moved now; a click still works wherever
   the pointer is sitting.
 - **The name screen's instruction overlapped the name being typed.** It was two lines and
-  the name is drawn just under it. One line now.
+  the name is drawn just under it. One line now, and a short one: the text is anchored on
+  the left rather than centred, so it runs off the right edge at around thirty characters.
+- **Answering "no" on the confirm screen put the deleted letter grid back.** The name
+  screen switches the grid off when it loads, and the confirm screen switched it back on
+  when a player said the name was wrong and went back to edit it. The grid was removed one
+  commit earlier and the path that resurrected it was never played. It also showed a
+  different instruction line from the one the screen loads with; there is one string now.
 - **The error screen sent most players to a log file that was not there.** It named
   `output_log.txt` in the save folder, which is where Unity puts it on Windows and nowhere
   else: Linux writes `Player.log` to that folder and macOS writes it under

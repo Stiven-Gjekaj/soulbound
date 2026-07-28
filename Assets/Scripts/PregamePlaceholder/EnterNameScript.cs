@@ -21,14 +21,27 @@ public class EnterNameScript : MonoBehaviour {
     public AudioSource uiAudio;
     public TextManager tmInstr, tmName, tmLettersMaj, tmLettersMin;
 
+    /// <summary>
+    /// The line above the name. It has to say to type, because with the grid gone there is
+    /// nothing on screen that suggests the keyboard.
+    ///
+    /// One line, and a short one. The name is drawn immediately below, so a second line
+    /// lands on top of it; and the text is anchored on the left rather than centred, so it
+    /// grows towards the right edge and runs off it somewhere around thirty characters.
+    /// Both of those are properties of the scene, and the scene is rebuilt at v0.6.
+    ///
+    /// Used in two places: here, and again when a player answers "no" on the confirm screen
+    /// and comes back to edit. Those two used to disagree.
+    /// </summary>
+    private const string Instruction = "Type the fallen human's name.";
+
     // Use this for initialization
     private void Start() {
         AddToDict();
         isNewGame = SaveLoad.savedGame == null;
         try { GameObject.Find("textframe_border_outer").SetActive(false); }
         catch { /* ignored */ }
-        // One line. The name is drawn just below this and a second line collides with it.
-        tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human. Type it."), false, true) });
+        tmInstr.SetTextQueue(new[] { new TextMessage((Instruction), false, true) });
         tmInstr.SetHorizontalSpacing(2);
         tmName.SetHorizontalSpacing(2);
         GameObject firstCamera = GameObject.Find("Main Camera");
@@ -54,7 +67,9 @@ public class EnterNameScript : MonoBehaviour {
         // Z is only ever a letter.
         //
         // Taking the objects out of EnterName.unity needs the Unity editor, so it happens at
-        // v0.6 along with the rest of this screen.
+        // v0.6 along with the rest of this screen. Switched off here and nowhere else: the
+        // confirm screen used to switch them back on when a player answered "no", which put
+        // the whole grid back on top of the rebuilt screen.
         tmLettersMaj.gameObject.SetActive(false);
         tmLettersMin.gameObject.SetActive(false);
 
@@ -265,8 +280,6 @@ public class EnterNameScript : MonoBehaviour {
         tmInstr.SetTextQueue(new[] { new TextMessage((confirmText ?? ("Is this name correct?")), false, true) });
         tmName.SetEffect(new ShakeEffect(tmName));
         GameObject.Find("Backspace").GetComponent<SpriteRenderer>().enabled = false;
-        tmLettersMaj.gameObject.SetActive(false);
-        tmLettersMin.gameObject.SetActive(false);
         setColor("Quit");
         GameObject.Find("Done").GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, isForbidden ? 0 : 1);
         float diff = calcTotalLength(tmName)*2;
@@ -293,9 +306,7 @@ public class EnterNameScript : MonoBehaviour {
             tmName.SetEffect(null);
             tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
             tmName.MoveTo(-calcTotalLength(tmName)/2, 145);
-            tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human."), false, true) });
-            tmLettersMaj.gameObject.SetActive(true);
-            tmLettersMin.gameObject.SetActive(true);
+            tmInstr.SetTextQueue(new[] { new TextMessage((Instruction), false, true) });
             GameObject.Find("Backspace").GetComponent<SpriteRenderer>().enabled = true;
             setColor("Done");
         } else {
