@@ -1,4 +1,5 @@
-﻿using MoonSharp.Interpreter;
+﻿using System.Collections.Generic;
+using MoonSharp.Interpreter;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,9 +51,33 @@ public abstract class Projectile : MonoBehaviour {
     }
 
     /// <summary>
+    /// Every bullet currently in play. Bullets are pooled and a pooled one is inactive, so
+    /// enabling and disabling is exactly the live/not-live boundary and needs no extra
+    /// bookkeeping. BattleTick walks this instead of searching the scene every step.
+    /// </summary>
+    private static readonly List<Projectile> live = new List<Projectile>();
+
+    /// <summary>
+    /// Advances every live bullet by one step: hitbox, position bookkeeping, collision.
+    ///
+    /// Walked backwards because a bullet that hits the player can remove itself, and a
+    /// wave's OnHit can remove others.
+    /// </summary>
+    public static void TickAll() {
+        for (int i = live.Count - 1; i >= 0; i--) {
+            if (i >= live.Count)
+                continue;
+            Projectile p = live[i];
+            if (p)
+                p.Tick();
+        }
+    }
+
+    /// <summary>
     /// Built-in Unity function run on enabling this object
     /// </summary>
     private void OnEnable() {
+        live.Add(this);
         self = GetComponent<RectTransform>();
         img = GetComponent<Image>();
         img.color = Color.white;
@@ -77,10 +102,15 @@ public abstract class Projectile : MonoBehaviour {
 
     public bool isPP() { return ppcollision && ppchanged || ProjectileController.globalPixelPerfectCollision && !ppchanged; }
 
+    private void OnDisable() { live.Remove(this); }
+
     /// <summary>
-    /// Built-in Unity function run at the end of every frame
+    /// One step of this bullet. Driven by BattleTick after the wave scripts have moved it,
+    /// so the collision test below sees where the bullet actually ended up this step and
+    /// where the player actually ended up, rather than whichever Unity happened to run
+    /// first.
     /// </summary>
-    private void Update() {
+    private void Tick() {
         //ctrl.UpdatePosition();
         //OnUpdate();
         if (needSizeRefresh || internalRotation != self.eulerAngles.z)

@@ -290,9 +290,11 @@ public class PlayerController : MonoBehaviour {
 
     // move within arena boundaries given 'directional' vector (non-unit: x is -1 OR 1 and y is -1 OR 1)
     public virtual void Move(Vector2 dir) {
-        Vector2 soulDir = soul.GetMovement(dir.x, dir.y);
-        if (ControlPanel.instance.FrameBasedMovement) soulDir *= 1.0f/60.0f;
-        else                                          soulDir *= Time.deltaTime;
+        // One tick's worth of movement. This used to be a choice between a fixed step and
+        // elapsed time, settable from Lua; it is always the fixed step now, because the
+        // bullets the player is dodging advance in fixed steps too and the two have to
+        // agree or the fight changes difficulty with the frame rate.
+        Vector2 soulDir = soul.GetMovement(dir.x, dir.y) * BattleTick.Step;
         lastMovement = soulDir;
 
         // reusing the direction Vector2 for position to save ourselves the creation of a new object
@@ -384,7 +386,13 @@ public class PlayerController : MonoBehaviour {
     /// <summary>
     /// Built-in Unity function called once per frame.
     /// </summary>
-    private void Update() {
+    /// <summary>
+    /// One step of the player's fight: input, movement, invulnerability, hitbox.
+    ///
+    /// Driven by BattleTick through UIController rather than by Unity, so that the soul
+    /// and the bullets it is dodging advance on the same clock and in a known order.
+    /// </summary>
+    public void Tick() {
         // DEBUG CONTROLS
         /*if (Input.GetKeyDown(KeyCode.Alpha1))
             SetSoul(new RedSoul(this));
@@ -411,7 +419,7 @@ public class PlayerController : MonoBehaviour {
 
         // if the invulnerability timer has more than 0 seconds (usually when you get hurt), blink to reflect the hurt state
         if (invulTimer > 0.0f) {
-            invulTimer -= Time.deltaTime;
+            invulTimer -= BattleTick.Step;
             selfImg.enabled = !(invulTimer % BLINK_CYCLE_SECONDS > BLINK_CYCLE_SECONDS / 2.0f) || invulTimer <= 0.0f;
         }
 

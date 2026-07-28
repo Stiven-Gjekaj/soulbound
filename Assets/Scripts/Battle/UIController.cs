@@ -1082,7 +1082,6 @@ public class UIController : MonoBehaviour {
         NewMusicManager.audiolist.Add("src", MusicManager.src);
 
         ProjectileController.globalPixelPerfectCollision = false;
-        ControlPanel.instance.FrameBasedMovement = false;
 
         LuaScriptBinder.CopySessionGlobalsToBattleGlobals();
         GameObject.Find("Main Camera").GetComponent<ProjectileHitboxRenderer>().enabled = !GameObject.Find("Main Camera").GetComponent<ProjectileHitboxRenderer>().enabled;
@@ -1139,7 +1138,10 @@ public class UIController : MonoBehaviour {
         if (UnitaleUtil.firstErrorShown) return;
         encounter.CallOnSelfOrChildren("EncounterStarting");
 
-        // Everything above this line is loading, which is not the player's time.
+        // Everything above this line is loading, which is not the player's time. Resetting
+        // the tick here also throws away the accumulator, so however long the encounter
+        // script took to run is not owed to the fight as a burst of catch-up steps.
+        BattleTick.Reset();
         BossRecords.ClockStart();
 
         // Display only, and off by default. The clock above runs either way.
@@ -1211,7 +1213,50 @@ public class UIController : MonoBehaviour {
     }
 
     // Update is called once per frame
+    /// <summary>
+    /// Runs the fight forward by however many whole steps the last frame owed.
+    ///
+    /// Nothing that decides what happens in a fight lives here. Battle.unity has no object
+    /// to hang a tick driver on and adding one needs the Unity editor, so this drives it,
+    /// being the component the battle scene already runs.
+    /// </summary>
     private void Update() {
+        BattleTick.Advance(RunTick);
+    }
+
+    /// <summary>
+    /// One step of the fight, in the order the pieces depend on each other: the player
+    /// moves, then the boss and its waves run and move their bullets, then collision is
+    /// tested against where everything ended up.
+    ///
+    /// That order used to be whatever Unity felt like. PlayerController and Projectile had
+    /// their own Update methods with no execution order set between them, so whether a
+    /// bullet was tested against this frame's or last frame's player position was not
+    /// decided anywhere.
+    /// </summary>
+    private void RunTick() {
+        // isActiveAndEnabled on each, because that is exactly when Unity would have called
+        // the Update these were. The attack bar in particular switches its own object off
+        // partway through, and a direct call would keep running it afterwards.
+
+        // The arena first, because it is the boundary everything else is measured inside.
+        if (ArenaManager.instance && ArenaManager.instance.isActiveAndEnabled)
+            ArenaManager.instance.Tick();
+
+        // Then the attack bar, so the state machine below reads where it actually is when
+        // the player presses Confirm this step.
+        if (fightUI && fightUI.isActiveAndEnabled)
+            fightUI.Tick();
+
+        if (PlayerController.instance && PlayerController.instance.isActiveAndEnabled)
+            PlayerController.instance.Tick();
+
+        TickBattle();
+
+        Projectile.TickAll();
+    }
+
+    private void TickBattle() {
         //frameDebug++;
         stateSwitched = false;
         if (encounter.gameOverStance)

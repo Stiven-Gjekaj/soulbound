@@ -78,7 +78,6 @@ public static class LuaScriptBinder {
         script.Globals["CreateSprite"] = (Func<string, string, int, DynValue>)SpriteUtil.MakeIngameSprite;
         script.Globals["CreateLayer"] = (Func<string, string, bool, bool>)SpriteUtil.CreateLayer;
         script.Globals["CreateProjectileLayer"] = (Action<string, string, bool>)SpriteUtil.CreateProjectileLayer;
-        script.Globals["SetFrameBasedMovement"] = (Action<bool>)SetFrameBasedMovement;
         script.Globals["SetAction"] = (Action<string>)SetAction;
         script.Globals["SetPPCollision"] = (Action<bool>)SetPPCollision;
         script.Globals["AllowPlayerDef"] = (Action<bool>)AllowPlayerDef;
@@ -280,7 +279,6 @@ public static class LuaScriptBinder {
         }
     }
 
-    public static void SetFrameBasedMovement(bool b) { ControlPanel.instance.FrameBasedMovement = b; }
 
     public static void SetAction(string action) {
         try {

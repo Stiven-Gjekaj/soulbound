@@ -249,33 +249,41 @@ public class ArenaManager : MonoBehaviour {
     /// <summary>
     /// Resizes the arena if the desired size is different from the current size.
     /// </summary>
-    private void Update() {
+    /// <summary>
+    /// Advances a resize by one battle step.
+    ///
+    /// The arena is the boundary the player is clamped inside, so it is part of the fight
+    /// rather than decoration: an arena that closed in by elapsed frame time while the
+    /// player moved by fixed steps would give a slow machine a differently shaped fight.
+    /// Driven by BattleTick through UIController.
+    /// </summary>
+    public void Tick() {
         // do not resize the arena if the state is frozen with PAUSE
         if (!UIController.instance || UIController.instance.frozenState != "PAUSE")
             return;
 
         if (currentWidth != desiredWidth) {
             float sign = Mathf.Sign(desiredWidth - currentWidth);
-            currentWidth += sign * pxPerSecond * Time.deltaTime;
+            currentWidth += sign * pxPerSecond * BattleTick.Step;
             if (Mathf.Sign(desiredWidth - currentWidth) != sign)
                 currentWidth = desiredWidth;
         }
         if (currentHeight != desiredHeight) {
             float sign = Mathf.Sign(desiredHeight - currentHeight);
-            currentHeight += sign * pxPerSecond * Time.deltaTime;
+            currentHeight += sign * pxPerSecond * BattleTick.Step;
             if (Mathf.Sign(desiredHeight - currentHeight) != sign)
                 currentHeight = desiredHeight;
         }
 
         if (currentX != desiredX) {
             float sign = Mathf.Sign(desiredX - currentX);
-            currentX += sign * pxPerSecond * Time.deltaTime / 2;
+            currentX += sign * pxPerSecond * BattleTick.Step / 2;
             if (Mathf.Sign(desiredX - currentX) != sign)
                 currentX = desiredX;
         }
         if (currentY != desiredY) {
             float sign = Mathf.Sign(desiredY - currentY);
-            currentY += sign * pxPerSecond * Time.deltaTime / 2;
+            currentY += sign * pxPerSecond * BattleTick.Step / 2;
             if (Mathf.Sign(desiredY - currentY) != sign)
                 currentY = desiredY;
         }

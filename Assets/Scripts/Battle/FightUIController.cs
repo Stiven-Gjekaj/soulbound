@@ -164,8 +164,14 @@ public class FightUIController : MonoBehaviour {
             HideAttackingUI();
     }
 
-    // Update is called once per frame
-    private void Update() {
+    /// <summary>
+    /// Advances the attack bar by one battle step.
+    ///
+    /// The bar is the FIGHT minigame: where it is when the player presses Confirm decides
+    /// the damage. It has to advance on the same clock as everything else the player is
+    /// timing against. Driven by BattleTick through UIController.
+    /// </summary>
+    public void Tick() {
         // do not update the attack UI if the ATTACKING state is frozen
         if (UIController.instance.frozenState != "PAUSE")
             return;
@@ -204,7 +210,7 @@ public class FightUIController : MonoBehaviour {
         if (stopped || UIController.instance.state != "ATTACKING")
             return;
 
-        float mv = xSpeed * Time.deltaTime;
+        float mv = xSpeed * BattleTick.Step;
         targetRt.anchoredPosition = new Vector2(targetRt.anchoredPosition.x + mv, 0);
         if (!Finished() || boundFightUiInstances.Count == 0) return;
         stopped = true;

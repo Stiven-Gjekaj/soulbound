@@ -34,13 +34,15 @@ public class BlueSoul : AbstractSoul {
             falling = true;
         }
 
-        // while midair
+        // while midair. This runs inside a battle step, so it advances by the step rather
+        // than by elapsed frame time: gravity has to agree with the movement it is applied
+        // to, and with the bullets the player is jumping over.
         if (jumping)
-            ySpeed -= jumpDecelerationSpeed * Time.deltaTime;
+            ySpeed -= jumpDecelerationSpeed * BattleTick.Step;
 
         if (falling) {
             fallSpeed += fallSpeedIncrement;
-            ySpeed -= fallSpeed * Time.deltaTime;
+            ySpeed -= fallSpeed * BattleTick.Step;
         }
 
         // turning point

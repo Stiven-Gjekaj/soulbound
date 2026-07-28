@@ -14,7 +14,6 @@
     // first, so this should never reach the screen. See PlayerProfile.
     public string BasisName = "Soul";
     public string WindowBasisName = "Create Your Frisk v" + GlobalControls.CYFversion + " LTS " + (GlobalControls.BetaVersion > 0 ? (GlobalControls.LTSversion + 1) + " b" + GlobalControls.BetaVersion : "" + GlobalControls.LTSversion);
-    public bool FrameBasedMovement = false;
     #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
         public bool windows = true;
     #else
