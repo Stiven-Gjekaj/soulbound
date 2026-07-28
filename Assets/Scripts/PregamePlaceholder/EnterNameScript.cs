@@ -27,7 +27,8 @@ public class EnterNameScript : MonoBehaviour {
         isNewGame = SaveLoad.savedGame == null;
         try { GameObject.Find("textframe_border_outer").SetActive(false); }
         catch { /* ignored */ }
-        tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human.\nType it."), false, true) });
+        // One line. The name is drawn just below this and a second line collides with it.
+        tmInstr.SetTextQueue(new[] { new TextMessage(("Name the fallen human. Type it."), false, true) });
         tmInstr.SetHorizontalSpacing(2);
         tmName.SetHorizontalSpacing(2);
         GameObject firstCamera = GameObject.Find("Main Camera");
@@ -149,6 +150,7 @@ public class EnterNameScript : MonoBehaviour {
     }
 
     private static readonly string[] buttonNames = { "Quit", "Backspace", "Done" };
+    private Vector3 lastMousePosition = Vector3.zero;
 
     /// <summary>
     /// Highlights whichever button the pointer is over, and presses it on a click.
@@ -163,6 +165,13 @@ public class EnterNameScript : MonoBehaviour {
         Camera cam = Camera.main;
         if (cam == null)
             return false;
+
+        // A pointer that has not moved does not get to hold the selection. Without this a
+        // mouse left resting over a button re-selects it every frame, so the arrow keys
+        // appear dead: the selection moves and is dragged back before the next frame draws.
+        // Clicks still work wherever the pointer is sitting.
+        bool moved = Input.mousePosition != lastMousePosition;
+        lastMousePosition = Input.mousePosition;
 
         Vector3 point = cam.ScreenToWorldPoint(Input.mousePosition);
         point.z = 0;
@@ -179,7 +188,7 @@ public class EnterNameScript : MonoBehaviour {
             if (point.x < b.min.x || point.x > b.max.x || point.y < b.min.y || point.y > b.max.y)
                 continue;
 
-            if (choiceLetter != name) {
+            if (moved && choiceLetter != name) {
                 setColor(name);
                 uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menumove"));
             }

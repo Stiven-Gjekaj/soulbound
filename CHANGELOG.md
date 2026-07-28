@@ -119,6 +119,17 @@ compatibility for years and none of them were cosmetic:
 - Empty dialogue tables were accepted where a non-empty array or a string was required.
 - Non-persistent bullets survived the wave that spawned them.
 
+Two more came from playing the rebuilt name screen, and neither was visible in the diff
+that caused them:
+
+- **The arrow keys looked dead on the name screen** whenever the pointer happened to rest
+  over a button. The mouse re-selected whatever it was over on every frame, so a keypress
+  moved the selection and the pointer dragged it back before the next frame drew. The mouse
+  only claims the selection when it has actually moved now; a click still works wherever
+  the pointer is sitting.
+- **The name screen's instruction overlapped the name being typed.** It was two lines and
+  the name is drawn just under it. One line now.
+
 ### Notes
 
 - **The Discord application ID is still Create Your Frisk's**, and no change here can alter
