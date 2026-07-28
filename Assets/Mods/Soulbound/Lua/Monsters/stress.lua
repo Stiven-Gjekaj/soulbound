@@ -28,7 +28,13 @@ function HandleAttack(attackstatus)
     -- Unkillable on purpose. Press Escape to leave once the numbers are on screen.
 end
 
-function EnemyDialogueStarting()
+-- Called by the encounter script, not by the engine.
+--
+-- This was an EnemyDialogueStarting handler and never ran once. The engine dispatches those
+-- hooks through EnemyEncounter.CallOnSelfOrChildren, which returns as soon as the encounter
+-- script handles one, and this encounter defines its own. A monster's copy of any hook the
+-- encounter also defines is dead code, silently, so the lines below never appeared.
+function NextLine()
     said = said + 1
     if said == 1 then
         currentdialogue = { "Same length,[w:5] more bullets." }

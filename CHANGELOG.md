@@ -117,6 +117,11 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   now both wrong and vaguer than the code deserves: 30 iterations is exactly half a second
   on every machine. It is the example boss authors copy from, so its vocabulary is the
   vocabulary they learn.
+- The stress boss says its three lines. It never had: it defined `EnemyDialogueStarting`,
+  and so does its encounter, and the engine's `CallOnSelfOrChildren` returns as soon as the
+  encounter script handles a hook. A monster's copy of any hook the encounter also defines
+  is dead code and nothing says so. The monster exposes a plainly named function that the
+  encounter calls instead.
 - **A bad text command says so.** Fourteen of them caught their own errors, wrote a
   well-phrased usage message to a console nobody reads, and carried on as if nothing had
   happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.

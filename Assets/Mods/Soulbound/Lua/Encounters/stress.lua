@@ -31,6 +31,11 @@ function EnemyDialogueStarting()
     turn = turn + 1
     if turn > 3 then turn = 3 end
 
+    -- The monster's line has to be driven from here. Defining EnemyDialogueStarting in this
+    -- file stops the engine ever calling the monster's copy of it, so the monster exposes a
+    -- plainly named function instead of a hook that would never fire.
+    enemies[1].Call("NextLine")
+
     -- The wave reads this to know which report slot it owns, so three turns give three
     -- numbers instead of overwriting each other.
     SetGlobal("stress_slot", turn)
