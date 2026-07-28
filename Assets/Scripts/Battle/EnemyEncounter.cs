@@ -104,7 +104,12 @@ public class EnemyEncounter : MonoBehaviour {
             Table size = script.GetVar("arenasize").Table;
             if (size == null)
                 return new Vector2(155, 130);
-            if (size.Get(1).Number < 16 || size.Get(2).Number < 16) // TODO remove hardcoding (but player never changes size so nobody cares)
+            // 16 is twice the Player's 8x8 hitbox, hardcoded because the Player is always
+            // that size. Deriving it was suggested and is not wanted on its own: it is
+            // downstream of whether the Player can be resized at all, which is a design
+            // question nobody has asked. The clamp below is safe either way, and if a boss
+            // ever resizes the soul this comes with that work rather than before it.
+            if (size.Get(1).Number < 16 || size.Get(2).Number < 16)
                 return new Vector2(size.Get(1).Number > 16 ? (int)size.Get(1).Number : 16, size.Get(2).Number > 16 ? (int)size.Get(2).Number : 16);
             return new Vector2((int)size.Get(1).Number, (int)size.Get(2).Number);
         }

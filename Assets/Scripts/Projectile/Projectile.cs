@@ -209,8 +209,14 @@ public abstract class Projectile : MonoBehaviour {
     /// <returns>true if there's a collision, otherwise false</returns>
     public bool HitTestPP() {
         if (!selfAbs.Overlaps(PlayerController.instance.playerAbs)) return false;
-        // TODO: Store a table of textures instead of a single texture and replace it when it's not on anymore?
-        // Ex: animated bullets will often need to reload their sprite
+        // One texture is cached and re-read whenever the sprite changes. GetPixels32
+        // allocates the whole sprite as a colour array, so an animated bullet pays that on
+        // every frame it changes, and a wave full of them pays it every frame.
+        //
+        // Deferred to v0.8 rather than fixed: bullets are single-frame placeholders until
+        // art exists, so nothing triggers it yet and there is no way to measure whether the
+        // cure is worth it. Caching one texture per animation frame is the shape of the fix.
+        // Recorded in docs/project/milestones.md under v0.8.
         if (needUpdateTex) {
             texture = ((Texture2D)img.mainTexture).GetPixels32();
             needUpdateTex = false;

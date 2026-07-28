@@ -377,9 +377,16 @@ public class PlayerController : MonoBehaviour {
         float xDelta = self.anchoredPosition.x - oldX;
         float yDelta = self.anchoredPosition.y - oldY;
 
-        // if the position is the same, the player hasnt moved - by doing it like this we account
-        // for things like being moved by external factors like being shoved by boundaries
-        // TODO: account for external factors like being moved by other scripts (enemies e.a.)
+        // If the position is the same, the Player has not moved. Comparing positions rather
+        // than reading input means being shoved by the arena boundaries counts as moving,
+        // which is what the documentation promises.
+        //
+        // Telling script-driven movement apart from the player's own was suggested, and is
+        // deliberately not done. isMoving is read by orange and blue bullets to decide
+        // whether to hurt, so the only case where the distinction matters is a boss moving
+        // the soul while blue bullets are on screen. Soulbound will not do that: taking
+        // damage for movement the player did not make is unfair, so the two never overlap
+        // and there is nothing here to disambiguate.
         if (xDelta == 0.0f && yDelta == 0.0f) moving = false;
         else                                  moving = true;
         soul.PostMovement(xDelta, yDelta);

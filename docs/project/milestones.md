@@ -359,9 +359,10 @@ has the detail.
   commands, so it wants settling before then.
 - **Whatever else the stress encounter exposes.** Bullet performance, wave composition, and
   whatever the Lua API makes awkward when a fight runs long are all expected to land here.
-- **Ten remaining TODOs** in our own code, none of which name a version any more, to be
-  triaged into a v0.5 item or an explicit decision not to do them. Two more sit in the
-  vendored MoonSharp interpreter under `Assets/Plugins` and are not ours to answer.
+- Nothing from the inherited TODOs. All ten are answered: four implemented, one deferred to
+  v0.8 and recorded there, three closed as decisions not to do them, and the last three were
+  one problem wearing three hats. See the changelog. Two remain in the vendored MoonSharp
+  interpreter under `Assets/Plugins` and are not ours to answer.
 - **Anything only visible off Linux.** The Discord leak was invisible to every playtest here
   and sat in people's friends lists. Windows-only and macOS-only paths need reading, and
   anything found there needs a human on that platform to confirm.
@@ -428,6 +429,13 @@ from v0.5 through v0.7 may wait on a sprite that does not exist yet.
 
 - The teased boss gets its identity here: whatever the locked entry built at v0.6 displays,
   presented well enough to say what is coming without saying too much.
+- **Pixel-perfect collision reloads a bullet's texture whenever its frame changes.**
+  `Projectile.HitTestPP` caches one texture and re-reads it with `GetPixels32`, which
+  allocates the whole sprite as a colour array, so an animated bullet pays that on every
+  frame it changes. Nothing pays it today: bullets are single-frame placeholders and no
+  animation exists to trigger it. It becomes real the moment bullets have art, which is
+  here. Caching a texture per frame of the animation is the fix the code already suggests;
+  the stress encounter is what should decide whether it is needed before it is written.
 - A Soulbound logo on the splash screen. The project is on a Unity Personal licence, so the
   Unity logo cannot be removed, but a custom logo can sit with it: add the sprite to
   `m_SplashScreenLogos` in `ProjectSettings` with `m_SplashScreenDrawMode` left at `0`,

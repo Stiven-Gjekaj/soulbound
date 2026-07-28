@@ -209,6 +209,21 @@ that caused them:
 
 ### Notes
 
+- **The ten inherited TODOs are answered.** Four became the changes above: game events
+  reaching monster scripts, the attack instance lifetime, `Text.GetTextHeight` prediction,
+  and the duplicated command stripper, which was three of the ten describing one problem.
+  One is deferred to v0.8 with the reason written down: pixel-perfect collision re-reads a
+  bullet's texture on every frame change, which costs nothing until bullets have animation.
+
+  Three are closed as decisions rather than work, stated where the code is so the question
+  is not reopened by the next person to read it. Pixel-perfect collision stays specific to
+  the Player, because a boss rush needs soul against bullet and the generality would cost
+  the innermost loop of every fight. The 16 pixel minimum arena stays hardcoded, because it
+  is downstream of whether the Player can be resized, which nobody has asked for. And
+  `isMoving` stays as it is: it exists for orange and blue bullets, so the only case that
+  could tell script-driven movement from the player's own is a boss moving the soul during
+  blue bullets, and Soulbound will not do that, because taking damage for movement you did
+  not make is unfair.
 - **The Discord application ID is still Create Your Frisk's**, and no change here can alter
   it. Discord draws the displayed game name and the icon from whatever is registered against
   the ID on its developer portal, so a player with Discord open announces the wrong game

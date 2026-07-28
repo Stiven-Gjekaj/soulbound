@@ -603,7 +603,12 @@ public static class UnitaleUtil {
 
     /// <summary>
     /// Checks if the Player and a given bullet collide.
-    /// TODO: Extend this function so it can handle two different random objects, instead of forcing one of them to be the Player.
+    ///
+    /// It stays specific to the Player on purpose. Generalising it to any two objects was
+    /// suggested and is not wanted: a boss rush needs soul against bullet and nothing else,
+    /// and this is the innermost loop of per-pixel collision, so the generality would cost
+    /// every fight to serve a mechanic nobody has designed. A boss that genuinely needs two
+    /// arbitrary objects tested this way can pay for it then.
     /// </summary>
     /// <param name="playerMatrix">List of pixels depicting the Player's hitbox. Currently is 8x8 with no transparent pixel.</param>
     /// <param name="bulletMatrix">List of pixels depicting the bullet's sprite.</param>
