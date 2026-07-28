@@ -43,8 +43,12 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
 - **`Time.dropped`**, the number of steps the catch-up ceiling has thrown away. Above zero
   means the machine could not keep up and the fight skipped forward rather than running
   every step: bullets did not move for those steps and no collision was tested for them.
+
   It was added because the first stress run could only infer whether the ceiling had been
-  reached, from a frame rate, and inference is not measurement.
+  reached, from a frame rate, and inference is not measurement. The run after it settled the
+  question: a 10fps frame in the 288-bullet turn owed six steps against a ceiling of five
+  and dropped one. Neither the game time nor the wall clock moved for it, which is exactly
+  why reading the frame rate was not good enough.
 
 ### Removed
 

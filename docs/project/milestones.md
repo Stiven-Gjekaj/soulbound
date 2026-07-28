@@ -317,9 +317,14 @@ has the detail.
   rather than appearance and were fixes rather than deletions.
 - **The fight keeps its own time, measured.** The stress encounter's three turns each run
   600 wave updates: 12 bullets, then 288, then 288 in an arena more than twice the size.
-  All three took 10.0s of game time and 10.0s of wall clock, with worst frames of 11, 17
-  and 14fps. `Time.dropped` was added afterwards, because the report could only infer
-  whether the catch-up ceiling had been reached and inference is not measurement.
+  All three took 10.0s of game time and 10.0s of wall clock, at worst frames of 16, 10 and
+  48fps.
+
+  The 10fps turn dropped a step: a frame that long owes six against a ceiling of five, and
+  `Time.dropped` reported the one discarded. Neither the game time nor the wall clock moved
+  for it, because one step in six hundred is a sixtieth of a second and vanishes into a
+  decimal place. That is the reason the counter exists: reading the frame rate and inferring
+  the rest was giving answers that changed between runs.
 - **Names are typed.** The letter grid is gone and the screen is a text field with two
   buttons, worked by keyboard or mouse. A controller cannot type, so `Done` accepts an empty
   name and falls back to the default rather than trapping a pad player.
@@ -334,11 +339,17 @@ has the detail.
 
 ### Open
 
-- **A load heavy enough to reach the catch-up ceiling.** The stress encounter has run and
-  the fight held its time, but 288 bullets on a software renderer stayed near 60fps, so the
-  ceiling was barely touched and what happens past it is still argument. Either the
-  encounter gets a turn heavy enough to force drops, or the ceiling's value is chosen on
-  reasoning and that is written down as a decision rather than left as an untested five.
+- **Whether five is the right catch-up ceiling.** It has now been reached and measured
+  rather than argued about, but nothing has been decided. The question is what a fight
+  should do on a machine that cannot keep up: skip forward and stay in step with the wave
+  timer and the music, or run every step and fall behind them. Five is the current answer
+  by inheritance rather than by argument.
+- **A load that is slow for longer than one frame.** The stress encounter turns out to
+  measure startup cost rather than sustained load. Its worst frame is the one that compiles
+  the wave and creates every bullet, and once that is paid the renderer keeps up: the
+  288-bullet turn in the largest arena saw a worst frame of 48fps, better than the same
+  wave in a smaller arena that had to compile it. Nothing here has produced a machine that
+  is slow for a whole wave, which is the condition a real player on old hardware is in.
 - **Text still types per rendered frame.** `TextManager` has its own `Update` and is not on
   the battle tick, so `[speed:x]`, `[w:x]` and `[waitall:x]` are counted in rendered frames:
   dialogue types at half speed on a 30fps machine and double on a 120fps one. The
