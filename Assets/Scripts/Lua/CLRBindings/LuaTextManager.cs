@@ -412,10 +412,13 @@ public class LuaTextManager : TextManager {
             CheckExists();
             _color.a = Mathf.Clamp01(value);
             textAlphaSet = true;
-            textColorSet = true; // TODO: Remove in 0.7
+            // Setting alpha also marks the colour as set. Upstream wanted these
+            // uncoupled; they stay coupled because uncoupling them changes what a text
+            // object's colour is after only its alpha was touched.
+            textColorSet = true;
 
             foreach (LetterData l in letters.Where(i => !i.commandAlphaSet))
-                //l.image.color = new Color(l.image.color.r, l.image.color.g, l.image.color.b, _color.a); // TODO: Remove in 0.7
+                //l.image.color = new Color(l.image.color.r, l.image.color.g, l.image.color.b, _color.a);
                 l.image.color = _color;
 
             if (!commandAlphaSet)

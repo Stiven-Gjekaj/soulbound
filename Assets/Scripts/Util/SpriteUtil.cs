@@ -117,7 +117,10 @@ public static class SpriteUtil {
         if (!string.IsNullOrEmpty(filename)) {
             SwapSpriteFromFile(i, filename);
             sprCtrl = LuaSpriteController.GetOrCreate(i.gameObject);
-            // TODO: Restore in 0.7
+            // Upstream meant to go back to naming the GameObject after its sprite and read it
+            // back from there. Soulbound keeps the stored string: it is what sprite.spritename
+            // reports to Lua, and a name in the Unity hierarchy is a debugging convenience
+            // rather than API. Revisit only if the hierarchy needs to be readable.
             //i.name = filename;
             sprCtrl.spritename = filename;
         } else

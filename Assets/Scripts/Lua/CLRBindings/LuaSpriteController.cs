@@ -49,7 +49,9 @@ public class LuaSpriteController {
     // The name of the sprite
     [MoonSharpHidden] public string _spritename = "empty";
     public string spritename {
-        // TODO: Restore in 0.7
+        // Open question for whoever builds the first boss: should this report the name the
+        // sprite was set with, or the name of the texture actually on screen? They differ
+        // once an animation is running. The stored string is the current answer.
         //get { return img.GetComponent<Image>() ? img.GetComponent<Image>().sprite.name : img.GetComponent<SpriteRenderer>().sprite.name; }
         get { return _spritename; }
         [MoonSharpHidden] set { _spritename = value; }
@@ -440,7 +442,8 @@ public class LuaSpriteController {
             nativeSizeDelta = new Vector2(imgtemp.sprite.texture.width, imgtemp.sprite.texture.height);
             shader.UpdateTexture(imgtemp.sprite.texture);
         }
-        // TODO: Restore in 0.7
+        // See the note on spritename above: the stored string is the API, the GameObject
+        // name is not.
         //imgtemp.name = name;
         spritename = name;
         Scale(xScale, yScale);
@@ -759,7 +762,7 @@ public class LuaSpriteController {
             return;
         Keyframe k = keyframes.getCurrent();
         if (k != null) {
-            // TODO: Restore in 0.7
+            // As above: the stored string is what Lua reads.
             //img.name = k.name;
             spritename = k.name;
         } else {
@@ -769,7 +772,9 @@ public class LuaSpriteController {
 
         if (k.sprite == null) return;
         Set(spritename);
-        // TODO: Remove in 0.7
+        // An empty keyframe reports itself as "blank" rather than as whatever sprite the
+        // animation last held. Upstream wanted this gone; it stays until a boss animation
+        // needs the other behaviour, because changing it changes what Lua reads mid-animation.
         if (k == KeyframeCollection.EMPTY_KEYFRAME)
             spritename = "blank";
     }

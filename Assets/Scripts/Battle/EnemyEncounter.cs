@@ -301,7 +301,8 @@ public class EnemyEncounter : MonoBehaviour {
         if (sprite == null)
             throw new CYFException("You can't create a projectile with a nil sprite!");
         SpriteUtil.SwapSpriteFromFile(projectile, sprite);
-        // TODO: Restore in 0.7
+        // The stored string is what Lua reads; the GameObject name is a debugging
+        // convenience. Same call as everywhere else sprites are named.
         //projectile.name = sprite;
         projectile.GetComponent<CYFSprite>().ctrl.spritename = sprite;
         projectile.owner = s;

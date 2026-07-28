@@ -261,7 +261,9 @@ public class PlayerController : MonoBehaviour {
         if (canHeal && oldMHP < newMHP)
             SetHP(PlayerCharacter.instance.HP + (newMHP - oldMHP));
 
-        // TODO: Remove overheal reset in 0.7
+        // HP is clamped to MaxHP, so a boss cannot heal the player above their maximum.
+        // Whether it should be able to is a design question for the first boss rather than
+        // a cleanup, so the clamp stays until someone wants overhealing and says why.
         if (PlayerCharacter.instance.HP > PlayerCharacter.instance.MaxHP)
             SetHP(PlayerCharacter.instance.MaxHP);
         if (UIStats.instance)

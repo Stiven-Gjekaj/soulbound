@@ -190,7 +190,7 @@ public static class FileLoader {
         if (!LoadModule.RequireFile(ref fileName, pathSuffix, needsToExist, needsAbsolutePath, errorOnFailure))
             if (leadingSlash) {
                 // Passthrough: Remove the leading slash if the file wasn't found
-                if (!fileName.StartsWith(DataRoot)) fileName = fileName.Replace('\\', '/').TrimStart('/'); // TODO: Remove this for 0.7
+                if (!fileName.StartsWith(DataRoot)) fileName = fileName.Replace('\\', '/').TrimStart('/'); // Normalises a relative path from Lua; kept, boss scripts pass them
                 if (!LoadModule.RequireFile(ref fileName, pathSuffix, needsToExist, needsAbsolutePath, errorOnFailure))
                     return false;
             } else

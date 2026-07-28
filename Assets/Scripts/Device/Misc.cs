@@ -142,23 +142,25 @@ public class Misc {
 
     public static void DestroyWindow() { Application.Quit(); }
 
-    // TODO: When OW is reworked, add 3rd argument to open a file in any of "mod", "map" or "default" locations
+    // Upstream planned a third argument here to choose between the "mod", "map" and
+    // "default" locations, once the overworld was reworked. v0.1 deleted the overworld, so
+    // there is no map location and never will be. Two locations do not need an argument.
     public static LuaFile OpenFile(string path, string mode = "rw") { return new LuaFile(path, mode); }
 
     public bool FileExists(string path) {
-        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // TODO: Remove this for 0.7
+        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // Normalises a relative path from Lua; kept, boss scripts pass them
         FileLoader.SanitizePath(ref path, "", false, true);
         return File.Exists(path);
     }
 
     public bool DirExists(string path) {
-        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // TODO: Remove this for 0.7
+        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // Normalises a relative path from Lua; kept, boss scripts pass them
         FileLoader.SanitizePath(ref path, "", false, true);
         return Directory.Exists(path);
     }
 
     public bool CreateDir(string path) {
-        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // TODO: Remove this for 0.7
+        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // Normalises a relative path from Lua; kept, boss scripts pass them
         FileLoader.SanitizePath(ref path, "", false, true);
         if (Directory.Exists(path)) return false;
         Directory.CreateDirectory(path);
@@ -168,8 +170,8 @@ public class Misc {
     private static bool PathValid(string path) { return path != " " && path != "" && path != "/" && path != "\\" && path != "." && path != "./" && path != ".\\"; }
 
     public bool MoveDir(string path, string newPath) {
-        if (!path.StartsWith(FileLoader.DataRoot))    path = path.Replace('\\', '/').TrimStart('/');       // TODO: Remove this for 0.7
-        if (!newPath.StartsWith(FileLoader.DataRoot)) newPath = newPath.Replace('\\', '/').TrimStart('/'); // TODO: Remove this for 0.7
+        if (!path.StartsWith(FileLoader.DataRoot))    path = path.Replace('\\', '/').TrimStart('/');       // Normalises a relative path from Lua; kept, boss scripts pass them
+        if (!newPath.StartsWith(FileLoader.DataRoot)) newPath = newPath.Replace('\\', '/').TrimStart('/'); // Normalises a relative path from Lua; kept, boss scripts pass them
         if (!DirExists(path) || DirExists(newPath) || !PathValid(path)) return false;
 
         FileLoader.SanitizePath(ref path, "", true, true);
@@ -179,7 +181,7 @@ public class Misc {
     }
 
     public bool RemoveDir(string path, bool force = false) {
-        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // TODO: Remove this for 0.7
+        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // Normalises a relative path from Lua; kept, boss scripts pass them
         FileLoader.SanitizePath(ref path, "", true, true);
 
         if (!Directory.Exists(path)) return false;
@@ -193,7 +195,7 @@ public class Misc {
         if (path == null) throw new CYFException("Cannot list a directory with a nil path.");
 
         string origPath = path;
-        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // TODO: Remove this for 0.7
+        if (!path.StartsWith(FileLoader.DataRoot)) path = path.Replace('\\', '/').TrimStart('/'); // Normalises a relative path from Lua; kept, boss scripts pass them
         FileLoader.SanitizePath(ref path, "", false, true);
         if (!Directory.Exists(path))
             throw new CYFException("Invalid path:\n\n\"" + origPath + "\"");
