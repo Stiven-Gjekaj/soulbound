@@ -9,7 +9,10 @@
 -- If the battle tick is doing its job, every turn reports the same game time no matter how
 -- badly the renderer struggled. See docs/project/boss-rush-loop.md, "The battle tick".
 
-encountertext = "Three turns, same length each. Watch the numbers."
+-- Two lines, broken by hand. The battle text box does not wrap unless the encounter sets
+-- autolinebreak, so a line longer than the box crosses its border and is clipped by the
+-- screen. This one used to be one line of forty-nine characters and lost its last word.
+encountertext = "Four turns, same length each.\nWatch the numbers."
 nextwaves = { "stress_light" }
 wavetimer = 999.0
 arenasize = { 155, 130 }
@@ -23,21 +26,22 @@ function EncounterStarting()
     SetGlobal("stress_report_1", "")
     SetGlobal("stress_report_2", "")
     SetGlobal("stress_report_3", "")
+    SetGlobal("stress_report_4", "")
 end
 
 -- Picks the next turn's wave and arena. nextwaves is re-read at the start of every
 -- defending round, so changing it here is what makes the turns differ.
 function EnemyDialogueStarting()
     turn = turn + 1
-    if turn > 3 then turn = 3 end
+    if turn > 4 then turn = 4 end
 
     -- The monster's line has to be driven from here. Defining EnemyDialogueStarting in this
     -- file stops the engine ever calling the monster's copy of it, so the monster exposes a
     -- plainly named function instead of a hook that would never fire.
     enemies[1].Call("NextLine")
 
-    -- The wave reads this to know which report slot it owns, so three turns give three
-    -- numbers instead of overwriting each other.
+    -- The wave reads this to know which report slot it owns, so each turn gives its own
+    -- number instead of overwriting the last.
     SetGlobal("stress_slot", turn)
 
     if turn == 1 then
@@ -46,18 +50,24 @@ function EnemyDialogueStarting()
     elseif turn == 2 then
         nextwaves = { "stress_heavy" }
         arenasize = { 250, 180 }
-    else
+    elseif turn == 3 then
         -- Same wave as turn 2 in a much larger arena, so the renderer has more to draw for
         -- identical fight logic. Game time should not notice.
         nextwaves = { "stress_heavy" }
         arenasize = { 400, 250 }
+    else
+        -- The one that is supposed to hurt. Turns one to three all held close to sixty
+        -- frames a second, so none of them ever really reached the catch-up ceiling. This
+        -- one exists to reach it and show what reaching it costs.
+        nextwaves = { "stress_absurd" }
+        arenasize = { 500, 300 }
     end
 end
 
 -- Collects whatever the waves reported and puts it where the player can read it.
 function DefenseEnding()
     local lines = {}
-    for i = 1, 3 do
+    for i = 1, 4 do
         local report = GetGlobal("stress_report_" .. i)
         if report ~= nil and report ~= "" then
             table.insert(lines, report)

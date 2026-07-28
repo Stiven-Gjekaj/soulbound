@@ -154,6 +154,17 @@ milestone has no fixed end: it runs until its list is empty and has stopped grow
   them required ten characters for both names, so the nine-character line `[letters]` failed
   it and was stripped while `[letters]x` was kept. This matters before v0.7, a boss written
   largely in text commands.
+- **A fourth stress turn, meant to hurt.** Turns one to three all held close to sixty frames
+  a second, so the catch-up ceiling was never really reached and what happens past it was
+  still argument. This one pushes bullets in the thousands across a 500x300 arena, spread
+  over the first sixty steps so the spawn does not become the measurement. Its bullet count
+  is meant to be turned up: a run reporting `d0` means the load was too light, not that the
+  ceiling is unreachable.
+- **Encounter text that crossed the text box border.** The battle text box does not wrap
+  unless the encounter sets `autolinebreak`, so a line wider than the box runs through its
+  border and is clipped by the screen edge rather than continuing on the next line. Three of
+  our own lines were doing it, including the stress encounter's own opening, which lost its
+  last word. They carry their own `\n` now.
 - **A bad text command says so.** Fourteen of them caught their own errors, wrote a
   well-phrased usage message to a console nobody reads, and carried on as if nothing had
   happened, so `[color:notacolour]` in a boss's dialogue produced silence and no colour.

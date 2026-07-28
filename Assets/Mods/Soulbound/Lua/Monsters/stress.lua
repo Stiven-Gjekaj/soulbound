@@ -41,6 +41,8 @@ function NextLine()
         currentdialogue = { "Same length,[w:5] more bullets." }
     elseif said == 2 then
         currentdialogue = { "Same again,[w:5] bigger arena." }
+    elseif said == 3 then
+        currentdialogue = { "Now the absurd one.[w:10]\nThis will hurt." }
     else
         currentdialogue = { "Read the numbers.[w:10]\nEscape to leave." }
     end
