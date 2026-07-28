@@ -749,8 +749,12 @@ public class LuaTextManager : TextManager {
         if (textQueue == null || textQueue[currentLine] == null)
             return 0;
 
-        if (firstLetter < 0) firstLetter += textQueue[currentLine].Text.Length - 1;
-        if (lastLetter < 0) lastLetter += textQueue[currentLine].Text.Length - 1;
+        // Length, not Length - 1. The documented example is GetTextWidth(-4) on
+        // "I want some text" starting at the t of "text", which is index 12 of 16, and
+        // -4 + 16 is 12. Subtracting one as well landed a letter early, on the space
+        // before it. GetTextHeight always had this right.
+        if (firstLetter < 0) firstLetter += textQueue[currentLine].Text.Length;
+        if (lastLetter < 0) lastLetter += textQueue[currentLine].Text.Length;
 
         if (firstLetter >= textQueue[currentLine].Text.Length) firstLetter = textQueue[currentLine].Text.Length - 1;
         if (lastLetter >= textQueue[currentLine].Text.Length) lastLetter = textQueue[currentLine].Text.Length - 1;
