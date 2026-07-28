@@ -61,9 +61,10 @@ enemypositions = { { 0, 0 } }
 
 ## Status
 
-**v0.3.** The loop exists. You pick a boss from a list, you fight it, you come
-back to the list, and beating one marks it cleared. The bosses are placeholders,
-but the game is a game.
+**v0.4.** The loop exists and keeps score. You pick a boss from a list, you fight
+it, you come back to the list, and it tells you how you did: cleared, cleared
+without taking a hit, best time, tries, deaths. The bosses are placeholders, but
+the game is a game.
 
 v0.0 turned an unmodified Create Your Frisk snapshot into a documented base: about
 37 MB of example content removed, the 644 KB documentation website converted by
@@ -84,9 +85,19 @@ v0.3 built the boss rush loop. A boss registry designers can edit without touchi
 C#, a select screen that reads it, a fight that starts from it and returns to it,
 and a per-boss record of attempts, clears and best times. It also finished leaving
 the fork behind: a tag-driven release pipeline, safe mode and Crate Your Frisk gone,
-the player naming their own character, and the product renamed to Soulbound. The
-[changelog](CHANGELOG.md) has the full account, and
-[milestones](docs/project/milestones.md) covers what comes next.
+the player naming their own character, and the product renamed to Soulbound.
+
+v0.4 put those records on the boss select and added the two worth keeping beside
+them, deaths and no-hit clears, along with an optional in-fight timer. It also fixed
+the problems that only appear once people can download a build: sparing a boss did
+nothing at all, an error screen named the wrong project and then ignored the key it
+told you to press, and the disclaimer still introduced somebody else's engine. Most
+of those were found by playing a build rather than reading one, which is part of
+shipping now.
+
+Next is v0.5, which ties off every loose end before the game gets screens, a real
+boss and art, in that order. The [changelog](CHANGELOG.md) has the full account, and
+[milestones](docs/project/milestones.md) covers the whole road to v1.0.
 
 ---
 

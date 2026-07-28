@@ -12,6 +12,34 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
+## 0.5 (unreleased)
+
+Tying off every loose end before the game gets screens, a real boss and art. The
+milestone has no fixed end: it runs until its list is empty and has stopped growing.
+
+### Changed
+
+- The roadmap from v0.5 to v1.0. Six milestones rather than five. v0.5 becomes open-ended
+  loose ends instead of a fixed list of engine work. Rebuilding the screens splits out of
+  the art milestone into v0.6 and happens unskinned, so the layouts are finished and lived
+  with before anyone draws for them and the artists get a settled target rather than a
+  moving one. The first boss moves to v0.7, art and audio to v0.8, and v0.9 becomes a
+  public demo rather than an internal release candidate.
+
+  Three consequences are recorded with it. The demo makes the save format public, so any
+  change to the AlMighty global keys or `GlobalControls.SaveVersion` has to land before
+  v0.9 rather than after. Publishing to GameJolt and itch.io is real packaging work rather
+  than an upload of what the release workflow already produces. And the framerate model has
+  to be chosen before the first boss is written, because every pattern in that fight gets
+  tuned against whichever model exists at the time.
+- The loop page's account of timing. It described framerate drops and `Time.timeScale` as
+  two open questions. They are one disagreement with two faces: wave duration is wall-clock
+  at `Time.time + wavetimer` while wave content ticks once per rendered frame through
+  `UIController.Update`, so a machine holding 30fps runs a four second wave 120 times
+  instead of 240 and every bullet written as movement per update covers half the ground.
+  `Time.timeScale` then moves `Time.time` without moving the record clock. The page names
+  the line each face comes from now.
+
 ## 0.4 (2026-07-27)
 
 The records v0.3 wrote but did not show, plus the first-release problems that only
