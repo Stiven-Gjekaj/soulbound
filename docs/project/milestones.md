@@ -14,14 +14,18 @@ The engine began as Create Your Frisk, a general Undertale-fangame engine, and
 roughly a third of it existed to support features this game does not have. v0.1
 through v0.3 made the engine fit the game. From v0.4 on, the work is the game.
 
-Art is not the constraint yet. Menus and boss assets arrive at v0.7, so the
-milestones before it are engine and content work with placeholder art, sequenced
-so that nothing blocks on a sprite that does not exist. Content and audio move
-together from v0.6 on, because a boss without its music is not a finished boss.
+Art is not the constraint yet. Menus and boss assets arrive at v0.8, so everything
+before it is engine and content work with placeholder art, sequenced so that nothing
+blocks on a sprite that does not exist. v0.6 rebuilds every screen unskinned for that
+reason: layout and art are different problems and only one of them waits on delivery.
+A screen built at v0.6 gets used, tested and disliked for two milestones before anyone
+draws for it, and the artists get a settled layout to work against instead of a moving
+target.
 
-The split from v0.5 onward is a proposal, not a promise. The boundaries are where
-they seem to belong today, and the content milestones are the ones most likely to
-want reshaping once a real boss is being built.
+The split from v0.5 onward is a proposal, not a promise. Two milestones, v0.5 and v0.9,
+deliberately have no fixed end: they run until their lists are empty and have stopped
+growing. That is a real scheduling risk and it is taken on purpose, because both of them
+exist to absorb the work that only appears once something is finished enough to use.
 
 ## v0.0: a clean foundation
 
@@ -288,79 +292,153 @@ art: the boss select shows its records on one line because that is all `ModSelec
 has spare, and the options screen is now using all ten of its rows, two of them adopted
 from retired settings.
 
-## v0.5: engine work for bosses
+## v0.5: loose ends
 
-Boss fights push harder on the engine than ordinary encounters. Three items are
-already known, and the rest comes from what v0.3 and v0.4 surface:
+The largest milestone before release, and the first of the two with no fixed end. It runs
+until the list is empty and has stopped growing. Everything deferred, worked around, or
+noticed and never written down belongs here, because everything after this is screens,
+content and art, and none of those should be built on top of a known defect.
 
-- Framerate drops change how many times per frame wave logic ticks. The 60 cap in
-  `ScreenResolution.Start` settles high-refresh displays but not slow machines.
-- `Time.timeScale` is settable from Lua, so a boss script can distort a fight against
-  a wall-clock timer. It needs locking during a timed fight.
-- Retro mode: 54 lines across 18 files that change gameplay semantics, including enemy
-  HP clamping, wave argument parsing, state transition rules, projectile positioning
-  and rotation, sprite active semantics and script call-existence checks. It is the last
+- **The fight's clock and the record's clock disagree, and neither survives a slow
+  machine.** Wave duration is wall-clock, `waveTimer = Time.time + wavetimer`, but wave
+  content ticks once per rendered frame: `UIController.Update` calls
+  `EnemyEncounter.UpdateWave`, which calls every wave script's `Update`. A machine holding
+  30fps runs a four second wave 120 times instead of 240, so a bullet written as movement
+  per update travels half as far and the fight is measurably easier. `Time.time` also obeys
+  `Time.timeScale`, which Lua can set through `LuaUnityTime`, while the record clock uses
+  `realtimeSinceStartup` and cannot be slowed. v0.4 put best times on the boss select.
+  Until this is fixed that number is not comparable between two machines, and the game
+  presents it as though it is.
+- **Retro mode.** 53 references across 18 files, concentrated in `UIController`,
+  `TextManager` and `EnemyEncounter`. It changes gameplay semantics rather than appearance:
+  enemy HP clamping, wave argument parsing, state transition rules, projectile positioning
+  and rotation, sprite active semantics, and script call-existence checks. It is the last
   inherited mode flag. Shim to false, collapse the branches, delete the flag, in that
   order, exactly as v0.2 handled `IsOverworld`.
-- Typing your name on the keyboard. The name screen is a grid you walk with the arrow
-  keys, inherited unchanged, and Cancel is the only way to delete a letter. Letters
-  should go in as they are typed, with the grid kept beside it for pads and mice rather
-  than replaced. The catch is that the grid reads Confirm, Cancel and the four directions
-  through the rebindable keybinds, and WASD is bound to the directions by default, so
-  typing a name that contains a W would currently move the cursor. Character input has to
-  take priority over movement while that screen is up, and only on that screen.
+- **Typing your name on the keyboard.** The name screen is a grid walked with the arrow
+  keys, inherited unchanged, and Cancel is the only way to delete a letter. Letters should
+  go in as they are typed, with the grid kept beside it for pads and mice rather than
+  replaced. The catch is that the grid reads Confirm, Cancel and the four directions
+  through the rebindable keybinds, and WASD is bound to the directions by default, so a
+  name containing a W would currently move the cursor. Character input has to win on that
+  screen, and only on that screen.
+- **Whatever else the list grows.** This milestone exists to be added to. Bullet pattern
+  performance under load, wave composition, and whatever the Lua API makes awkward when a
+  fight runs long are all expected to land here once there is a fight long enough to find
+  them.
 
-Likely additions once a real fight exists: bullet pattern performance under load, wave
-composition, and whatever the Lua API makes awkward when a fight runs long.
+### The timing decision
 
-## v0.6: the first boss
+Framerate independence has two shapes and they are not interchangeable:
+
+- **Delta-time scaling.** Wave logic still runs once per frame, and movement is multiplied
+  by elapsed time so bullets travel per second rather than per frame. Every existing Lua
+  pattern silently changes speed, and anything written against frame counts needs
+  rewriting.
+- **A fixed logic tick.** The engine runs wave `Update` a set number of times per second
+  regardless of rendering, catching up or dropping frames as needed. Existing patterns keep
+  their exact current meaning and the Lua API does not change.
+
+The second is the safer default for a project whose Lua API is public and whose patterns
+are about to be written in volume. This has to be settled before v0.7, because every
+pattern in the first boss is tuned against whichever model exists when it is written, and
+changing it afterwards means retuning the boss rather than fixing the engine.
+
+### Ending it
+
+v0.5 is done when the list is empty and a throwaway stress encounter, never shipped, plays
+correctly: several phases, a few hundred simultaneous projectiles, a fight long enough to
+drift, and dialogue between waves. If it does not hold up, the gap it exposes is v0.5 work
+that was not on the list, which is the reason for building it.
+
+## v0.6: wireframe
+
+Every screen the player sees, rebuilt as a purpose-built screen rather than an inherited
+one, and deliberately unskinned. Disclaimer, title, name entry, boss select, options,
+keybinds, and the battle UI itself.
+
+This is the milestone that most needs someone with the Unity editor open, because it is
+scene work rather than script work. Everything below has been waiting on exactly that:
+
+- The boss select is still the repurposed mod selector. Its objects are named `ModTitle`,
+  `EncounterCount` and `encounterBox`, and it shows all five records on one line because
+  that is the only spare line the scene has. It wants a real table.
+- The options screen is using all ten of its rows, two of them adopted from settings that
+  were retired. An eleventh option currently has nowhere to go.
+- The disclaimer screen is rebranded at runtime from C#, because none of it is reachable by
+  field: the inherited logo is hidden and the title is cloned out of the version label.
+  `DisclaimerScript.Rebrand` should not survive this milestone.
+- The in-fight timer builds its text at runtime from the same prefab Lua's `CreateText`
+  uses, because `Battle.unity` has no object for it.
+- A locked entry in the boss select, for the boss v1.0 teases rather than ships. The
+  registry, the select screen and the records all have to handle an entry that cannot be
+  fought. Building that into a new screen costs almost nothing and adding it to a finished
+  one costs a rebuild, which is why the capability lands here and the boss it advertises
+  lands at v0.8.
+
+## v0.7: the first boss
 
 The first Soultale boss, built as content rather than engine work: phases, patterns,
-dialogue, ACT options, balance. Placeholder art and audio throughout, because the point
-is a fight that plays well before it looks or sounds finished.
+dialogue, ACT options, balance. Placeholder art and audio throughout, on the finished
+layouts from v0.6, because the point is a fight that plays well before it looks or sounds
+finished.
 
-This is the milestone that proves the engine. Anything it cannot express is v0.5 work
-that was missed, and should go back there rather than being worked around in Lua.
+This is the milestone that proves the engine. Anything the engine cannot express is v0.5
+work that was missed, and belongs back there rather than worked around in Lua.
 
-## v0.7: art and audio
+It is also the first milestone with testers in the loop, which the release workflow already
+handles: a tag carrying a pre-release identifier, `v0.7.0-rc3`, publishes a real release
+with real builds attached and stays out of "latest", so a test build never becomes the
+headline download. Expect a lot of them, and expect the fight to be rebuilt more than once.
 
-The first boss gets its sprites, its music and its sound. The menus get theirs: boss
-select, the intro, the title screen and name entry, all of which are kept and reskinned
-rather than replaced.
+## v0.8: assets
 
-This is also when the boss select stops being the repurposed mod selector and becomes a
-purpose-built screen. That needs someone with the Unity editor open, so it should happen
-alongside the art it is being built for. Three things are waiting on it: the scene
-objects still named `ModTitle`, `EncounterCount` and `encounterBox`; the retired options
-rows currently hidden at runtime; and the "Change name" row, which took over the one
-safe mode left behind.
+Art and audio arrive and are integrated: the boss's sprites, music and sound, and the skin
+for every screen v0.6 built. Long, large, and mostly not code.
 
-A Soulbound logo on the splash screen belongs here too. The project is on a Unity
-Personal licence, so the Unity logo cannot be removed, but a custom logo can sit with it:
-add the sprite to `m_SplashScreenLogos` in `ProjectSettings`, with `m_SplashScreenDrawMode`
-left at `0`, which draws the custom logo above Unity's on one screen rather than as a
-second sequential one. v0.4 already set the splash background to black so it runs into the
-disclaimer screen without a flash.
+Blocked on delivery, which is why it sits after the content rather than inside it. Nothing
+from v0.5 through v0.7 may wait on a sprite that does not exist yet.
 
-Blocked on delivery, and deliberately separate from v0.6 so that engine and content work
-is never waiting on a sprite.
+- The teased boss gets its identity here: whatever the locked entry built at v0.6 displays,
+  presented well enough to say what is coming without saying too much.
+- A Soulbound logo on the splash screen. The project is on a Unity Personal licence, so the
+  Unity logo cannot be removed, but a custom logo can sit with it: add the sprite to
+  `m_SplashScreenLogos` in `ProjectSettings` with `m_SplashScreenDrawMode` left at `0`,
+  which draws both on one screen rather than as two sequential ones. v0.4 already set the
+  splash background to black so it runs into the disclaimer screen without a flash.
 
-## v0.8: the teased boss
+## v0.9: the demo
 
-The second boss, present but not playable: visible in the select screen, locked,
-presented well enough to say what is coming. Its encounter script does not need to exist
-yet, but the registry, the select screen and the records all need to handle an entry that
-cannot be fought.
+The public demo, and the longest phase of the project. It ends when everything is tied up
+and not before.
 
-## v0.9: release candidate
+This is everything between "the parts work" and "a stranger can play it": first-run
+experience, packaging, a pass over the options screen, and the bug list that only exists
+once people outside the team have played it. v0.4 was the first milestone played end to end
+before shipping, and three of its fixes exist only because of that. A demo is the same
+lesson at a scale the team cannot reproduce on its own.
 
-Everything between feature complete and shippable. First-run experience, the packaging the
-release workflow produces, a pass over the options screen, and the bug list that only
-appears once people other than the team have played it.
+One thing changes permanently here. **Once the demo is public, the save format is public.**
+Players will have records on disk, and from that point renaming an AlMighty global key or
+bumping `GlobalControls.SaveVersion` orphans real progress rather than test data. Any
+change to what v0.3 and v0.4 wrote has to land before this ships, not after.
+
+What the demo contains is a decision for the start of this milestone rather than now. The
+one constraint worth setting in advance is that it should not be all of v1.0.
 
 ## v1.0: ship
 
-One playable boss, one teased boss, on Windows, macOS and Linux.
+One playable boss, one teased boss, on Windows, macOS and Linux, plus the small tweaks the
+demo made obvious.
+
+Distribution is real work rather than a button press. GameJolt and itch.io each want their
+own packaging and metadata, and the release workflow currently produces three zips and a
+checksum file shaped for GitHub. Neither store is a straight upload of what already exists.
+
+The other known problem is that the builds are unsigned, so SmartScreen and Gatekeeper will
+warn about them. `SHA256SUMS.txt` makes "this is our build" checkable for anyone who thinks
+to check, which is not the same as making the warning go away, and a signing certificate
+costs money every year.
 
 ## After v1.0: the gauntlet
 
