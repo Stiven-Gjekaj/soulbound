@@ -12,10 +12,16 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
-## 0.5 (unreleased)
+## 0.5 (2026-07-30)
 
 Tying off every loose end before the game gets screens, a real boss and art. The
-milestone has no fixed end: it runs until its list is empty and has stopped growing.
+milestone was written with no fixed end, to run until its list was empty and had
+stopped growing. It stopped growing.
+
+Nothing here is visible as a feature. What changed is that the fight now keeps its
+own time, records measure what the fight did rather than how long you sat there,
+and a long list of things that were quietly wrong underneath are not wrong any
+more. Most of them were found by playing the build rather than reading it.
 
 ### Added
 

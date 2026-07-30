@@ -61,10 +61,10 @@ enemypositions = { { 0, 0 } }
 
 ## Status
 
-**v0.4.** The loop exists and keeps score. You pick a boss from a list, you fight
-it, you come back to the list, and it tells you how you did: cleared, cleared
-without taking a hit, best time, tries, deaths. The bosses are placeholders, but
-the game is a game.
+**v0.5.** The loop exists, keeps score, and now keeps its own time. You pick a boss
+from a list, you fight it, you come back to the list, and it tells you how you did:
+cleared, cleared without taking a hit, best time, tries, deaths. The bosses are
+placeholders, but the game is a game.
 
 v0.0 turned an unmodified Create Your Frisk snapshot into a documented base: about
 37 MB of example content removed, the 644 KB documentation website converted by
@@ -95,9 +95,18 @@ told you to press, and the disclaimer still introduced somebody else's engine. M
 of those were found by playing a build rather than reading one, which is part of
 shipping now.
 
-Next is v0.5, which ties off every loose end before the game gets screens, a real
-boss and art, in that order. The [changelog](CHANGELOG.md) has the full account, and
-[milestones](docs/project/milestones.md) covers the whole road to v1.0.
+v0.5 tied off the loose ends, and none of it is a feature. The fight runs on a fixed
+clock of sixty steps a second instead of once per drawn frame, which it turns out was
+making the game easier on a slow machine rather than slower: bullets covered half the
+ground they should while the soul kept full speed. Records count battle steps now, so
+a stutter cannot inflate a time. The letter grid is gone and you type your name. Retro
+mode is gone, and four of the bugs hiding inside it were behaviour rather than
+appearance. The window title and Discord stopped naming somebody else's engine.
+
+Next is v0.6, which rebuilds every screen the game has as a purpose-built screen
+rather than an inherited one, deliberately unskinned, so the layouts are settled
+before anyone draws art for them. The [changelog](CHANGELOG.md) has the full account,
+and [milestones](docs/project/milestones.md) covers the whole road to v1.0.
 
 ---
 

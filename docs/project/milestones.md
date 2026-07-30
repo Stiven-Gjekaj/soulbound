@@ -294,13 +294,12 @@ from retired settings.
 
 ## v0.5: loose ends
 
-The largest milestone before release, and the first of the two with no fixed end. It runs
-until the list is empty and has stopped growing. Everything deferred, worked around, or
-noticed and never written down belongs here, because everything after this is screens,
+Complete. The largest milestone before release, and the one written with no fixed end: it
+ran until the list was empty and had stopped growing. Everything deferred, worked around, or
+noticed and never written down belonged here, because everything after this is screens,
 content and art, and none of those should be built on top of a known defect.
 
-Still open. What follows is what has been closed so far; the [changelog](../../CHANGELOG.md)
-has the detail.
+What follows is what it closed; the [changelog](../../CHANGELOG.md) has the detail.
 
 ### Done
 
@@ -357,29 +356,32 @@ has the detail.
 - **The window title and Discord** stopped naming the fork. One part of this cannot be fixed
   from code and is recorded against v0.9.
 
-### Open
+### How it ended
 
-- **Whatever else the stress encounter exposes.** Bullet performance, wave composition, and
-  whatever the Lua API makes awkward when a fight runs long are all expected to land here.
-- Nothing from the inherited TODOs. All ten are answered: four implemented, one deferred to
-  v0.8 and recorded there, three closed as decisions not to do them, and the last three were
-  one problem wearing three hats. See the changelog. Two remain in the vendored MoonSharp
-  interpreter under `Assets/Plugins` and are not ours to answer.
-- **Anything only visible off Linux.** The Discord leak was invisible to every playtest here
-  and sat in people's friends lists. Windows-only and macOS-only paths need reading, and
-  anything found there needs a human on that platform to confirm.
+The exit condition was that the list empties and the stress encounter plays correctly:
+several phases, a few hundred simultaneous projectiles, a fight long enough to drift, and
+dialogue between waves. It does, on four turns of up to 1500 simultaneous projectiles, with
+dialogue between every one, verified on a build rather than in the editor.
 
-### Ending it
+All ten inherited TODOs are answered: four implemented, one deferred to v0.8 and recorded
+there, three closed as decisions not to do them, and the last three turned out to be one
+problem wearing three hats. Two remain in the vendored MoonSharp interpreter under
+`Assets/Plugins` and are not ours to answer.
 
-v0.5 is done when the list is empty and the stress encounter plays correctly: several
-phases, a few hundred simultaneous projectiles, a fight long enough to drift, and dialogue
-between waves. If it does not hold up, the gap it exposes is v0.5 work that was not on the
-list, which is the reason for building it.
+One item is deliberately carried forward rather than closed. **Anything only visible off
+Linux** cannot be settled from here: the Discord leak was invisible to every playtest and
+sat in people's friends lists regardless. Windows-only and macOS-only paths need a human on
+that platform, so it moves to v0.7, which is the first milestone with testers in the loop.
 
-It was meant to be thrown away rather than shipped. It ships: it is in the registry and a
-player sees it at the end of the boss list, labelled as not a boss. A measuring instrument
-that only exists on a developer's machine cannot be pointed at the machine that is actually
-having the problem, which is the case for keeping it. It leaves when it stops earning that.
+The stress encounter was meant to be thrown away rather than shipped. It ships: it is in the
+registry and a player sees it at the end of the boss list, labelled as not a boss. A
+measuring instrument that only exists on a developer's machine cannot be pointed at the
+machine that is actually having the problem, which is the case for keeping it. It leaves
+when it stops earning that.
+
+Its fourth turn is tuned to a software renderer, where 1500 bullets reach 8fps. On real
+hardware it may drop nothing at all, and a reading of `d0` there means the machine kept up
+rather than the test failing.
 
 ## v0.6: wireframe
 
@@ -420,6 +422,12 @@ It is also the first milestone with testers in the loop, which the release workf
 handles: a tag carrying a pre-release identifier, `v0.7.0-rc3`, publishes a real release
 with real builds attached and stays out of "latest", so a test build never becomes the
 headline download. Expect a lot of them, and expect the fight to be rebuilt more than once.
+
+- **Anything only visible off Linux**, carried here from v0.5 because it cannot be settled
+  without someone on the platform. Every playtest so far has run on Linux, and the branding
+  leak v0.5 found had been sitting in people's friends lists while being invisible to all of
+  them. Windows-only and macOS-only paths need reading, and anything found needs confirming
+  by a human on that platform. Testers arriving here is what makes it possible.
 
 ## v0.8: assets
 
