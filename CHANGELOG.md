@@ -12,6 +12,23 @@ Version stamps appear in every commit subject as `v0.X.N`, so the history reads
 as a sequence of small, individually described changes rather than a few large
 ones.
 
+## 0.6 (unreleased)
+
+Every screen the player sees, rebuilt as a purpose-built screen rather than an
+inherited one, and deliberately unskinned. Disclaimer, title, name entry, boss
+select, options, keybinds, and the battle UI itself.
+
+This is scene work rather than script work, so it is the first milestone that needs
+someone with the Unity editor open. Several things have been waiting on exactly
+that: the boss select is still the repurposed mod selector and shows all five
+records on one line because that is the only spare line its scene has, the options
+screen has used all ten of its rows, the disclaimer is rebranded at runtime from C#
+because none of it is reachable by field, and the in-fight timer builds its text
+from a Lua prefab because `Battle.unity` has no object for it.
+
+Unskinned on purpose. The layouts get finished and lived with before anyone draws
+art for them, so the artists at v0.8 get a settled target rather than a moving one.
+
 ## 0.5 (2026-07-30)
 
 Tying off every loose end before the game gets screens, a real boss and art. The
