@@ -14,6 +14,22 @@ ones.
 
 ## 0.6 (unreleased)
 
+### Changed
+
+- The building page says which Unity Hub modules to install. It named the editor version
+  and stopped, leaving the rest of a long module list to guess at. Two matter, Windows and
+  Linux build support, and the **Mono** variants rather than IL2CPP, because
+  `scriptingBackend: Standalone: 0` is Mono and the IL2CPP modules are a large download that
+  never gets used. Your own platform needs no module: the editor ships with build support
+  for the system it runs on.
+
+  It also records that Unity 2018.4 is an Intel build and runs under Rosetta 2, which is the
+  supported way to work on this from an Apple Silicon Mac. The native ARM64 editor arrives
+  in Unity 2021.2, and going there is not a version bump: that release removed the legacy
+  .NET 3.5 scripting runtime this project uses, and the upgrade re-serialises every scene
+  and prefab. And a warning not to let the Hub upgrade the project, since CI picks its
+  editor from `ProjectVersion.txt` and would then be building something else.
+
 Every screen the player sees, rebuilt as a purpose-built screen rather than an
 inherited one, and deliberately unskinned. Disclaimer, title, name entry, boss
 select, options, keybinds, and the battle UI itself.

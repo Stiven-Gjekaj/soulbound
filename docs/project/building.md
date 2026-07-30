@@ -9,8 +9,51 @@
 - **Python 3.7 or newer** for `Build.py`, only if you build locally.
 - **7-Zip**, optional, only if you want `Build.py` to package the builds into archives.
 
+### Which Unity modules to install
+
+Unity Hub offers a long list of build support modules alongside the editor. Two of them
+matter here:
+
+- **Windows Build Support (Mono)**
+- **Linux Build Support (Mono)**
+
+Take the **Mono** variants rather than the IL2CPP ones. `ProjectSettings.asset` sets
+`scriptingBackend: Standalone: 0`, which is Mono, so the IL2CPP modules are a large download
+that never gets used, and IL2CPP additionally wants a native toolchain on each host.
+
+You do not need a module for your own platform. The editor ships with build support for the
+system it runs on, so a Mac editor can already produce a Mac build and a Windows editor a
+Windows one.
+
+Everything else can be skipped: Android, iOS, tvOS, WebGL, UWP, Lumin, and the various
+vendor SDKs. This ships Windows, macOS and Linux at v1.0 and nothing else, and none of the
+milestones adds a platform.
+
+Two optional extras, both small. **Documentation** gives you the API reference offline,
+which is worth having because 2018.4 is long out of support and its pages are increasingly
+awkward to find. **Visual Studio for Mac** is offered by the Hub on macOS and is worth
+declining: it is discontinued, and VS Code or Rider handle this project's C# fine.
+
+`Build.py` also lists 32-bit Windows and Linux targets, which would need their own build
+support. Nothing has ever shipped 32-bit and CI does not build it, so those modules are only
+worth installing if you decide 32-bit matters. `--single 2` and `--single 4` build the two
+64-bit targets that releases actually contain.
+
+### On Apple Silicon
+
+Unity 2018.4 is an Intel build and runs under Rosetta 2, which macOS offers to install on
+first launch. That is the supported way to work on this project from an Apple Silicon Mac:
+the native ARM64 editor first appeared in Unity 2021.2, three major versions later, and
+moving there is not a version bump. The project is on the legacy .NET 3.5 scripting runtime
+(`scriptingRuntimeVersion: 0`), which Unity removed in exactly that release, and upgrading
+re-serialises every scene and prefab in the project.
+
 Opening the repository root as a Unity project is all the setup there is. The first import
 takes a while because Unity registers every asset; later opens are fast.
+
+**Do not let Unity Hub upgrade the project.** Opening it with a newer editor rewrites
+`ProjectVersion.txt` and re-serialises assets, and CI reads that file to pick its own editor
+version, so the two would then be building different things. Decline the prompt.
 
 For a walkthrough of the editor setup, including setting the Game view to the engine's native
 640x480, see [Unity setup](../basics/unity-setup.md).
