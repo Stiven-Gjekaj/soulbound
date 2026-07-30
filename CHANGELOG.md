@@ -297,8 +297,9 @@ that caused them:
   one, since UnityEngine and MoonSharp are not on the path outside the editor, but it parses
   every C# and Lua file and reports the mistakes that need no Unity to find. CI took three
   minutes to say "unexpected else"; this takes four seconds.
-- v0.5 has no fixed end and is still open. This section is written as the milestone goes
-  rather than at the end of it.
+- This section was written as the milestone went rather than at the end of it, which is why
+  it reads as a running account. v0.5 was deliberately open-ended, to run until its list was
+  empty and had stopped growing, and it closed when that happened.
 
 ## 0.4 (2026-07-27)
 
