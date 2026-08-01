@@ -14,6 +14,16 @@ ones.
 
 ## 0.6 (unreleased)
 
+### Added
+
+- The read me points at [Soulbound Notes](https://github.com/Stiven-Gjekaj/soulbound-notes),
+  the repository the game's design is argued out in. It is an Obsidian vault holding boss
+  designs, difficulty and pacing arguments, art direction, and the decisions those produced
+  along with the options that lost. None of it runs, which is why it is a separate repository:
+  this one is built by CI on every push and everything in it is either shipped or checked,
+  and half-formed ideas do not survive that setting. This repository is what the game does,
+  that one is why it does it.
+
 ### Changed
 
 - The player starts with fists and a worn coat instead of a stick and a bandage. The two

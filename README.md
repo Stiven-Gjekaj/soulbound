@@ -24,6 +24,7 @@ _A Lua-moddable battle engine, running on Unity. Made by PaperTrail._
   <a href="#status"><b>Status</b></a> |
   <a href="#project-structure"><b>Structure</b></a> |
   <a href="#documentation"><b>Documentation</b></a> |
+  <a href="#design-notes"><b>Design Notes</b></a> |
   <a href="CHANGELOG.md"><b>Changelog</b></a>
 </p>
 
@@ -269,6 +270,18 @@ directly, are covered in
 </table>
 
 Start with [how to read the documentation](docs/how-to-read.md).
+
+---
+
+## Design notes
+
+The reasoning behind the game, as opposed to the engine, lives in a separate repository:
+[**Soulbound Notes**](https://github.com/Stiven-Gjekaj/soulbound-notes).
+
+It is an Obsidian vault shared by the people making the game, and it holds boss designs,
+arguments about difficulty and pacing, art direction, and the decisions those produced along
+with the options that lost. Nothing in it runs. This repository is what the game does; that one
+is why it does it.
 
 ---
 
