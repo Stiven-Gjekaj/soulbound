@@ -451,6 +451,7 @@ public static class Inventory {
                 break;
             case 1:
                 switch (name) {
+                    case "Fists":         amount = 0;  break;
                     case "Toy Knife":     amount = 3;  break;
                     case "Tough Glove":   amount = 5;  break;
                     case "Ballet Shoes":  amount = 7;  break;
@@ -464,6 +465,7 @@ public static class Inventory {
                 break;
             case 2:
                 switch (name) {
+                    case "Worn Coat":      amount = 0;  break;
                     case "Faded Ribbon":   amount = 3;  break;
                     case "Manly Bandanna": amount = 7;  break;
                     case "Old Tutu":       amount = 10; break;
@@ -548,28 +550,28 @@ public static class Inventory {
             }
 
         foreach (string str in addedItems) {
-            if (str == PlayerCharacter.instance.Weapon && PlayerCharacter.instance.Weapon != "Stick" && !NametoDesc.ContainsValue(str)) {
+            if (str == PlayerCharacter.instance.Weapon && PlayerCharacter.instance.Weapon != "Fists" && !NametoDesc.ContainsValue(str)) {
                 for (int i = 0; i < inventory.Count; i++)
-                    if (inventory[i].Name == "Stick") {
+                    if (inventory[i].Name == "Fists") {
                         inventory.RemoveAt(i);
                         break;
                     }
-                PlayerCharacter.instance.Weapon = "Stick";
+                PlayerCharacter.instance.Weapon = "Fists";
                 PlayerCharacter.instance.WeaponATK = 0;
-            } else if (str == PlayerCharacter.instance.Weapon && PlayerCharacter.instance.Weapon != "Stick" && NametoDesc.ContainsValue(str)) {
+            } else if (str == PlayerCharacter.instance.Weapon && PlayerCharacter.instance.Weapon != "Fists" && NametoDesc.ContainsValue(str)) {
                 TextMessage[] mess; float amount; string replacement;
                 ItemLibrary(str, 1, out mess, out amount, out replacement);
                 PlayerCharacter.instance.WeaponATK = (int)amount;
             }
 
-            if (str == PlayerCharacter.instance.Armor && PlayerCharacter.instance.Armor != "Bandage" &&!NametoDesc.ContainsValue(str)) {
+            if (str == PlayerCharacter.instance.Armor && PlayerCharacter.instance.Armor != "Worn Coat" &&!NametoDesc.ContainsValue(str)) {
                 for (int i = 0; i < inventory.Count; i++)
-                    if (inventory[i].Name == "Bandage") {
+                    if (inventory[i].Name == "Worn Coat") {
                         inventory.RemoveAt(i);
                         break;
                     }
-                PlayerCharacter.instance.Armor = "Bandage";
-            } else if (str == PlayerCharacter.instance.Armor && PlayerCharacter.instance.Armor != "Bandage" && NametoDesc.ContainsValue(str)) {
+                PlayerCharacter.instance.Armor = "Worn Coat";
+            } else if (str == PlayerCharacter.instance.Armor && PlayerCharacter.instance.Armor != "Worn Coat" && NametoDesc.ContainsValue(str)) {
                 TextMessage[] mess; float amount; string replacement;
                 ItemLibrary(str, 2, out mess,  out amount, out replacement);
                 PlayerCharacter.instance.ArmorDEF = (int)amount;

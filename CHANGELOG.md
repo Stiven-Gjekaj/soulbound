@@ -16,6 +16,21 @@ ones.
 
 ### Changed
 
+- The player starts with fists and a worn coat instead of a stick and a bandage. The two
+  inherited names were Undertale's, and one of them collided with a healing item Soulbound
+  wants to keep calling Bandage, so the player would have been wearing a bandage while
+  carrying more of them in the bag. The new names also say who the player is: an outsider
+  who arrived with nothing and gets stronger by fighting, so they start with themselves and
+  the clothes they crossed in.
+
+  This is not only a text change. `Inventory.UpdateEquipBonuses` resolves ATK and DEF by
+  looking the equipment name up in the item pools, and the engine's fallback logic reverts
+  to those two names whenever a mod removes the equipped item from the library, so both had
+  to move together. Fists and Worn Coat are now entries in the weapon and armor pools at 0,
+  which is what the old defaults should always have been: neither Stick nor Bandage was in
+  either pool, so looking up the engine's own starting gear used to warn that it did not
+  exist. Stick and Bandage stay in the library as ordinary items.
+
 - The building page says which Unity Hub modules to install. It named the editor version
   and stopped, leaving the rest of a long module list to guess at. Two matter, Windows and
   Linux build support, and the **Mono** variants rather than IL2CPP, because

@@ -43,8 +43,8 @@
     public int DEF = 10;      // not unused anymore!
     public int EXP;
     public int Gold;
-    public string Weapon = "Stick";
-    public string Armor = "Bandage";
+    public string Weapon = "Fists";
+    public string Armor = "Worn Coat";
     private int[] LevelUpTable = { 10, 30, 70, 120, 200, 300, 500, 800, 1200, 1700, 2500, 3500, 5000, 7000, 10000, 15000, 25000, 50000, 99999, 100000 };
 
     /*private string[] names = new string[]{
@@ -77,8 +77,8 @@
         SetLevel(1);
         SetEXP(0);
         SetGold(0);
-        Weapon = "Stick";
-        Armor = "Bandage";
+        Weapon = "Fists";
+        Armor = "Worn Coat";
         WeaponATK = 0;
         ArmorDEF = 0;
         HP = MaxHP;

@@ -6,7 +6,7 @@ This page lists all items added in the engine, as well as their effect.
 
 | Item name | Effect | Price | Notes |
 | --- | --- | --- | --- |
-| Bandage | Restores 10 HP | 5 G | Equipped by the Player as their armor by default |
+| Bandage | Restores 10 HP | 5 G | |
 | Monster Candy | Restores 10 HP | 5 G | |
 | Spider Donut | Restores 12 HP | 7 G | |
 | Spider Cider | Restores 24 HP | 18 G | |
@@ -42,6 +42,7 @@ Note: Weapons do not modify the usual ATTACKING state.
 
 | Item name | Effect | Price | Notes |
 | --- | --- | --- | --- |
+| Fists | 0 ATK | | Equipped by the Player as their weapon by default |
 | Toy Knife | 3 ATK | 30 G | |
 | Tough Glove | 5 ATK | 50 G | |
 | Ballet Shoes | 7 ATK | 100 G | |
@@ -55,6 +56,7 @@ Note: Weapons do not modify the usual ATTACKING state.
 
 | Item name | Effect | Price | Notes |
 | --- | --- | --- | --- |
+| Worn Coat | 0 DEF | | Equipped by the Player as their armor by default |
 | Faded Ribbon | 3 DEF | 30 G | |
 | Manly Bandanna | 7 DEF | 50 G | |
 | Old Tutu | 10 DEF | 100 G | |
@@ -69,5 +71,5 @@ Note: Weapons do not modify the usual ATTACKING state.
 
 | Item name | Effect | Price | Notes |
 | --- | --- | --- | --- |
-| Stick | Displays a message | 50 G | Equipped by the Player as their weapon by default |
+| Stick | Displays a message | 50 G | |
 | Testing Dog | Displays a message | 0 G | |
