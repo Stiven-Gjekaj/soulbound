@@ -216,6 +216,42 @@ ones.
 
 ### Changed
 
+- The menus are keyboard only. The pointer is gone from the menu, the options screen and name
+  entry: no buttons, no hover, no raycast targets. The game is played with four directions and
+  two buttons, and a pointer was a second way to do everything that had to keep working and
+  that no controller has.
+
+  The keybind screen keeps its mouse, and that is a gap rather than an exception. It is the
+  fork's screen, driven entirely by clicking Edit, Reset and Clear per row, and it has no
+  keyboard navigation to fall back on, so taking the pointer away would strand anyone who
+  opened it. Giving it keyboard navigation is its own piece of work.
+
+- The options screen returns to the menu rather than to the boss select, and Cancel does the
+  same. It is reachable from both, and the menu is the one place everything else is reachable
+  from too.
+
+- Fullscreen is a row on the options screen. F4 and Alt+Enter already toggled it, but on macOS
+  the function keys belong to the system and rarely reach the game, and Alt+Enter also presses
+  Confirm because Return is bound to it. A row costs one entry in a list now that the screen
+  builds its own rows, which is the sort of thing that rebuild was for.
+  `allowFullscreenSwitch` in the player settings was also off, and is on.
+
+- The boss select says how to leave. It named the way in and not the way out, and on a locked
+  entry it said nothing at all, so there was no sign that backing out was possible: Cancel
+  worked the whole time and the screen never mentioned it. The lock is meant to be worked out
+  by the player; the way off the screen is not a puzzle.
+
+- The registry is down to the tutorial, the teased boss and the stress test. The second and
+  third placeholders were there so the old one-at-a-time selector had something to page
+  through, and the wheel does not need them: the positions past the end of the registry are
+  drawn as locked anyway, so the screen still shows a full seven. The tutorial and the teased
+  boss sit next to each other, the first thing the player can do beside the thing they cannot.
+  `placeholder_two` and `placeholder_three` had no monsters or waves of their own, so their
+  encounter scripts came out and nothing else moved.
+
+- Name entry lost its instruction line. It said to type a name and that backspace deletes,
+  which is what a text field already says by being one.
+
 - The read me's status section covers the milestone in progress and nothing else. It had grown
   a paragraph per version from v0.0 to v0.5, which is roughly forty lines of history standing
   between a reader and the answer to "where is this now", and it is the changelog's job rather

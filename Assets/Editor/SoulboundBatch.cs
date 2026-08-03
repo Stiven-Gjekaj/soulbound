@@ -100,7 +100,7 @@ public static class SoulboundBatch {
 
             NameEntry name = Object.FindObjectOfType<NameEntry>();
             if (name != null) {
-                bool ok = name.heading && name.nameText && name.hint && name.underline
+                bool ok = name.heading && name.nameText && name.underline
                        && name.fade && name.quitLabel && name.doneLabel;
                 sb.AppendLine("    NameEntry bindings = " + (ok ? "all bound" : "INCOMPLETE"));
                 if (!ok) problems++;
@@ -233,7 +233,7 @@ public static class SoulboundBatch {
         // letter of whichever one is selected rather than floating at a fixed distance.
         List<Text> entries = new List<Text>();
         for (int i = 0; i < Rows.Length; i++) {
-            GameObject go = new GameObject(Rows[i], typeof(Text), typeof(Button), typeof(EventTrigger));
+            GameObject go = new GameObject(Rows[i], typeof(Text));
             Text text = go.GetComponent<Text>();
             text.font               = AssetDatabase.LoadAssetAtPath<Font>(MenuFont);
             text.text               = Rows[i];
@@ -242,8 +242,7 @@ public static class SoulboundBatch {
             text.color              = Color.white;
             text.horizontalOverflow = HorizontalWrapMode.Overflow;
             text.verticalOverflow   = VerticalWrapMode.Overflow;
-            text.raycastTarget      = true;
-            go.GetComponent<Button>().targetGraphic = text;
+            text.raycastTarget      = false;
             Place(go, canvas.transform, new Vector2(300f, 40f), new Vector2(40f, 30f - i * 50f));
             entries.Add(text);
         }
@@ -552,9 +551,6 @@ public static class SoulboundBatch {
         underline.raycastTarget = false;
         Place(rule, canvas.transform, new Vector2(260f, 2f), new Vector2(0f, 22f));
 
-        Text hint = MakeText("Hint", canvas.transform, "", 12, TextAnchor.MiddleCenter,
-                             new Vector2(620f, 20f), new Vector2(0f, -10f));
-
         Text quit = MakeChoice("Quit", canvas.transform, new Vector2(-90f, -110f));
         Text done = MakeChoice("Done", canvas.transform, new Vector2(90f, -110f));
 
@@ -569,7 +565,6 @@ public static class SoulboundBatch {
         NameEntry entry = script.GetComponent<NameEntry>();
         entry.heading   = heading;
         entry.nameText  = nameText;
-        entry.hint      = hint;
         entry.underline = underline;
         entry.fade      = fade;
         entry.quitLabel = quit;
@@ -581,7 +576,7 @@ public static class SoulboundBatch {
 
     /// <summary>One of the two buttons: a label the pointer can reach.</summary>
     private static Text MakeChoice(string name, Transform parent, Vector2 at) {
-        GameObject go = new GameObject(name, typeof(Text), typeof(Button), typeof(EventTrigger));
+        GameObject go = new GameObject(name, typeof(Text));
         Text text = go.GetComponent<Text>();
         text.font               = AssetDatabase.LoadAssetAtPath<Font>(MenuFont);
         text.text               = name;
@@ -590,8 +585,7 @@ public static class SoulboundBatch {
         text.color              = Color.white;
         text.horizontalOverflow = HorizontalWrapMode.Overflow;
         text.verticalOverflow   = VerticalWrapMode.Overflow;
-        text.raycastTarget      = true;
-        go.GetComponent<Button>().targetGraphic = text;
+        text.raycastTarget      = false;
         Place(go, parent, new Vector2(120f, 32f), at);
         return text;
     }
@@ -803,8 +797,10 @@ public static class SoulboundBatch {
                                  new Vector2(140f, 20f), new Vector2(PanelX + 100f, y));
         }
 
-        Text hint = MakeText("Hint", canvas.transform, "", 12, TextAnchor.MiddleLeft,
-                             new Vector2(340f, 20f), new Vector2(PanelX, -190f));
+        // Full width and centred, because it names the way off the screen and that should not
+        // be tucked into the panel's column.
+        Text hint = MakeText("Hint", canvas.transform, "", 12, TextAnchor.MiddleCenter,
+                             new Vector2(620f, 20f), new Vector2(0f, -205f));
 
         GameObject script = new GameObject("BossSelectScript", typeof(BossSelect));
         BossSelect select = script.GetComponent<BossSelect>();

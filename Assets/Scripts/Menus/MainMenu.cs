@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -39,25 +38,9 @@ public class MainMenu : MonoBehaviour {
             music.Play();
         }
 
-        // The rows answer to the mouse as well as the keyboard. Hover moves the selection so
-        // the soul always marks what a click would activate, rather than the two disagreeing.
-        for (int i = 0; i < entries.Length; i++) {
-            int index = i;
-
-            Button button = entries[i].GetComponent<Button>();
-            if (button != null) {
-                button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(() => { Select(index); Activate(index); });
-            }
-
-            EventTrigger trigger = entries[i].GetComponent<EventTrigger>();
-            if (trigger != null) {
-                EventTrigger.Entry enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-                enter.callback.AddListener(data => Select(index));
-                trigger.triggers.Add(enter);
-            }
-        }
-
+        // Keyboard only. The menus are driven with the same four directions and two buttons
+        // the fight is, so a pointer would be a second way to do everything that has to be
+        // kept working and that no controller has.
         Select(0);
     }
 

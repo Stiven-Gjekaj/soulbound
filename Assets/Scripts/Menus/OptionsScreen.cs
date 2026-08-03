@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using MoonSharp.Interpreter;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -78,6 +77,12 @@ public class OptionsScreen : MonoBehaviour {
           + "compared with anyone else's.",
             () => FightTimer.Enabled = !FightTimer.Enabled);
 
+        Add(() => "Fullscreen: " + (Screen.fullScreen ? "On" : "Off"),
+            "Fills the screen instead of running in a window.\n\nF4 and Alt+Enter do the same "
+          + "thing, where the system lets them through. On a Mac the function keys are usually "
+          + "taken by the system, which is why this row exists.",
+            () => ScreenResolution.SetFullScreen(!Screen.fullScreen));
+
         Add(() => "Window scale: " + ScreenResolution.windowScale + "x",
             "Scales the window in Windowed mode.\n\nThis is useful for especially large screens, "
           + "such as 4k monitors.\n\nHas no effect in Fullscreen mode.",
@@ -124,9 +129,9 @@ public class OptionsScreen : MonoBehaviour {
             },
             "Are you sure?");
 
-        Add(() => "Back to boss select",
-            "Returns to the boss select screen.",
-            () => SceneManager.LoadScene("ModSelect"));
+        Add(() => "Back to the menu",
+            "Returns to the menu.",
+            () => SceneManager.LoadScene("TitleScreen"));
     }
 
     private void Add(Func<string> label, string description, Action press, string armedLabel = null) {
@@ -156,17 +161,16 @@ public class OptionsScreen : MonoBehaviour {
     /// <summary>Makes one text row per option and hangs it under the row root.</summary>
     private void Lay() {
         for (int i = 0; i < options.Count; i++) {
-            int index = i;
             Option option = options[i];
 
-            GameObject go = new GameObject("Option" + (i + 1), typeof(Text), typeof(Button), typeof(EventTrigger));
+            GameObject go = new GameObject("Option" + (i + 1), typeof(Text));
             Text text = go.GetComponent<Text>();
             text.font               = font;
             text.fontSize           = rowSize;
             text.alignment          = TextAnchor.MiddleLeft;
             text.horizontalOverflow = HorizontalWrapMode.Overflow;
             text.verticalOverflow   = VerticalWrapMode.Overflow;
-            text.raycastTarget      = true;
+            text.raycastTarget      = false;
 
             RectTransform rt = go.GetComponent<RectTransform>();
             rt.SetParent(rowRoot, false);
@@ -175,13 +179,6 @@ public class OptionsScreen : MonoBehaviour {
             rt.pivot            = new Vector2(0.5f, 0.5f);
             rt.sizeDelta        = new Vector2(rowWidth, rowPitch - 4f);
             rt.anchoredPosition = new Vector2(rowX, rowTop - i * rowPitch);
-
-            go.GetComponent<Button>().targetGraphic = text;
-            go.GetComponent<Button>().onClick.AddListener(() => { Select(index); Press(index); });
-
-            EventTrigger.Entry enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-            enter.callback.AddListener(data => Select(index));
-            go.GetComponent<EventTrigger>().triggers.Add(enter);
 
             option.Text = text;
         }
@@ -210,7 +207,7 @@ public class OptionsScreen : MonoBehaviour {
         else if (GlobalControls.input.Confirm == ButtonState.PRESSED)
             Press(selected);
         else if (GlobalControls.input.Cancel == ButtonState.PRESSED)
-            SceneManager.LoadScene("ModSelect");
+            SceneManager.LoadScene("TitleScreen");
     }
 
     private void Press(int index) {

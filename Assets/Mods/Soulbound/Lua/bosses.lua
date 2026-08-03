@@ -12,12 +12,13 @@
 -- music track can be added here before the menu is ready to read them.
 
 return {
-    { id = "placeholder",       name = "Placeholder",       subtitle = "Not built yet" },
-    { id = "placeholder_two",   name = "Second Placeholder", subtitle = "Also not built yet" },
-    { id = "placeholder_three", name = "Third Placeholder",  subtitle = "Here so the list has something to page through" },
-    { id = "stress",            name = "Stress Test",        subtitle = "Not a boss. Measures whether the fight keeps its own time" },
+    { id = "placeholder",       name = "Placeholder",        subtitle = "Not built yet" },
 
     -- Advertised rather than playable. It has no encounter script and no records, because it
-    -- can never be started, and its logo is the whole tease, so the name stays hidden.
+    -- can never be started, and its logo is the whole tease, so the name stays hidden. It sits
+    -- next to the tutorial on purpose: the first thing the player can do and the thing they
+    -- cannot, side by side.
     { id = "teased",            name = "???",                teased = true },
+
+    { id = "stress",            name = "Stress Test",        subtitle = "Not a boss. Measures whether the fight keeps its own time" },
 }

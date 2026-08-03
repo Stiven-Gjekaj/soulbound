@@ -352,12 +352,13 @@ public class BossSelect : MonoBehaviour {
         }
 
         if (hint != null) {
-            // A teased boss says so. A locked one says nothing, because the player is meant to
-            // work the lock out, but "you have not earned this" and "this does not exist yet"
-            // are different answers and the screen should not give the same silence to both.
-            if (unlocked)                        hint.text = "Confirm to fight";
-            else if (BossProgress.Teased(selected)) hint.text = "Not in this build";
-            else                                 hint.text = "";
+            // The exit is always named. A locked entry used to leave this line empty, so the
+            // screen showed no sign that backing out was possible at all: the lock is meant to
+            // be worked out, but the way off the screen is not a puzzle.
+            string what = unlocked ? "Confirm to fight"
+                        : BossProgress.Teased(selected) ? "Not in this build"
+                        : "";
+            hint.text = (what == "" ? "" : what + "     ") + "Cancel to go back     Menu for options";
         }
     }
 

@@ -12,9 +12,9 @@ The registry is a Lua data file that returns a list of tables, one per boss:
 
 ```lua
 return {
-    { id = "placeholder",       name = "Placeholder",        subtitle = "Not built yet" },
-    { id = "placeholder_two",   name = "Second Placeholder", subtitle = "Also not built yet" },
-    { id = "placeholder_three", name = "Third Placeholder",  subtitle = "Here so the list has something to page through" },
+    { id = "placeholder", name = "Placeholder", subtitle = "Not built yet" },
+    { id = "teased",      name = "???",         teased = true },
+    { id = "stress",      name = "Stress Test", subtitle = "Not a boss" },
 }
 ```
 

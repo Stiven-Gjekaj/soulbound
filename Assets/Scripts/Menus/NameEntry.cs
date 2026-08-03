@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -23,7 +22,6 @@ using UnityEngine.UI;
 public class NameEntry : MonoBehaviour {
     public Text  heading;
     public Text  nameText;
-    public Text  hint;
     public Image underline;
     public Image fade;
     public Text  quitLabel;
@@ -33,7 +31,6 @@ public class NameEntry : MonoBehaviour {
     private const int MaxLength = 9;
 
     private const string Instruction = "Name the fallen human.";
-    private const string Hint        = "Type a name. Backspace deletes.";
 
     private string playerName = "";
     private bool   onDone     = true;
@@ -60,36 +57,11 @@ public class NameEntry : MonoBehaviour {
             audio.Play();
         }
 
-        Bind(quitLabel, () => { onDone = false; Press(); });
-        Bind(doneLabel, () => { onDone = true;  Press(); });
-
         if (fade != null)
             fade.color = new Color(0f, 0f, 0f, 0f);
 
         heading.text = Instruction;
         Refresh();
-    }
-
-    private void Bind(Text label, UnityEngine.Events.UnityAction press) {
-        if (label == null)
-            return;
-        Button button = label.GetComponent<Button>();
-        if (button != null)
-            button.onClick.AddListener(press);
-
-        EventTrigger trigger = label.GetComponent<EventTrigger>();
-        if (trigger == null)
-            return;
-        EventTrigger.Entry enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-        enter.callback.AddListener(data => {
-            bool wantDone = label == doneLabel;
-            if (onDone == wantDone || !CanSwitch())
-                return;
-            onDone = wantDone;
-            Play("menumove");
-            Refresh();
-        });
-        trigger.triggers.Add(enter);
     }
 
     private void Update() {
@@ -243,7 +215,6 @@ public class NameEntry : MonoBehaviour {
 
         if (confirming) {
             heading.text = answer ?? "Is this name correct?";
-            if (hint != null)      hint.gameObject.SetActive(false);
             if (underline != null) underline.gameObject.SetActive(false);
             quitLabel.text = "No";
             doneLabel.text = "Yes";
@@ -254,10 +225,6 @@ public class NameEntry : MonoBehaviour {
         }
 
         heading.text = Instruction;
-        if (hint != null) {
-            hint.gameObject.SetActive(true);
-            hint.text = Hint;
-        }
         if (underline != null) underline.gameObject.SetActive(true);
         quitLabel.text  = "Quit";
         doneLabel.text  = "Done";
