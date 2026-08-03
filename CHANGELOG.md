@@ -16,6 +16,9 @@ ones.
 
 ### Removed
 
+- `arenaborder.png`, the fork's arena frame, once nothing referenced it. It was the last
+  inherited sprite the battle screen drew for the box itself.
+
 - `MenuButton.cs`, `ModButton.prefab` and `Keybinding.prefab`, which turned out to be one
   closed island rather than three separate assets: the keybinding prefab referenced the mod
   button prefab, which carried the script, and nothing outside the three named any of them.
@@ -81,6 +84,19 @@ ones.
   it, so they shipped in every release and were never drawn.
 
 ### Added
+
+- Soulbound's own arena border, `Assets/Sprites/Arena_Border.png`, replacing the one inherited
+  from Create Your Frisk. A 25x25 nine-slice with a 5 pixel border: two pixels of outer rule, a
+  gap, then one pixel of inner rule, so the box reads as a drawn frame rather than a plain
+  outline.
+
+  It is drawn rather than generated, and that is the interesting part. The arena is resized
+  constantly during a fight and Unity stretches the middle of each edge to do it, so every edge
+  strip has to be uniform along the direction it stretches. That makes the pattern a function
+  of distance from the edge and nothing else, which is a geometric constraint rather than an
+  illustrative one: anything drawn freehand, by a person or a model, smears the moment the
+  arena changes size. Composing the slice at 575x140 and again at 180x90 gives the same
+  profile on every edge, two pixels then a gap then one.
 
 - `BossRecords.Clears`, a count of how many times a boss has been beaten. The records already
   held whether a boss had ever been cleared, as a boolean, but the select screen's table wants

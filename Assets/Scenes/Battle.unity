@@ -160,16 +160,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96dc5aa61b3446942acd3e628a7d73d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  letterSound: $
+  letterAdjustShifts: []
+  fontVoice: 
   currentLine: 0
   _textMaxWidth: 320
   currentCharacter: 0
   currentReferenceCharacter: 0
-  nextMonsterDialogueOnce: 0
-  wasStated: 0
+  currentSkippable: 1
   columnShift: 265
   columnNumber: 2
-  blockSkip: 0
   skipNowIfBlocked: 0
   lateStartWaiting: 0
 --- !u!1 &132697915
@@ -1673,10 +1672,11 @@ MonoBehaviour:
   mercyButton: {fileID: 1280180707}
   action: 0
   forcedAction: 4
+  arenaParent: {fileID: 0}
   psContainer: {fileID: 0}
   fightUI: {fileID: 0}
   monsterDialogues: []
-  monsterDialogueEnemyID: 
+  monsterDialogueEnemy: []
   playerOffsets:
   - {x: 16, y: 19}
   - {x: 16, y: 19}
@@ -1685,7 +1685,7 @@ MonoBehaviour:
   exp: 0
   gold: 0
   readyToNextLine: 
-  needOnDeath: 0
+  checkDeathCall: 0
   stateSwitched: 0
   battleDialogueStarted: 0
   UIStates:
@@ -2430,7 +2430,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9e5b8c252281549c3a05df1a46e5267a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0fc04bcba3f549d2b1905d3d1c7867b9, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 0
@@ -3157,29 +3157,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ac8dc980caea604a81186f096e200ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  letterSound: 
+  letterAdjustShifts: []
+  fontVoice: 
   currentLine: 0
   _textMaxWidth: 0
   currentCharacter: 0
   currentReferenceCharacter: 0
-  nextMonsterDialogueOnce: 0
-  wasStated: 0
+  currentSkippable: 1
   columnShift: 265
   columnNumber: 2
-  blockSkip: 0
   skipNowIfBlocked: 0
   lateStartWaiting: 0
   bubble: 0
   progress: 0
   autoSetLayer: 0
   needFontReset: 0
-  noAutoLineBreak: 0
   isMainTextObject: 0
-  noSelfAdvance: 0
   deleteWhenFinished: 1
   _color: {r: 1, g: 1, b: 1, a: 1}
-  hasColorBeenSet: 0
-  hasAlphaBeenSet: 0
+  textColorSet: 0
+  textAlphaSet: 0
 --- !u!1 &1339420633
 GameObject:
   m_ObjectHideFlags: 0
@@ -4176,16 +4173,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96dc5aa61b3446942acd3e628a7d73d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  letterSound: $
+  letterAdjustShifts: []
+  fontVoice: 
   currentLine: 0
   _textMaxWidth: 320
   currentCharacter: 0
   currentReferenceCharacter: 0
-  nextMonsterDialogueOnce: 0
-  wasStated: 0
+  currentSkippable: 1
   columnShift: 265
   columnNumber: 2
-  blockSkip: 0
   skipNowIfBlocked: 0
   lateStartWaiting: 0
 --- !u!1 &1642330544
@@ -5604,26 +5600,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ac8dc980caea604a81186f096e200ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  letterSound: 
+  letterAdjustShifts: []
+  fontVoice: 
   currentLine: 0
   _textMaxWidth: 0
   currentCharacter: 0
   currentReferenceCharacter: 0
-  nextMonsterDialogueOnce: 0
-  wasStated: 0
+  currentSkippable: 1
   columnShift: 265
   columnNumber: 2
-  blockSkip: 0
   skipNowIfBlocked: 0
   lateStartWaiting: 0
   bubble: 0
   progress: 0
   autoSetLayer: 0
   needFontReset: 0
-  noAutoLineBreak: 0
   isMainTextObject: 0
-  noSelfAdvance: 0
   deleteWhenFinished: 1
   _color: {r: 1, g: 1, b: 1, a: 1}
-  hasColorBeenSet: 0
-  hasAlphaBeenSet: 0
+  textColorSet: 0
+  textAlphaSet: 0

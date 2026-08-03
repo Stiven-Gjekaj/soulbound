@@ -19,10 +19,12 @@ public static class SoulboundBatch {
     private const string OptionsPath = "Assets/Scenes/Options.unity";
     private const string KeybindPath = "Assets/Scenes/KeybindSettings.unity";
     private const string NamePath = "Assets/Scenes/EnterName.unity";
+    private const string BattlePath = "Assets/Scenes/Battle.unity";
 
     private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
     private const string SilhouetteSprite = "Assets/Sprites/Boss_Silhouette.png";
+    private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
 
     /// <summary>
@@ -299,6 +301,50 @@ public static class SoulboundBatch {
         Text text = MakeText(name + " Label", go.transform, label, size, TextAnchor.MiddleCenter, box, Vector2.zero);
         go.GetComponent<Button>().targetGraphic = plate;
         return go.GetComponent<Button>();
+    }
+
+    // ---------------------------------------------------------------- the battle box
+
+    /// <summary>
+    /// Points the arena's frame at Soulbound's own border sprite.
+    ///
+    /// Battle.unity is not rebuilt the way the menus were. It is the game rather than a menu:
+    /// five and a half thousand lines driven by a dozen scripts that find their objects by
+    /// name, and rebuilding it from an empty scene would be a rewrite of the battle system
+    /// wearing a layout change's clothes. So the box is reskinned in place.
+    /// </summary>
+    public static void SkinBattleBox() {
+        UnityEngine.SceneManagement.Scene scene =
+            EditorSceneManager.OpenScene(BattlePath, OpenSceneMode.Single);
+
+        Sprite border = AssetDatabase.LoadAssetAtPath<Sprite>(ArenaBorderSprite);
+        if (border == null) {
+            Debug.Log("SOULBOUND-BATCH-ARENA missing " + ArenaBorderSprite);
+            return;
+        }
+
+        int changed = 0;
+        foreach (GameObject root in scene.GetRootGameObjects()) {
+            foreach (Transform t in root.GetComponentsInChildren<Transform>(true)) {
+                if (t.name != "arena_border_outer")
+                    continue;
+                Image image = t.GetComponent<Image>();
+                if (image == null)
+                    continue;
+                image.sprite = border;
+                // Sliced with a hollow centre: the frame draws, the arena's own black
+                // interior shows through it.
+                image.type       = Image.Type.Sliced;
+                image.fillCenter = false;
+                changed++;
+            }
+        }
+
+        if (changed > 0) {
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+        }
+        Debug.Log("SOULBOUND-BATCH-ARENA reskinned " + changed + " arena border(s)");
     }
 
     // ---------------------------------------------------------------- name entry
