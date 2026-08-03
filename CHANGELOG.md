@@ -16,6 +16,11 @@ ones.
 
 ### Removed
 
+- `Title.cs`, the fork's title screen controller, 216 lines. The screen it drove is now the
+  menu and nothing references the class: no scene, no prefab, and no other script. Its two
+  jobs are both covered elsewhere, the singleton setup by `GlobalControls.Awake` and the
+  name and save handling by the options screen.
+
 - `Photo.png`, `PhotoBack.png` and `spr_chestbox_0.png` are out of `Assets/Default/Sprites`.
   The first is a group photo of Undertale's cast and the others are stray leftovers, and no
   mod, script, scene or prefab asks for any of the three by name or by GUID.
@@ -72,6 +77,19 @@ ones.
   that one is why it does it.
 
 ### Changed
+
+- `TitleScreen.unity` is the game's menu, rebuilt from an empty scene rather than edited down
+  from the fork's. It carries the title and four rows: Boss Select, Options, Credits and Quit,
+  with the soul marking the selected one. Keyboard and mouse both drive it, and hovering moves
+  the selection so the soul always marks what a click would activate.
+
+  What it replaces was save management wearing a menu's clothes. Continue, Reset and Change
+  Name were the three things the fork's title screen offered, and the options screen already
+  offers the last two, so the menu offers destinations and options keeps the settings.
+
+  The scene carries a `GlobalControls` object, which is what the fork's title screen was
+  missing and why `Title.cs` opened by building the singletons itself. `GlobalControls.Awake`
+  already does that once per run behind its own flag, so the new screen initialises nothing.
 
 - The milestones page says what "unskinned" means at v0.6, because it did not and the word
   reads both ways. It means placeholder art, not the absence of art. A screen with nothing
