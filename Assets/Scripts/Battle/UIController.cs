@@ -1145,10 +1145,6 @@ public class UIController : MonoBehaviour {
         BattleTick.Reset();
         BossRecords.ClockStart();
 
-        // Display only, and off by default. The clock above runs either way.
-        if (FightTimer.Enabled)
-            gameObject.AddComponent<FightTimer>();
-
         if (!stateSwitched)
             SwitchState("ACTIONSELECT", true);
     }

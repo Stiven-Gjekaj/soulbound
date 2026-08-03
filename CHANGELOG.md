@@ -240,6 +240,17 @@ ones.
   position rather than a named boss, so it works today against a registry of placeholders and
   applies to the tutorial boss the moment she is the one listed first.
 
+- The in-fight timer has an object in `Battle.unity`, which is the last thing the milestone
+  lists for the battle screen. It used to build its own at runtime from the prefab Lua's
+  `CreateText` uses, because the scene had nothing for it: a `Resources.Load`, an `Instantiate`,
+  a caller bound to the encounter script, and a text object that rebuilt one sprite per letter
+  whenever the string changed, which is why refreshing it had to be rationed to the tenths that
+  actually differed. A `Text` component costs none of that, so `Update` simply writes the time.
+
+  `UIController` no longer adds the component when a fight starts. The object is always in the
+  scene and hides itself when the setting is off, which is read once rather than every frame,
+  because a fight cannot change it.
+
 - The disclaimer is a disclaimer. It shows what Soulbound is, what it is not, whose engine it
   runs on, and the build number, and any key opens the menu.
 

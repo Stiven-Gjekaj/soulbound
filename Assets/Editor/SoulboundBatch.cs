@@ -347,6 +347,50 @@ public static class SoulboundBatch {
         Debug.Log("SOULBOUND-BATCH-ARENA reskinned " + changed + " arena border(s)");
     }
 
+    /// <summary>
+    /// Gives the in-fight timer an object in Battle.unity, which is the last thing the
+    /// milestone lists for the battle screen. It used to build its own at runtime.
+    ///
+    /// Top right, clear of the arena in the middle and the stats along the bottom, and right
+    /// aligned so the reading does not shift as the tenths tick over.
+    /// </summary>
+    public static void AddFightTimer() {
+        UnityEngine.SceneManagement.Scene scene =
+            EditorSceneManager.OpenScene(BattlePath, OpenSceneMode.Single);
+
+        Canvas canvas = null;
+        foreach (GameObject root in scene.GetRootGameObjects()) {
+            foreach (Canvas c in root.GetComponentsInChildren<Canvas>(true)) {
+                if (c.gameObject.name != "Canvas")
+                    continue;
+                canvas = c;
+                break;
+            }
+            if (canvas != null)
+                break;
+        }
+        if (canvas == null) {
+            Debug.Log("SOULBOUND-BATCH-TIMER no Canvas in " + BattlePath);
+            return;
+        }
+
+        // Idempotent: running this twice must not leave two timers behind.
+        foreach (FightTimer old in Object.FindObjectsOfType<FightTimer>())
+            Object.DestroyImmediate(old.gameObject);
+
+        GameObject holder = new GameObject("FightTimer", typeof(RectTransform), typeof(FightTimer));
+        Place(holder, canvas.transform, new Vector2(140f, 20f), new Vector2(230f, 212f));
+
+        Text display = MakeText("Display", holder.transform, "0:00.0", 14, TextAnchor.MiddleRight,
+                                new Vector2(140f, 20f), Vector2.zero);
+
+        holder.GetComponent<FightTimer>().display = display;
+
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log("SOULBOUND-BATCH-TIMER added the timer object to " + BattlePath);
+    }
+
     // ---------------------------------------------------------------- name entry
 
     public static void BuildNameEntry() {
