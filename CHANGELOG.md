@@ -16,6 +16,17 @@ ones.
 
 ### Removed
 
+- `Photo.png`, `PhotoBack.png` and `spr_chestbox_0.png` are out of `Assets/Default/Sprites`.
+  The first is a group photo of Undertale's cast and the others are stray leftovers, and no
+  mod, script, scene or prefab asks for any of the three by name or by GUID.
+
+  `Default/` is not referenced the way the rest of the project is. `SpriteUtil` and
+  `SpriteRegistry` resolve sprites by filename at runtime through
+  `FileLoader.PathToDefaultFile`, so nothing in that folder ever appears as a reference and
+  "unused" has to be established by asking whether anything names it. Nothing does. The
+  mugshot folders stay: they are the fallback the engine falls through to when a mod has no
+  portrait of its own, and Soulbound has no portraits yet.
+
 - Lu and Punder, Create Your Frisk's own characters, are out of `Assets/Resources/Sprites`.
   Fifty sprites and 433 KB, none of them loaded by anything: no `Resources.Load` call names
   either folder, and their GUIDs appear in no scene, prefab or asset in the project. They were
