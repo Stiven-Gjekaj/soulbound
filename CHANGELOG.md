@@ -216,6 +216,13 @@ ones.
 
 ### Changed
 
+- The read me stopped advertising its own line count. Two of the badges were a file and line
+  total for the engine and a page total for the docs, which are not things a reader wants and
+  are wrong the moment anyone commits: they claimed 112 files and 18.8k lines against an actual
+  115 and 19,393, and 37 doc pages against 38. The Unity version badge stays, because the exact
+  editor version is the one fact a contributor has to know before they can open the project at
+  all, and so do build, release and licence.
+
 - The scene count says ten, because `Credits.unity` made it ten. `CLAUDE.md`, the read me and
   the repository layout page all still said nine. The mention in the milestones page is left
   alone: it describes what `nonOWScenes` listed at v0.2 and is history rather than a

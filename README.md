@@ -8,8 +8,6 @@ _A Lua-moddable battle engine, running on Unity. Made by PaperTrail._
 
 <p align="center">
   <img src="https://img.shields.io/badge/Unity-2018.4.36f1-000000?style=for-the-badge&logo=unity&logoColor=white" alt="Unity 2018.4.36f1"/>
-  <img src="https://img.shields.io/badge/engine-112_C%23_files,_18.8k_lines-239120?style=for-the-badge" alt="The engine is 112 C# files and about 18,800 lines"/>
-  <img src="https://img.shields.io/badge/docs-37_pages-007ec6?style=for-the-badge" alt="37 documentation pages"/>
 </p>
 
 <p align="center">
