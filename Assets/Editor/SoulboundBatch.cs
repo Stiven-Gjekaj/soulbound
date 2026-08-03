@@ -320,51 +320,79 @@ public static class SoulboundBatch {
 
         BossSelect select = Object.FindObjectOfType<BossSelect>();
 
-        // What the panel would show on a fresh save, with the first entry selected.
-        select.bossName.text  = "Placeholder";
-        select.bossName.color = Color.white;
-        select.subtitle.text  = "Not built yet";
-        select.subtitle.color = new Color(0.5f, 0.5f, 0.5f, 1f);
-        select.hint.text      = "Confirm to fight";
-        Text[] values = { select.tries, select.clears, select.deaths, select.best, select.nohit };
-        string[] shown = { "0", "0", "0", "-", "-" };
+        // Which entry the shot is taken on. Everything below derives from this one number,
+        // because a shot that filled the panel from one entry and the wheel from another would
+        // show a screen the game cannot produce, and a picture that lies is worse than none.
+        int shown = 0;
+        string want = System.Environment.GetEnvironmentVariable("SOULBOUND_SHOT_SLOT");
+        if (!string.IsNullOrEmpty(want))
+            int.TryParse(want, out shown);
+
+        // The registry as it stands: four playable entries, then the teased one, then nothing.
+        string[] names    = { "Placeholder", "Second Placeholder", "Third Placeholder", "Stress Test", "???", "???", "???" };
+        string[] arts     = { "placeholder", null, null, null, "teased", null, null };
+        string[] subs     = { "Not built yet", "Also not built yet", "Here so the list has something to page through",
+                              "Not a boss. Measures whether the fight keeps its own time", "", "", "" };
+        bool[]   playable = { true, false, false, false, false, false, false };
+        bool[]   teased   = { false, false, false, false, true, false, false };
+
+        Color dim  = new Color(0.42f, 0.42f, 0.42f, 1f);
+        Color grey = new Color(0.5f, 0.5f, 0.5f, 1f);
+
+        select.bossName.text  = names[shown];
+        select.bossName.color = playable[shown] ? Color.white : grey;
+        select.subtitle.text  = playable[shown] ? subs[shown] : "";
+        select.subtitle.color = grey;
+        select.hint.text      = playable[shown] ? "Confirm to fight" : (teased[shown] ? "Not in this build" : "");
+
+        Text[] values  = { select.tries, select.clears, select.deaths, select.best, select.nohit };
+        string[] real  = { "0", "0", "0", "-", "-" };
         for (int i = 0; i < values.Length; i++) {
-            values[i].text  = shown[i];
-            values[i].color = new Color(1f, 1f, 0f, 1f);
+            values[i].text  = playable[shown] ? real[i] : "?";
+            values[i].color = playable[shown] ? new Color(1f, 1f, 0f, 1f) : grey;
         }
 
-        // And the wheel, laid out the way BossSelect.TurnWheel would with nothing selected
-        // and nothing left to turn.
+        Sprite shownArt = arts[shown] == null ? null
+            : AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Mods/Soulbound/Sprites/Bosses/" + arts[shown] + ".png");
+        select.portrait.enabled = shownArt != null;
+        if (shownArt != null) {
+            select.portrait.sprite = shownArt;
+            select.portrait.color  = playable[shown] ? Color.white : dim;
+        }
+        select.portraitLock.enabled = !playable[shown];
+
+        // And the wheel, laid out the way TurnWheel would with that same entry selected and
+        // nothing left to turn.
         int count = BossProgress.SlotsPerScreen, half = count / 2;
         for (int i = 0; i < select.slots.Length; i++) {
             BossSlot slot = select.slots[i];
-            float offset = ((i + half) % count) - half;
+            float offset = ((i - shown + half + count) % count) - half;
             float away   = Mathf.Abs(offset);
             if (away > select.wheelReach) {
-                slot.icon.enabled = false; slot.padlock.enabled = false; continue;
+                slot.icon.enabled = false;
+                slot.padlock.enabled = false;
+                continue;
             }
 
             float radians = offset * select.wheelStep * Mathf.Deg2Rad;
             slot.pivot.anchoredPosition = select.wheelCentre
                 + new Vector2(Mathf.Cos(radians), -Mathf.Sin(radians)) * select.wheelRadius;
-            float near  = Mathf.Clamp01(1f - away / select.wheelReach);
-            float scale = Mathf.Lerp(0.55f, 1.35f, near);
-            slot.pivot.localScale = new Vector3(scale, scale, 1f);
+            float near = Mathf.Clamp01(1f - away / select.wheelReach);
+            slot.pivot.localScale = Vector3.one * Mathf.Lerp(0.55f, 1.35f, near);
 
             float fade = Mathf.Lerp(0.15f, 1f, near);
-            // Only the first boss has an icon so far, and only it is unlocked.
-            slot.icon.enabled = i == 0;
-            if (i == 0) {
-                slot.icon.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Mods/Soulbound/Sprites/Bosses/placeholder.png");
-                slot.icon.color  = new Color(1f, 1f, 1f, fade);
+            Sprite art = arts[i] == null ? null
+                : AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Mods/Soulbound/Sprites/Bosses/" + arts[i] + ".png");
+            slot.icon.enabled = art != null;
+            if (art != null) {
+                slot.icon.sprite = art;
+                Color tint = playable[i] ? Color.white : dim;
+                tint.a = fade;
+                slot.icon.color = tint;
             }
-            slot.padlock.enabled = i != 0;
+            slot.padlock.enabled = !playable[i];
             slot.padlock.color   = new Color(1f, 1f, 1f, fade);
         }
-        select.portrait.sprite  = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Mods/Soulbound/Sprites/Bosses/placeholder.png");
-        select.portrait.color   = Color.white;
-        select.portrait.enabled = true;
-        select.portraitLock.enabled = false;
 
         Camera cam = Camera.main;
         Canvas canvas = Object.FindObjectOfType<Canvas>();
