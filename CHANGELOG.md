@@ -183,6 +183,16 @@ ones.
 
 ### Changed
 
+- The layout doc says which of the three sprite folders cares about import settings, because
+  the answer is not the same for all of them and getting it wrong is invisible until the art is
+  on screen. `Assets/Mods` and `Assets/Default` are read by `SpriteUtil.FromFile`, which sets
+  point filtering, clamp, a centred pivot and 100 pixels per unit in code, so their `.meta`
+  files are editor bookkeeping and `Build.py` strips them from what it ships. `Assets/Sprites`
+  is imported by Unity and referenced by the scenes, so its `.meta` is the art: pixel work put
+  there needs `filterMode: 0` or it arrives blurred and nothing downstream corrects it.
+  `CLAUDE.md` carried the first half of that rule and not the second, and its folder list did
+  not mention `Assets/Sprites` at all.
+
 - Name entry is rebuilt on the same layout as the rest of the menus: the instruction, the name
   being typed with a rule under it, a line saying how to type, and Quit and Done. Confirming
   swaps the two for No and Yes and asks whether the name is right, and answering no returns to

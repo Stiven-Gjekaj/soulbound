@@ -46,6 +46,28 @@ There is deliberately no top-level `assets/` directory. Windows and macOS use
 case-insensitive filesystems, so a root `assets/` and Unity's `Assets/` would be the same
 directory and would break checkouts.
 
+## Sprites live in three places, and only one of them cares about import settings
+
+Which folder a PNG goes in decides how it reaches the screen, and the three routes are not
+interchangeable.
+
+| Folder | Reached by | Import settings |
+| --- | --- | --- |
+| `Assets/Mods/<mod>/Sprites` | filename, at runtime | ignored |
+| `Assets/Default/Sprites` | filename, at runtime, when a mod has no file of that name | ignored |
+| `Assets/Sprites` | a scene or prefab, by GUID | **they are the art** |
+
+The first two go through `SpriteUtil.FromFile`, which reads the PNG bytes itself and sets
+`FilterMode.Point`, `TextureWrapMode.Clamp`, a centred pivot and 100 pixels per unit in code.
+Unity's importer never touches them, and `Build.py` strips the `.meta` files out of the copies
+it ships, so a `.meta` beside a mod sprite is editor bookkeeping and nothing more. Drop the PNG
+in and reference it by name.
+
+`Assets/Sprites` is the opposite. Menu and title art is referenced by the scenes that draw it,
+so Unity imports it and the `.meta` is what decides how it looks. **Pixel art put here needs
+`filterMode: 0`**, which is Point, or it arrives on screen blurred and nothing in the engine
+will correct it.
+
 ## What v0.0 and v0.1 removed
 
 v0.0 started from an unmodified Create Your Frisk v0.6.6 LTS 3 snapshot and removed the

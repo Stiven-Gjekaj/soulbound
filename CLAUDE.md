@@ -46,6 +46,7 @@ Assets/Mods/        game content, loaded from disk at runtime
   Soulbound/          the game
   @Title/             engine title screen, a hard dependency
 Assets/Default/     engine fallback sprites, sounds, music, shaders
+Assets/Sprites/     menu and title art, imported by Unity and referenced by the scenes
 Assets/Scenes/      the nine engine scenes
 docs/               all documentation
 ```
@@ -55,10 +56,14 @@ docs/               all documentation
 - **Unity 2018.4.36f1**, pinned in `ProjectSettings/ProjectVersion.txt`, which CI also reads.
   Do not let Unity Hub upgrade the project. On Apple Silicon it runs under Rosetta 2.
 - **The game is 640x480 native.** Sprites should be authored near display size.
-- **Mod sprites need no import settings.** `SpriteUtil.FromFile` reads the PNG bytes at runtime
-  and hardcodes `FilterMode.Point`, `TextureWrapMode.Clamp`, a centred pivot and 100 pixels per
-  unit. Unity's importer never touches them and `Build.py` strips `.meta` files from the copies
-  it ships. Drop the PNG in `Assets/Mods/Soulbound/Sprites/` and reference it by filename.
+- **Mod sprites need no import settings. Menu sprites are nothing but import settings.**
+  `Assets/Mods` and `Assets/Default` are read by `SpriteUtil.FromFile`, which loads the PNG
+  bytes itself and sets `FilterMode.Point`, `TextureWrapMode.Clamp`, a centred pivot and 100
+  pixels per unit in code, so Unity's importer never touches them and `Build.py` strips their
+  `.meta` files from the copies it ships. `Assets/Sprites` is the other way round: the scenes
+  reference it by GUID, Unity imports it, and pixel art put there needs `filterMode: 0` in its
+  `.meta` or it arrives blurred. See
+  [`docs/project/repository-layout.md`](docs/project/repository-layout.md).
 - **`Assets/Default` is name-addressed**, not referenced. `FileLoader.PathToDefaultFile`
   resolves sprites by filename at runtime, so nothing in that folder appears as a reference and
   "unused" means "nothing names it" rather than "no code points at it".
