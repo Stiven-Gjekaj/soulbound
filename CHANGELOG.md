@@ -183,6 +183,11 @@ ones.
 
 ### Changed
 
+- The scene count says ten, because `Credits.unity` made it ten. `CLAUDE.md`, the read me and
+  the repository layout page all still said nine. The mention in the milestones page is left
+  alone: it describes what `nonOWScenes` listed at v0.2 and is history rather than a
+  description of the project now.
+
 - The layout doc says which of the three sprite folders cares about import settings, because
   the answer is not the same for all of them and getting it wrong is invisible until the art is
   on screen. `Assets/Mods` and `Assets/Default` are read by `SpriteUtil.FromFile`, which sets

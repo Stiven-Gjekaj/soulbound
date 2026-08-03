@@ -47,7 +47,7 @@ Assets/Mods/        game content, loaded from disk at runtime
   @Title/             engine title screen, a hard dependency
 Assets/Default/     engine fallback sprites, sounds, music, shaders
 Assets/Sprites/     menu and title art, imported by Unity and referenced by the scenes
-Assets/Scenes/      the nine engine scenes
+Assets/Scenes/      the ten engine scenes
 docs/               all documentation
 ```
 

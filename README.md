@@ -230,7 +230,7 @@ Assets/Mods/        game content, loaded at runtime
   Soulbound/          the game
   @Title/             engine title screen, a hard dependency
 Assets/Default/     engine sprites, sounds, music, and shaders
-Assets/Scenes/      the nine engine scenes
+Assets/Scenes/      the ten engine scenes
 Assets/Editor/      editor tooling, shaders, the CI build script
 docs/               all documentation
 tools/              build and content tooling

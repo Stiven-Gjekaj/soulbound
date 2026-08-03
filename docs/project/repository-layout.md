@@ -14,7 +14,7 @@ opens the game.
       Soulbound/           the game
     Plugins/               MoonSharp, Discord SDK, user32.dll
     Resources/             prefabs, sprites and audio loaded by name at runtime
-    Scenes/                the nine engine scenes
+    Scenes/                the ten engine scenes
     Scripts/               engine source, 111 C# files
     Sprites/               menu and title sprites
   Packages/                Unity package manifest
