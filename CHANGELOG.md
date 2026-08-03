@@ -35,6 +35,14 @@ ones.
 
 ### Added
 
+- `CLAUDE.md`, so the repository's conventions live in the repository. Commit stamps,
+  authorship, no trailers, small commits, changelog entries landing with their change, and the
+  no em-dash and no emoji rule were all things you had to already know. It also collects the
+  engine facts that get rediscovered every time somebody needs them: mod sprites take no import
+  settings because `SpriteUtil.FromFile` sets them at runtime, `Assets/Default` is
+  name-addressed rather than referenced, the battle menus are two columns 265 pixels apart, and
+  the build is the only check there is.
+
 - The read me points at [Soulbound Notes](https://github.com/Stiven-Gjekaj/soulbound-notes),
   the repository the game's design is argued out in. It is an Obsidian vault holding boss
   designs, difficulty and pacing arguments, art direction, and the decisions those produced
