@@ -40,6 +40,16 @@ ones.
 
 ### Added
 
+- `Assets/Editor/SoulboundBatch.cs`, which builds the rebuilt screens from batch mode. It is
+  editor-only, so it never reaches a player's build.
+
+  v0.6 is scene work, and a scene is 2000 lines of generated YAML where a wrong reference does
+  not fail the build, it fails when somebody presses a key. Writing the scenes from an editor
+  script means the editor that owns the format writes it, the layout is reviewable as code
+  rather than as a diff of serialised fields, and a screen can be rebuilt from scratch instead
+  of being edited down from whatever the fork left behind. `Verify` opens the scenes afterwards
+  and reports whether the inspector references actually resolved.
+
 - The credits are a screen, `Assets/Scenes/Credits.unity`, reached from the menu. They used to
   be a camera pan you found by holding Down on the disclaimer, which meant the attribution the
   GPLv3 requires was the least discoverable thing in the game.
