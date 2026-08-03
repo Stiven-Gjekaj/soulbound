@@ -210,17 +210,16 @@ options) and `output_log.txt`.
 The repository root is the Unity project root. Game content is kept in a single
 mod folder, because that is where the engine loads it from at runtime.
 
-| Area | Files | Lines | Responsibility |
-| ---- | ----- | ----- | -------------- |
-| **Lua bindings** | `Assets/Scripts/Lua` | 5130 | The scripting API: object bindings, file loading, asset registries |
-| **Battle** | `Assets/Scripts/Battle` | 4007 | The encounter state machine, enemies, the arena |
-| **Menus** | `Assets/Scripts/PregamePlaceholder` | 2402 | Title, intro, name entry, mod selector, options, keybinding |
-| **Text** | `Assets/Scripts/Text` | 1734 | Text objects, typing, commands, dialogue bubbles |
-| **Device** | `Assets/Scripts/Device` | 1605 | Input, screen resolution, global controls, Discord |
-| **Util** | `Assets/Scripts/Util` | 1455 | Shared helpers, error reporting, static init |
-| **Save** | `Assets/Scripts/Save` | 245 | Session saves and the persistent AlMighty globals |
-| **Other** | inventory, rendering, projectiles, players, animation | 2705 | Supporting systems |
-| **Total** | **111 files** | **19283** | Battle engine, no overworld and no map importer |
+| Area | Where | Responsibility |
+| ---- | ----- | -------------- |
+| **Lua bindings** | `Assets/Scripts/Lua` | The scripting API: object bindings, file loading, asset registries |
+| **Battle** | `Assets/Scripts/Battle` | The encounter state machine, enemies, the arena |
+| **Menus** | `Assets/Scripts/Menus` | Title, boss select, options, keybinding, name entry, credits |
+| **Text** | `Assets/Scripts/Text` | Text objects, typing, commands, dialogue bubbles |
+| **Device** | `Assets/Scripts/Device` | Input, screen resolution, global controls, Discord |
+| **Util** | `Assets/Scripts/Util` | Shared helpers, error reporting, static init |
+| **Save** | `Assets/Scripts/Save` | Session saves, boss records, the persistent AlMighty globals |
+| **Other** | inventory, rendering, projectiles, players, animation | Supporting systems |
 
 ```
 Assets/Scripts/     the engine

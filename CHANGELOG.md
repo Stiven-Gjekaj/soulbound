@@ -216,6 +216,13 @@ ones.
 
 ### Changed
 
+- The read me's structure table stopped counting lines, for the same reason the badge did, and
+  had two rows that were simply wrong. It sent anyone looking for the menus to
+  `Assets/Scripts/PregamePlaceholder`, which v0.6 emptied when the screens were rebuilt into
+  `Assets/Scripts/Menus`, and its total said 111 files against an actual 115. What the table is
+  for is telling a newcomer which folder does what, and that survives without a number beside
+  it that is stale by the next commit.
+
 - The read me stopped advertising its own line count. Two of the badges were a file and line
   total for the engine and a page total for the docs, which are not things a reader wants and
   are wrong the moment anyone commits: they claimed 112 files and 18.8k lines against an actual
