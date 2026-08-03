@@ -12,13 +12,11 @@
 -- music track can be added here before the menu is ready to read them.
 
 return {
-    { id = "placeholder",       name = "Placeholder",        subtitle = "Not built yet" },
+    { id = "placeholder",       name = "Illia, The Tutor",   subtitle = "Not built yet" },
 
     -- Advertised rather than playable. It has no encounter script and no records, because it
     -- can never be started, and its logo is the whole tease, so the name stays hidden. It sits
-    -- next to the tutorial on purpose: the first thing the player can do and the thing they
-    -- cannot, side by side.
+    -- next to the tutorial on purpose: the first thing the player can do beside the thing they
+    -- cannot.
     { id = "teased",            name = "???",                teased = true },
-
-    { id = "stress",            name = "Stress Test",        subtitle = "Not a boss. Measures whether the fight keeps its own time" },
 }

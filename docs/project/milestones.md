@@ -373,11 +373,12 @@ Linux** cannot be settled from here: the Discord leak was invisible to every pla
 sat in people's friends lists regardless. Windows-only and macOS-only paths need a human on
 that platform, so it moves to v0.7, which is the first milestone with testers in the loop.
 
-The stress encounter was meant to be thrown away rather than shipped. It ships: it is in the
-registry and a player sees it at the end of the boss list, labelled as not a boss. A
-measuring instrument that only exists on a developer's machine cannot be pointed at the
-machine that is actually having the problem, which is the case for keeping it. It leaves
-when it stops earning that.
+The stress encounter was meant to be thrown away rather than shipped, and it was kept on the
+argument that a measuring instrument only on a developer's machine cannot be pointed at the
+machine actually having the problem. It leaves when it stops earning that, and it did: v0.6
+took it out of the registry along with its monster and its three waves. The boss select is a
+screen the player looks at rather than a list to page through now, and a row on it that says
+"not a boss" costs more than a tool nobody has needed since the measurements were taken.
 
 Its fourth turn is tuned to a software renderer, where 1500 bullets reach 8fps. On real
 hardware it may drop nothing at all, and a reading of `d0` there means the machine kept up

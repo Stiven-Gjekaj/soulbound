@@ -216,6 +216,28 @@ ones.
 
 ### Changed
 
+- The keybind screen is driven by the keyboard, so the pointer is gone from every menu. Arrows
+  move a selection across a grid, one row per keybind holding its Edit, Reset and Clear and a
+  last row holding Save, Reset All, Restore and Back; Confirm presses whichever is selected and
+  Cancel is Back. Moving between rows clamps the column rather than wrapping it, so leaving the
+  Clear column for the bottom row lands on Restore rather than skipping past it.
+
+  Navigation is off while a keybind is listening, because every key belongs to the keybind
+  being edited then, including the ones that would otherwise move the selection. It reads the
+  saved binds rather than the ones being edited, so clearing Confirm in the editor cannot strip
+  the player of the key they need to save or leave.
+
+- The tutorial boss is Illia, The Tutor rather than Placeholder. Her fight is still a
+  placeholder, and the subtitle still says so; the name is hers.
+
+- The stress test is out of the registry, along with its monster and its three waves. It was
+  kept through v0.5 on the argument that a measuring instrument only on a developer's machine
+  cannot be pointed at the machine actually having the problem, and it earned that while the
+  fight's timing was being settled. The boss select is a screen the player looks at now rather
+  than a list to page through, and a row on it reading "not a boss" costs more than a tool
+  nobody has needed since those measurements were taken. The milestones page records why it
+  was kept and now records why it went.
+
 - The read me counts the registry correctly. It said three placeholder bosses, which was true
   when it was written and stopped being true one commit later: there is one placeholder, the
   teased entry, and the stress test. The order in the sentence follows the order on the wheel.

@@ -121,9 +121,8 @@ open the app.
 Every release also carries a `SHA256SUMS.txt`. Put it in the same folder as the zips
 and run `sha256sum -c SHA256SUMS.txt` to check you got the real files.
 
-The current build is placeholder content: one placeholder boss, one entry the select
-screen advertises but cannot start, and a stress test that measures whether the fight
-keeps its own time. It is the loop and the screens around it, not the game.
+The current build is placeholder content: one boss whose fight is not built yet, and one
+entry the select screen advertises but cannot start. It is the loop and the screens around it, not the game.
 See [Status](#status).
 
 To build from source instead, carry on below.

@@ -19,6 +19,20 @@ public class KeybindSettings : MonoBehaviour {
 
     [HideInInspector] public KeybindEntry listening = null;
 
+    /// <summary>
+    /// Every button on the screen, as a grid: one row per keybind holding its Edit, Reset and
+    /// Clear, then a last row holding Save, Reset All, Restore and Back.
+    ///
+    /// The screen was driven entirely by clicking, which made it the one place a player using
+    /// the keyboard could open and not get out of. The buttons still do the work; this only
+    /// decides which one Confirm presses.
+    /// </summary>
+    private readonly List<Button[]> grid = new List<Button[]>();
+    private int row, col;
+
+    private static readonly Color CellIdle   = new Color(1f, 1f, 1f, 0.10f);
+    private static readonly Color CellPicked = new Color(1f, 1f, 0f, 0.45f);
+
     void Start() {
         foreach (KeyValuePair<string, List<string>> keybind in KeyboardInput.playerKeys)
             tempKeybinds[keybind.Key] = new List<string>(keybind.Value);
@@ -86,6 +100,37 @@ public class KeybindSettings : MonoBehaviour {
         });
 
         Reload();
+
+        foreach (KeybindEntry entry in new[] { Confirm, Cancel, Menu, Up, Left, Down, Right })
+            grid.Add(new[] { entry.Edit, entry.Reset, entry.Clear });
+        grid.Add(new[] { Save, ResetAll, Restore, Back });
+        Highlight();
+    }
+
+    /// <summary>Tints whichever button Confirm would press.</summary>
+    private void Highlight() {
+        for (int r = 0; r < grid.Count; r++)
+            for (int c = 0; c < grid[r].Length; c++) {
+                Image plate = grid[r][c] == null ? null : grid[r][c].GetComponent<Image>();
+                if (plate != null)
+                    plate.color = r == row && c == col ? CellPicked : CellIdle;
+            }
+    }
+
+    /// <summary>
+    /// Moves the selection. Rows wrap and so do columns, and the column is clamped rather than
+    /// wrapped when moving between rows of different widths, so leaving the Clear column and
+    /// landing on the bottom row does not skip past Restore.
+    /// </summary>
+    private void MoveSelection(int dRow, int dCol) {
+        if (dRow != 0) {
+            row = Math.Mod(row + dRow, grid.Count);
+            col = Mathf.Min(col, grid[row].Length - 1);
+        }
+        if (dCol != 0)
+            col = Math.Mod(col + dCol, grid[row].Length);
+        Highlight();
+        UnitaleUtil.PlaySound("KeybindMove", "menumove");
     }
 
     public void CancelResetAll() {
@@ -259,6 +304,21 @@ public class KeybindSettings : MonoBehaviour {
         resetAllTimer.Update();
         restoreTimer.Update();
         notSavedExitTimer.Update();
+
+        // Not while listening: every key belongs to the keybind being edited then, including
+        // the ones that would otherwise move the selection.
+        if (listening == null) {
+            if (GlobalControls.input.Down == ButtonState.PRESSED)       MoveSelection(1, 0);
+            else if (GlobalControls.input.Up == ButtonState.PRESSED)    MoveSelection(-1, 0);
+            else if (GlobalControls.input.Right == ButtonState.PRESSED) MoveSelection(0, 1);
+            else if (GlobalControls.input.Left == ButtonState.PRESSED)  MoveSelection(0, -1);
+            else if (GlobalControls.input.Confirm == ButtonState.PRESSED) {
+                Button button = grid[row][col];
+                if (button != null)
+                    button.onClick.Invoke();
+            } else if (GlobalControls.input.Cancel == ButtonState.PRESSED)
+                Back.onClick.Invoke();
+        }
 
         if (listening != null) {
             foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode))) {

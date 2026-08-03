@@ -314,12 +314,17 @@ public static class SoulboundBatch {
 
     // ---------------------------------------------------------------- shared widgets
 
-    /// <summary>A clickable label. Returns the Button; its Text child carries the wording.</summary>
+    /// <summary>
+    /// A button the keyboard presses. It keeps its Button component, because that is what
+    /// carries the click handler the selection invokes, but it is not a raycast target: the
+    /// pointer does nothing anywhere in the menus.
+    /// </summary>
     private static Button MakeButton(string name, Transform parent, string label, int size,
                                      Vector2 box, Vector2 at) {
         GameObject go = new GameObject(name, typeof(Image), typeof(Button));
         Image plate = go.GetComponent<Image>();
-        plate.color = new Color(1f, 1f, 1f, 0.10f);
+        plate.color         = new Color(1f, 1f, 1f, 0.10f);
+        plate.raycastTarget = false;
         Place(go, parent, box, at);
 
         Text text = MakeText(name + " Label", go.transform, label, size, TextAnchor.MiddleCenter, box, Vector2.zero);
@@ -350,12 +355,11 @@ public static class SoulboundBatch {
             int.TryParse(want, out shown);
 
         // The registry as it stands: four playable entries, then the teased one, then nothing.
-        string[] names    = { "Placeholder", "Second Placeholder", "Third Placeholder", "Stress Test", "???", "???", "???" };
-        string[] arts     = { "placeholder", null, null, null, "teased", null, null };
-        string[] subs     = { "Not built yet", "Also not built yet", "Here so the list has something to page through",
-                              "Not a boss. Measures whether the fight keeps its own time", "", "", "" };
+        string[] names    = { "Illia, The Tutor", "???", "???", "???", "???", "???", "???" };
+        string[] arts     = { "placeholder", "teased", null, null, null, null, null };
+        string[] subs     = { "Not built yet", "", "", "", "", "", "" };
         bool[]   playable = { true, false, false, false, false, false, false };
-        bool[]   teased   = { false, false, false, false, true, false, false };
+        bool[]   teased   = { false, true, false, false, false, false, false };
 
         Color dim  = new Color(0.42f, 0.42f, 0.42f, 1f);
         Color grey = new Color(0.5f, 0.5f, 0.5f, 1f);
@@ -692,7 +696,7 @@ public static class SoulboundBatch {
         keys.Back     = MakeButton("Back",     canvas.transform, "Back",      14, new Vector2(140f, 28f), new Vector2(240f,  -180f));
 
         MakeText("Hint", canvas.transform,
-                 "Edit listens for a key. Press it again, or ESC, to stop.", 12,
+                 "Arrows move, Confirm presses, Cancel goes back. ESC stops listening.", 12,
                  TextAnchor.MiddleCenter, new Vector2(620f, 18f), new Vector2(0f, -215f));
 
         EditorSceneManager.SaveScene(scene, KeybindPath);
