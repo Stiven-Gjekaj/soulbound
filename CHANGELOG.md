@@ -16,6 +16,13 @@ ones.
 
 ### Removed
 
+- `DisclaimerScript.Rebrand`, which rebranded the disclaimer screen at runtime because none of
+  it was reachable from C# by field: it hid the inherited logo, cloned a title out of the
+  version label and copied the logo's anchors onto it, then overwrote four labels by name. The
+  screen is rebuilt, so it says what it says in the scene and the method has nothing to do.
+  Removing it was a v0.6 goal and it takes the credits scroll and the intro branch with it,
+  leaving 151 lines as 44.
+
 - `Title.cs`, the fork's title screen controller, 216 lines. The screen it drove is now the
   menu and nothing references the class: no scene, no prefab, and no other script. Its two
   jobs are both covered elsewhere, the singleton setup by `GlobalControls.Awake` and the
@@ -87,6 +94,14 @@ ones.
   that one is why it does it.
 
 ### Changed
+
+- The disclaimer is a disclaimer. It shows what Soulbound is, what it is not, whose engine it
+  runs on, and the build number, and any key opens the menu.
+
+  It used to be the front door as well: Confirm went to the boss select, Menu went to the
+  fork's intro, and Down panned the camera to the credits, so the screen carrying the legal
+  notice was also the game's navigation and the notice itself was the part you could ignore.
+  The three destinations are the menu's job now, and the credits are their own screen.
 
 - `TitleScreen.unity` is the game's menu, rebuilt from an empty scene rather than edited down
   from the fork's. It carries the title and four rows: Boss Select, Options, Credits and Quit,

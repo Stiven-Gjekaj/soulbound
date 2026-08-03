@@ -14,6 +14,7 @@ using UnityEngine.UI;
 public static class SoulboundBatch {
     private const string TitlePath  = "Assets/Scenes/TitleScreen.unity";
     private const string CreditPath = "Assets/Scenes/Credits.unity";
+    private const string DisclaimerPath = "Assets/Scenes/Disclaimer.unity";
 
     private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
@@ -32,7 +33,7 @@ public static class SoulboundBatch {
             sb.AppendLine("  buildscene " + (s.enabled ? "on  " : "off ") + s.path);
 
         int problems = 0;
-        foreach (string path in new[] { TitlePath, CreditPath }) {
+        foreach (string path in new[] { DisclaimerPath, TitlePath, CreditPath }) {
             EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             sb.AppendLine("  --- " + path);
 
@@ -235,6 +236,45 @@ public static class SoulboundBatch {
         Debug.Log("SOULBOUND-BATCH-CREDITS saved " + CreditPath);
     }
 
+    // ---------------------------------------------------------------- the disclaimer
+
+    public static void BuildDisclaimer() {
+        UnityEngine.SceneManagement.Scene scene =
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+        MakeCamera();
+        MakeSupport();
+        Canvas canvas = MakeCanvas();
+
+        MakeText("Heading", canvas.transform, "DISCLAIMER", 32, TextAnchor.MiddleCenter,
+                 new Vector2(600f, 40f), new Vector2(0f, 160f));
+
+        // The wording is the wording the screen already carried, moved out of C# and into the
+        // scene. It is a legal notice, so it is not the place to be inventive.
+        MakeText("Fanwork", canvas.transform,
+                 "Soulbound is a fan work.\nIt is not owned by, endorsed by, or affiliated with\nToby Fox or Undertale.",
+                 20, TextAnchor.MiddleCenter, new Vector2(620f, 80f), new Vector2(0f, 70f));
+
+        MakeText("Licence", canvas.transform,
+                 "It runs on Create Your Frisk, which is free software\nunder the GPLv3. This game is free.\nDo not sell it, or anything made with it.",
+                 20, TextAnchor.MiddleCenter, new Vector2(620f, 80f), new Vector2(0f, -20f));
+
+        MakeText("Build", canvas.transform, "This is an early build.", 20, TextAnchor.MiddleCenter,
+                 new Vector2(620f, 24f), new Vector2(0f, -100f));
+
+        Text version = MakeText("Version", canvas.transform, "v0.0.0", 16, TextAnchor.MiddleCenter,
+                                new Vector2(620f, 20f), new Vector2(0f, -140f));
+
+        MakeText("Prompt", canvas.transform, "Press any key to continue", 16, TextAnchor.MiddleCenter,
+                 new Vector2(620f, 20f), new Vector2(0f, -200f));
+
+        GameObject script = new GameObject("DisclaimerScript", typeof(DisclaimerScript));
+        script.GetComponent<DisclaimerScript>().Version = version;
+
+        EditorSceneManager.SaveScene(scene, DisclaimerPath);
+        Debug.Log("SOULBOUND-BATCH-DISCLAIMER saved " + DisclaimerPath);
+    }
+
     /// <summary>Adds a scene to the build list if it is not already in it.</summary>
     private static void RegisterScene(string path) {
         List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
@@ -249,6 +289,7 @@ public static class SoulboundBatch {
     public static void BuildAll() {
         BuildCredits();
         BuildMenu();
+        BuildDisclaimer();
         AssetDatabase.SaveAssets();
         Debug.Log("SOULBOUND-BATCH-DONE");
     }
