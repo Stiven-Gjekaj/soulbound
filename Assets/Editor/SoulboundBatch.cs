@@ -18,6 +18,7 @@ public static class SoulboundBatch {
     private const string BossSelectPath = "Assets/Scenes/ModSelect.unity";
     private const string OptionsPath = "Assets/Scenes/Options.unity";
     private const string KeybindPath = "Assets/Scenes/KeybindSettings.unity";
+    private const string NamePath = "Assets/Scenes/EnterName.unity";
 
     private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
@@ -37,7 +38,7 @@ public static class SoulboundBatch {
             sb.AppendLine("  buildscene " + (s.enabled ? "on  " : "off ") + s.path);
 
         int problems = 0;
-        foreach (string path in new[] { DisclaimerPath, TitlePath, CreditPath, BossSelectPath, OptionsPath, KeybindPath }) {
+        foreach (string path in new[] { DisclaimerPath, TitlePath, CreditPath, BossSelectPath, OptionsPath, KeybindPath, NamePath }) {
             EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             sb.AppendLine("  --- " + path);
 
@@ -82,6 +83,14 @@ public static class SoulboundBatch {
                               + "  listening=" + (binds.Listening == null ? "NULL" : "bound"));
                 if (bound != 7 || binds.Listening == null
                  || !binds.Save || !binds.ResetAll || !binds.Restore || !binds.Back) problems++;
+            }
+
+            NameEntry name = Object.FindObjectOfType<NameEntry>();
+            if (name != null) {
+                bool ok = name.heading && name.nameText && name.hint && name.underline
+                       && name.fade && name.quitLabel && name.doneLabel;
+                sb.AppendLine("    NameEntry bindings = " + (ok ? "all bound" : "INCOMPLETE"));
+                if (!ok) problems++;
             }
 
             MainMenu menu = Object.FindObjectOfType<MainMenu>();
@@ -290,6 +299,72 @@ public static class SoulboundBatch {
         Text text = MakeText(name + " Label", go.transform, label, size, TextAnchor.MiddleCenter, box, Vector2.zero);
         go.GetComponent<Button>().targetGraphic = plate;
         return go.GetComponent<Button>();
+    }
+
+    // ---------------------------------------------------------------- name entry
+
+    public static void BuildNameEntry() {
+        UnityEngine.SceneManagement.Scene scene =
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+        MakeCamera();
+        MakeSupport();
+        Canvas canvas = MakeCanvas();
+
+        // Two lines tall, because a handful of names answer back over two.
+        Text heading = MakeText("Heading", canvas.transform, "", 20, TextAnchor.MiddleCenter,
+                                new Vector2(620f, 60f), new Vector2(0f, 140f));
+
+        Text nameText = MakeText("Name", canvas.transform, "", 32, TextAnchor.MiddleCenter,
+                                 new Vector2(400f, 44f), new Vector2(0f, 50f));
+
+        GameObject rule = new GameObject("Underline", typeof(Image));
+        Image underline = rule.GetComponent<Image>();
+        underline.raycastTarget = false;
+        Place(rule, canvas.transform, new Vector2(260f, 2f), new Vector2(0f, 22f));
+
+        Text hint = MakeText("Hint", canvas.transform, "", 12, TextAnchor.MiddleCenter,
+                             new Vector2(620f, 20f), new Vector2(0f, -10f));
+
+        Text quit = MakeChoice("Quit", canvas.transform, new Vector2(-90f, -110f));
+        Text done = MakeChoice("Done", canvas.transform, new Vector2(90f, -110f));
+
+        // Last child, so it covers everything when the new game fades out.
+        GameObject curtain = new GameObject("Fade", typeof(Image));
+        Image fade = curtain.GetComponent<Image>();
+        fade.color         = new Color(0f, 0f, 0f, 0f);
+        fade.raycastTarget = false;
+        Place(curtain, canvas.transform, new Vector2(640f, 480f), Vector2.zero);
+
+        GameObject script = new GameObject("NameEntryScript", typeof(NameEntry));
+        NameEntry entry = script.GetComponent<NameEntry>();
+        entry.heading   = heading;
+        entry.nameText  = nameText;
+        entry.hint      = hint;
+        entry.underline = underline;
+        entry.fade      = fade;
+        entry.quitLabel = quit;
+        entry.doneLabel = done;
+
+        EditorSceneManager.SaveScene(scene, NamePath);
+        Debug.Log("SOULBOUND-BATCH-NAME saved " + NamePath);
+    }
+
+    /// <summary>One of the two buttons: a label the pointer can reach.</summary>
+    private static Text MakeChoice(string name, Transform parent, Vector2 at) {
+        GameObject go = new GameObject(name, typeof(Text), typeof(Button), typeof(EventTrigger));
+        Text text = go.GetComponent<Text>();
+        text.font               = AssetDatabase.LoadAssetAtPath<Font>(MenuFont);
+        text.text               = name;
+        text.fontSize           = 18;
+        text.alignment          = TextAnchor.MiddleCenter;
+        text.color              = Color.white;
+        text.horizontalOverflow = HorizontalWrapMode.Overflow;
+        text.verticalOverflow   = VerticalWrapMode.Overflow;
+        text.raycastTarget      = true;
+        go.GetComponent<Button>().targetGraphic = text;
+        Place(go, parent, new Vector2(120f, 32f), at);
+        return text;
     }
 
     // ---------------------------------------------------------------- the options screen
@@ -549,6 +624,7 @@ public static class SoulboundBatch {
         BuildBossSelect();
         BuildOptionsScreen();
         BuildKeybinds();
+        BuildNameEntry();
         AssetDatabase.SaveAssets();
         Debug.Log("SOULBOUND-BATCH-DONE");
     }

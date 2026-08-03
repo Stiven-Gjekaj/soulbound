@@ -150,6 +150,26 @@ ones.
 
 ### Changed
 
+- Name entry is rebuilt on the same layout as the rest of the menus: the instruction, the name
+  being typed with a rule under it, a line saying how to type, and Quit and Done. Confirming
+  swaps the two for No and Yes and asks whether the name is right, and answering no returns to
+  typing rather than starting over, so a near miss costs one keystroke.
+
+  What it drops is what the letter grid left behind when v0.5 made names typed. Two text
+  objects were filled with the alphabet at runtime and switched off again on load, a Backspace
+  button duplicated the Backspace key, and the buttons were bare sprites with no colliders,
+  hit-tested against their own world bounds because Unity's pointer events could not see them.
+  The rebuilt buttons are ordinary UI and answer to the pointer on their own.
+
+  Everything the screen decided stays decided: letters only, nine of them, an empty name
+  becoming the default so a player on a controller is not trapped, and a forbidden name
+  offering no way forward.
+
+  The table of names that answer back is carried over untouched. Several of them name the fork
+  or its author, several are marked broken, and several point at features this game does not
+  have, but what the game says is a writing decision rather than a layout one, and this was a
+  screen pass. It wants a pass of its own.
+
 - The options screen builds its rows from a list instead of from objects in the scene, which
   is what the milestone meant by an eleventh option having nowhere to go. There were ten rows
   and no eleventh, so a new setting had to either wait for someone with Unity open or take
