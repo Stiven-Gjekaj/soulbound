@@ -35,6 +35,14 @@ ones.
 
 ### Added
 
+- The credits are a screen, `Assets/Scenes/Credits.unity`, reached from the menu. They used to
+  be a camera pan you found by holding Down on the disclaimer, which meant the attribution the
+  GPLv3 requires was the least discoverable thing in the game.
+
+  The names are carried over unchanged, because they are not ours to edit: Toby Fox for
+  Undertale, lvkuln for Unitale, RhenaudTheLukark for Create Your Frisk, and the six people
+  credited as its contributors. Soulbound's own line sits above them.
+
 - A Soulbound title wordmark, `Assets/Sprites/Soulbound_Title.png`. Placeholder art for v0.6,
   generated with PixelLab's Pixen model at seed 6061 and authored at 528x96, which is display
   size rather than something drawn large and scaled down. The seed is recorded here as well as

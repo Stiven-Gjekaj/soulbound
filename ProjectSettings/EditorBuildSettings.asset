@@ -32,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/KeybindSettings.unity
     guid: c7340ada0080ba74ebc7e5bf2a43e8b5
+  - enabled: 1
+    path: Assets/Scenes/Credits.unity
+    guid: 5a0d91b1672b74d3e91c9216040a8079
   m_configObjects: {}
