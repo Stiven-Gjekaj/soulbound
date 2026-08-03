@@ -105,8 +105,8 @@ mode is gone, and four of the bugs hiding inside it were behaviour rather than
 appearance. The window title and Discord stopped naming somebody else's engine.
 
 Next is v0.6, which rebuilds every screen the game has as a purpose-built screen
-rather than an inherited one, deliberately unskinned, so the layouts are settled
-before anyone draws art for them. The [changelog](CHANGELOG.md) has the full account,
+rather than an inherited one, on placeholder art, so the layouts are settled and
+argued with before the real art is drawn for them. The [changelog](CHANGELOG.md) has the full account,
 and [milestones](docs/project/milestones.md) covers the whole road to v1.0.
 
 ---

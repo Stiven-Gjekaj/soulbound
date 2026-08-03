@@ -16,8 +16,8 @@ through v0.3 made the engine fit the game. From v0.4 on, the work is the game.
 
 Art is not the constraint yet. Menus and boss assets arrive at v0.8, so everything
 before it is engine and content work with placeholder art, sequenced so that nothing
-blocks on a sprite that does not exist. v0.6 rebuilds every screen unskinned for that
-reason: layout and art are different problems and only one of them waits on delivery.
+blocks on a sprite that does not exist. v0.6 rebuilds every screen on placeholder art for
+that reason: layout and art are different problems and only one of them waits on delivery.
 A screen built at v0.6 gets used, tested and disliked for two milestones before anyone
 draws for it, and the artists get a settled layout to work against instead of a moving
 target.
@@ -386,8 +386,15 @@ rather than the test failing.
 ## v0.6: wireframe
 
 Every screen the player sees, rebuilt as a purpose-built screen rather than an inherited
-one, and deliberately unskinned. Disclaimer, title, name entry, boss select, options,
+one, and dressed in placeholder art. Disclaimer, title, name entry, boss select, options,
 keybinds, and the battle UI itself.
+
+**Unskinned here means placeholder, not bare.** A screen with nothing on it cannot be
+judged: an empty boss select does not tell you whether seven entries fit, and a locked
+entry with no silhouette in it does not tell you whether the slot holds its shape when it
+unlocks. So the layouts get stand-in art, made to be looked at and argued with, and made
+to be thrown away. v0.8 replaces all of it, and nothing here is a decision about how the
+game finally looks.
 
 This is the milestone that most needs someone with the Unity editor open, because it is
 scene work rather than script work. Everything below has been waiting on exactly that:

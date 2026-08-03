@@ -45,6 +45,14 @@ ones.
 
 ### Changed
 
+- The milestones page says what "unskinned" means at v0.6, because it did not and the word
+  reads both ways. It means placeholder art, not the absence of art. A screen with nothing
+  on it cannot be judged: an empty boss select does not tell you whether seven entries fit,
+  and a locked entry with no silhouette in it does not tell you whether the slot keeps its
+  shape when it unlocks. The layouts get stand-in art made to be looked at and argued with
+  and then thrown away, and v0.8 replaces all of it. The read me and the milestones
+  overview carried the same ambiguous phrasing and now say placeholder too.
+
 - The player starts with fists and a worn coat instead of a stick and a bandage. The two
   inherited names were Undertale's, and one of them collided with a healing item Soulbound
   wants to keep calling Bandage, so the player would have been wearing a bandage while
