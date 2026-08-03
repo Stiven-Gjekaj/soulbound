@@ -140,6 +140,12 @@ ones.
   Destructive rows still have to be pressed twice, and the confirmation now expires on a clock
   rather than a frame counter, so leaving the screen alone is the same as saying no.
 
+- The keybind screen is rebuilt on the same layout language as the rest of the menus: seven
+  rows, each with its keys, an Edit, a Reset and a Clear, and the four screen-level buttons
+  along the bottom. `KeybindSettings` itself is untouched. Its conflict detection, its colour
+  coding and its guard against leaving with unsaved changes are the parts worth keeping, and
+  the rebuild is a scene rather than a rewrite.
+
 - The Discord option stopped naming Create Your Frisk. Its hover description said the player
   was playing the fork, twice, and `KeyboardInput` still described the fork's options menu in
   a comment. v0.4 caught fourteen strings like this and v0.5 another set; these survived both
