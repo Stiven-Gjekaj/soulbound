@@ -35,6 +35,18 @@ ones.
 
 ### Added
 
+- A Soulbound title wordmark, `Assets/Sprites/Soulbound_Title.png`. Placeholder art for v0.6,
+  generated with PixelLab's Pixen model at seed 6061 and authored at 528x96, which is display
+  size rather than something drawn large and scaled down. The seed is recorded here as well as
+  in the commit subject so this one asset can be redrawn without regenerating the set around it.
+
+  It is an engine sprite rather than mod content, and that is a decision rather than a
+  convenience. The screens that show a title are engine scenes, and a scene can only reference
+  a sprite Unity has imported. A file under `Assets/Mods` is loaded by name at runtime instead,
+  which is exactly the pattern that keeps a branding method alive in C#, and deleting that
+  method is a v0.6 goal. Its import settings are copied from the logo it replaces: point
+  filtering, 100 pixels per unit, and alpha treated as transparency.
+
 - `CLAUDE.md`, so the repository's conventions live in the repository. Commit stamps,
   authorship, no trailers, small commits, changelog entries landing with their change, and the
   no em-dash and no emoji rule were all things you had to already know. It also collects the
