@@ -20,11 +20,31 @@ public static class BossProgress {
 
     /// <summary>Whether the player may fight the entry in this position.</summary>
     public static bool Unlocked(int index) {
-        if (index <= 0)
+        List<BossEntry> entries = BossRegistry.Entries;
+
+        // A position past the end of the registry is not a boss, so it is not available. This
+        // used to fall through to the tutorial check and report an empty slot as unlocked once
+        // the tutorial had been cleared, which only stayed harmless because the select screen
+        // checked the count itself before asking.
+        if (index < 0 || index >= entries.Count)
+            return false;
+
+        // A teased boss is advertised rather than shipped, so it is never available however
+        // far the player has got. That is what makes it a tease rather than a lock.
+        if (entries[index].teased)
+            return false;
+
+        // The first entry is the tutorial and is always available; clearing it opens the rest.
+        if (index == 0)
             return true;
 
+        return BossRecords.Cleared(entries[0].id);
+    }
+
+    /// <summary>Whether this position is advertised rather than playable.</summary>
+    public static bool Teased(int index) {
         List<BossEntry> entries = BossRegistry.Entries;
-        return entries.Count > 0 && BossRecords.Cleared(entries[0].id);
+        return index >= 0 && index < entries.Count && entries[index].teased;
     }
 
     /// <summary>Whether the tutorial has been cleared, which is what opens the rest.</summary>

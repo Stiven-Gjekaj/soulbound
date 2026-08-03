@@ -351,8 +351,14 @@ public class BossSelect : MonoBehaviour {
             Set(nohit,  ValueShut, "?");
         }
 
-        if (hint != null)
-            hint.text = unlocked ? "Confirm to fight" : "";
+        if (hint != null) {
+            // A teased boss says so. A locked one says nothing, because the player is meant to
+            // work the lock out, but "you have not earned this" and "this does not exist yet"
+            // are different answers and the screen should not give the same silence to both.
+            if (unlocked)                        hint.text = "Confirm to fight";
+            else if (BossProgress.Teased(selected)) hint.text = "Not in this build";
+            else                                 hint.text = "";
+        }
     }
 
     private static void Set(Text text, Color color, string value) {

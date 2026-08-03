@@ -13,6 +13,11 @@ public class BossEntry {
     public string name;
     /// <summary>One line shown under the name.</summary>
     public string subtitle;
+    /// <summary>
+    /// A boss the game advertises rather than ships. It appears on the select screen and can
+    /// never be picked, and it has no encounter script, so the registry does not ask for one.
+    /// </summary>
+    public bool teased;
 }
 
 /// <summary>
@@ -87,7 +92,8 @@ public static class BossRegistry {
             entries.Add(new BossEntry {
                 id       = ReadString(row.Table, "id"),
                 name     = ReadString(row.Table, "name"),
-                subtitle = ReadString(row.Table, "subtitle")
+                subtitle = ReadString(row.Table, "subtitle"),
+                teased   = ReadBool(row.Table, "teased")
             });
         }
 
@@ -118,10 +124,16 @@ public static class BossRegistry {
                 return;
             }
 
-            string encounter = LuaPath("Encounters/" + boss.id + ".lua");
-            if (!File.Exists(encounter)) {
-                Fail("The boss \"" + boss.id + "\" has no encounter script.\n\nIt should be at:\n" + encounter);
-                return;
+            // A teased boss is one the game advertises and cannot start, so it has nothing to
+            // start and asking it for an encounter script would be asking for the thing that
+            // makes it not a tease.
+            if (!boss.teased) {
+                string encounter = LuaPath("Encounters/" + boss.id + ".lua");
+                if (!File.Exists(encounter)) {
+                    Fail("The boss \"" + boss.id + "\" has no encounter script.\n\nIt should be at:\n" + encounter
+                       + "\n\nIf it is meant to be advertised rather than played, mark it teased = true.");
+                    return;
+                }
             }
 
             // A boss with no name shows its id, which is at least something to click on.
@@ -133,6 +145,11 @@ public static class BossRegistry {
     private static string ReadString(Table row, string key) {
         DynValue value = row.Get(key);
         return value.Type == DataType.String ? value.String : "";
+    }
+
+    private static bool ReadBool(Table row, string key) {
+        DynValue value = row.Get(key);
+        return value.Type == DataType.Boolean && value.Boolean;
     }
 
     /// <summary>Drops whatever was loaded and sends the player to the error screen.</summary>

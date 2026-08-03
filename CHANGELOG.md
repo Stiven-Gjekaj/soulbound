@@ -89,6 +89,32 @@ ones.
 
 ### Added
 
+- A boss the game advertises rather than ships. A registry row marked `teased = true` appears on
+  the select screen and can never be picked, which is the last capability the v0.6 list names.
+  It lands now rather than with the boss it advertises, because building it into a screen that
+  is being written anyway costs almost nothing and adding it to a finished one costs a rebuild.
+
+  The registry does not ask a teased row for an encounter script, because having something to
+  start is exactly what would stop it being a tease. `BossProgress` never reports it unlocked
+  however far the player has got, so it does not sit behind the tutorial the way a locked boss
+  does, and nothing is ever recorded against it because no fight can begin. That last part has
+  a useful consequence: a teased row's `id` can be changed freely when it becomes a real boss,
+  where a fought boss's id is load bearing because its records are keyed on it.
+
+  The screen tells a tease apart from a lock. A locked boss says nothing, because the player is
+  meant to work out that clearing the first one opens the rest; a teased one says it is not in
+  this build. The design notes list "does a locked entry and an unbuilt entry look the same" as
+  an open question, and for this case it now has an answer.
+
+- `Sprites/Bosses/teased.png` at seed 6088, wings around a downward sword.
+
+  Three were generated. The first was legible but small, the second had the wings reaching the
+  frame and a dark navy palette, and in context the second was unusable: a locked entry draws at
+  42 per cent brightness on black, so a dark emblem dims into the background and its sword
+  becomes a faint line. The third keeps the wide wings and a pale palette. The constraint worth
+  remembering is that boss art has to survive being dimmed, because the locked state dims it.
+
+
 - Soulbound's own battle buttons, replacing Undertale's in
   `Assets/Default/Sprites/UI/Buttons`. Four words, two states each, 110x42 to match the slot
   the battle scene gives them. The states differ only in colour, orange unselected and yellow
@@ -116,6 +142,11 @@ ones.
   illustrative one: anything drawn freehand, by a person or a model, smears the moment the
   arena changes size. Composing the slice at 575x140 and again at 180x90 gives the same
   profile on every edge, two pixels then a gap then one.
+
+- `BossProgress.Unlocked` stopped reporting empty positions as available. Asked about a slot
+  past the end of the registry it fell through to the tutorial check and answered yes once the
+  tutorial had been cleared. Nothing acted on it, because the select screen checked the count
+  itself before asking, so it was a wrong answer nobody had yet used.
 
 - `BossRecords.Clears`, a count of how many times a boss has been beaten. The records already
   held whether a boss had ever been cleared, as a boolean, but the select screen's table wants
