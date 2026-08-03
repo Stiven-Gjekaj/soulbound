@@ -47,6 +47,15 @@ ones.
 
 ### Added
 
+- A boss silhouette placeholder, `Assets/Sprites/Boss_Silhouette.png`, 40x40 at seed 6063. A
+  featureless grey figure, mid grey rather than black so it reads against the black every
+  Soulbound screen sits on.
+
+  Every slot on the boss select wears it this pass, the unlocked one included. That is
+  deliberate and it is the cheapest way to test the thing the silhouette exists for: the slot
+  has to keep its shape when an entry unlocks, so if the layout is going to jump, it jumps
+  here rather than at v0.8 when real art arrives.
+
 - `Assets/Editor/SoulboundBatch.cs`, which builds the rebuilt screens from batch mode. It is
   editor-only, so it never reaches a player's build.
 
