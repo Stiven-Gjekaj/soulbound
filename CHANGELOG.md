@@ -447,6 +447,28 @@ from a Lua prefab because `Battle.unity` has no object for it.
 Unskinned on purpose. The layouts get finished and lived with before anyone draws
 art for them, so the artists at v0.8 get a settled target rather than a moving one.
 
+### Fixed
+
+- The rebuilt screens get their camera prefab back, which is what let the disclaimer ignore
+  every key. `Assets/Resources/Prefabs/Main Camera.prefab` is not just a camera: it carries
+  `ScreenResolution`, `GlobalControls`, the `AudioListener` and the hitbox renderer. Every
+  screen rebuilt this milestone was given a camera built by hand instead, and lost all four.
+
+  Two of those matter and neither shows up in a build. `DisclaimerScript.Update` returns early
+  until `ScreenResolution.hasInitialized` is true, and nothing set it, so the first screen of
+  the game accepted no input at all and there was no way past it. And with no `AudioListener`
+  in the scene, nothing any of the menus played could be heard.
+
+  The builder instances the prefab now, and `Verify` asserts all three components are present
+  in every scene it opens, because all three fail silently: the scene loads, the build
+  succeeds, and the game is simply deaf and unresponsive.
+
+- The version on the disclaimer said 0.3.0, two releases out of date. `bundleVersion` had not
+  been touched since that tag, and it is what a local build reports. Released builds were
+  always right, because the release workflow sets the version from the tag it is cutting, so
+  this only ever misreported a build somebody made themselves. It says 0.5.0 now, which is the
+  last release this repository cut.
+
 ## 0.5 (2026-07-30)
 
 Tying off every loose end before the game gets screens, a real boss and art. The

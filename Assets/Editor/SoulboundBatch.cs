@@ -27,6 +27,7 @@ public static class SoulboundBatch {
     private const string WheelSprite = "Assets/Sprites/Wheel_Rim.png";
     private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
+    private const string CameraPrefab = "Assets/Resources/Prefabs/Main Camera.prefab";
 
     /// <summary>
     /// Opens the rebuilt scenes and reports what is actually in them, including whether the
@@ -52,6 +53,13 @@ public static class SoulboundBatch {
                                   + Describe(child.GetComponent<Image>())
                                   + Describe(child.GetComponent<Text>()));
             }
+
+            // Every screen needs these, and the ways they fail are all invisible until the
+            // game runs: no ScreenResolution means keys are ignored, no AudioListener means
+            // silence, no GlobalControls means no input at all.
+            if (Object.FindObjectOfType<ScreenResolution>() == null) { sb.AppendLine("    NO ScreenResolution"); problems++; }
+            if (Object.FindObjectOfType<AudioListener>()    == null) { sb.AppendLine("    NO AudioListener");    problems++; }
+            if (Object.FindObjectOfType<GlobalControls>()   == null) { sb.AppendLine("    NO GlobalControls");   problems++; }
 
             BossSelect select = Object.FindObjectOfType<BossSelect>();
             if (select != null) {
@@ -125,17 +133,31 @@ public static class SoulboundBatch {
 
     // ---------------------------------------------------------------- building blocks
 
+    /// <summary>
+    /// The scene's camera, instanced from the prefab rather than built by hand.
+    ///
+    /// That prefab is not just a camera. It carries ScreenResolution, GlobalControls and the
+    /// AudioListener, and building a bare camera instead cost two things that only show up when
+    /// the game runs: with no ScreenResolution, hasInitialized never became true and the
+    /// disclaimer ignored every key forever, and with no AudioListener nothing made a sound.
+    /// </summary>
     private static Camera MakeCamera() {
-        GameObject go = new GameObject("Main Camera", typeof(Camera), typeof(AudioSource));
-        go.tag = "MainCamera";
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(CameraPrefab);
+        GameObject go = prefab != null ? (GameObject)PrefabUtility.InstantiatePrefab(prefab)
+                                       : new GameObject("Main Camera", typeof(Camera), typeof(AudioSource), typeof(AudioListener));
+        go.name = "Main Camera";
+        go.tag  = "MainCamera";
         go.transform.position = new Vector3(320f, 240f, -10f);
+
         Camera cam = go.GetComponent<Camera>();
         cam.orthographic     = true;
         cam.orthographicSize = 240f;
         cam.clearFlags       = CameraClearFlags.SolidColor;
         cam.backgroundColor  = Color.black;
+
         AudioSource audio = go.GetComponent<AudioSource>();
-        audio.playOnAwake = false;
+        if (audio != null)
+            audio.playOnAwake = false;
         return cam;
     }
 
@@ -154,9 +176,9 @@ public static class SoulboundBatch {
         return canvas;
     }
 
+    /// <summary>Only the event system. GlobalControls rides on the camera prefab.</summary>
     private static void MakeSupport() {
         new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
-        new GameObject("GlobalControls", typeof(GlobalControls));
     }
 
     private static RectTransform Place(GameObject go, Transform parent, Vector2 size, Vector2 at) {
