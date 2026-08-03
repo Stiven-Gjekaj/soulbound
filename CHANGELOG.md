@@ -216,6 +216,10 @@ ones.
 
 ### Changed
 
+- The read me counts the registry correctly. It said three placeholder bosses, which was true
+  when it was written and stopped being true one commit later: there is one placeholder, the
+  teased entry, and the stress test. The order in the sentence follows the order on the wheel.
+
 - The menus are keyboard only. The pointer is gone from the menu, the options screen and name
   entry: no buttons, no hover, no raycast targets. The game is played with four directions and
   two buttons, and a pointer was a second way to do everything that had to keep working and
