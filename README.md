@@ -60,58 +60,17 @@ enemypositions = { { 0, 0 } }
 
 ## Status
 
-**v0.6, in progress.** Every screen is being rebuilt as a purpose-built screen rather
-than an inherited one, on placeholder art, so the layouts settle before the real art
-is drawn. Title, disclaimer, name entry, options, keybinds, credits and the boss
-select are done; the boss select is a turning wheel of seven entries with a record
-panel beside it.
+**v0.6: wireframe, in progress.** Every screen the player sees is being rebuilt as a
+purpose-built screen rather than an inherited one, on placeholder art, so the layouts
+settle before the real art is drawn for them. Unskinned here means placeholder rather
+than bare: a screen with nothing on it cannot be judged.
 
-Under that, from v0.5: the loop exists, keeps score and keeps its own time. You pick
-a boss, you fight it, you come back to the list, and it tells you how you did.
-Cleared, cleared without taking a hit, best time, tries, deaths. The bosses are
-placeholders, but the game is a game.
+Done so far: the disclaimer, title, credits, name entry, options and keybinds, plus the
+boss select, which is a turning wheel of seven entries with a record panel beside it.
+The battle UI is the remainder.
 
-v0.0 turned an unmodified Create Your Frisk snapshot into a documented base: about
-37 MB of example content removed, the 644 KB documentation website converted by
-hand into Markdown, a scaffolded mod folder, and a build passing CI on Windows,
-macOS, and Linux.
-
-v0.1 removed the overworld. A boss rush has no maps, events, cutscenes or shops,
-and roughly a third of the engine existed to support them. Out went 18 scripts and
-6 Lua bindings, three scenes, eight prefabs, six sprite folders, the Tiled map
-importer, and 11 documentation pages: 5,800 lines of C# and about 1.5 MB.
-
-v0.2 removed what that left behind: the 40 places the engine still asked itself
-whether it was in a map, the flag they consulted, the map data in the save format,
-and the last identifiers named after a feature that no longer exists. Nothing
-observable changed, because every branch it deleted was already unreachable.
-
-v0.3 built the boss rush loop. A boss registry designers can edit without touching
-C#, a select screen that reads it, a fight that starts from it and returns to it,
-and a per-boss record of attempts, clears and best times. It also finished leaving
-the fork behind: a tag-driven release pipeline, safe mode and Crate Your Frisk gone,
-the player naming their own character, and the product renamed to Soulbound.
-
-v0.4 put those records on the boss select and added the two worth keeping beside
-them, deaths and no-hit clears, along with an optional in-fight timer. It also fixed
-the problems that only appear once people can download a build: sparing a boss did
-nothing at all, an error screen named the wrong project and then ignored the key it
-told you to press, and the disclaimer still introduced somebody else's engine. Most
-of those were found by playing a build rather than reading one, which is part of
-shipping now.
-
-v0.5 tied off the loose ends, and none of it is a feature. The fight runs on a fixed
-clock of sixty steps a second instead of once per drawn frame, which it turns out was
-making the game easier on a slow machine rather than slower: bullets covered half the
-ground they should while the soul kept full speed. Records count battle steps now, so
-a stutter cannot inflate a time. The letter grid is gone and you type your name. Retro
-mode is gone, and four of the bugs hiding inside it were behaviour rather than
-appearance. The window title and Discord stopped naming somebody else's engine.
-
-Next is v0.6, which rebuilds every screen the game has as a purpose-built screen
-rather than an inherited one, on placeholder art, so the layouts are settled and
-argued with before the real art is drawn for them. The [changelog](CHANGELOG.md) has the full account,
-and [milestones](docs/project/milestones.md) covers the whole road to v1.0.
+The [changelog](CHANGELOG.md) records every version in full, and
+[milestones](docs/project/milestones.md) covers the whole road to v1.0.
 
 ---
 

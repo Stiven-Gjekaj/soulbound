@@ -216,6 +216,13 @@ ones.
 
 ### Changed
 
+- The read me's status section covers the milestone in progress and nothing else. It had grown
+  a paragraph per version from v0.0 to v0.5, which is roughly forty lines of history standing
+  between a reader and the answer to "where is this now", and it is the changelog's job rather
+  than the read me's. Both the changelog and the milestones page are linked from the section
+  that replaced it. It also announced v0.6 twice, once as current and once as next, which is
+  what the previous commit left behind.
+
 - The read me says where the project actually is. Its status headline still read v0.5 with the
   milestone most of the way through, the download section described three bosses that are a
   10 HP monster when the registry now holds three placeholders, a stress test and a teased
