@@ -16,6 +16,18 @@ ones.
 
 ### Removed
 
+- The retro mode warning, both `RetromodeWarning.cs` and `Assets/Resources/Prefabs/Retromode
+  Warning.prefab`, along with the last instance of it, which was sitting in `Error.unity`.
+
+  This was not dead code, and the order mattered. The banner prefab defaults to active and no
+  scene overrode that, so the script existed to destroy the object on load: retro mode went in
+  v0.5, and without the script the warning it raised about a state that can no longer be
+  reached would have been permanently visible instead of never. Deleting the script first
+  would have shipped the warning. The prefab was instanced in three scenes; rebuilding the
+  boss select and the title screen took two of them out, and `Error.unity` was the last, so
+  the object comes out here and the script and prefab can follow. That is exactly what the
+  script's own comment said should happen at v0.6.
+
 - `OptionsScript.cs`, 342 lines, and with it `AdoptRetiredRow`, `HideRetiredButtons` and
   `StackButtons`. All three existed to work around a screen whose rows were fixed objects in
   the scene: one took over a row belonging to a retired setting, one hid the rows nothing had
