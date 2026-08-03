@@ -60,9 +60,15 @@ enemypositions = { { 0, 0 } }
 
 ## Status
 
-**v0.5.** The loop exists, keeps score, and now keeps its own time. You pick a boss
-from a list, you fight it, you come back to the list, and it tells you how you did:
-cleared, cleared without taking a hit, best time, tries, deaths. The bosses are
+**v0.6, in progress.** Every screen is being rebuilt as a purpose-built screen rather
+than an inherited one, on placeholder art, so the layouts settle before the real art
+is drawn. Title, disclaimer, name entry, options, keybinds, credits and the boss
+select are done; the boss select is a turning wheel of seven entries with a record
+panel beside it.
+
+Under that, from v0.5: the loop exists, keeps score and keeps its own time. You pick
+a boss, you fight it, you come back to the list, and it tells you how you did.
+Cleared, cleared without taking a hit, best time, tries, deaths. The bosses are
 placeholders, but the game is a game.
 
 v0.0 turned an unmodified Create Your Frisk snapshot into a documented base: about
@@ -156,9 +162,10 @@ open the app.
 Every release also carries a `SHA256SUMS.txt`. Put it in the same folder as the zips
 and run `sha256sum -c SHA256SUMS.txt` to check you got the real files.
 
-The current build is placeholder content: three bosses that are a 10 HP monster with
-no sprite and a wave that fires nothing. It is the loop, not the game. See
-[Status](#status).
+The current build is placeholder content: three placeholder bosses, a stress test that
+measures whether the fight keeps its own time, and one entry the select screen
+advertises but cannot start. It is the loop and the screens around it, not the game.
+See [Status](#status).
 
 To build from source instead, carry on below.
 
@@ -308,7 +315,7 @@ what changed between versions.
 
 ## Support
 
-If you find Soulbound useful, you can support its development here.
+If you want to support the development, you can do that here.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U1G623RXOE)
 

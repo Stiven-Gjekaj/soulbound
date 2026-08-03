@@ -216,6 +216,13 @@ ones.
 
 ### Changed
 
+- The read me says where the project actually is. Its status headline still read v0.5 with the
+  milestone most of the way through, the download section described three bosses that are a
+  10 HP monster when the registry now holds three placeholders, a stress test and a teased
+  entry that cannot be started, and the support section asked readers who found Soulbound
+  "useful" to donate, which is a strange thing to ask about a game and a stranger one about a
+  game nobody can play yet.
+
 - The read me's structure table stopped counting lines, for the same reason the badge did, and
   had two rows that were simply wrong. It sent anyone looking for the menus to
   `Assets/Scripts/PregamePlaceholder`, which v0.6 emptied when the screens were rebuilt into
