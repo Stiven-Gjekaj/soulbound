@@ -23,7 +23,7 @@ public static class SoulboundBatch {
 
     private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
-    private const string SilhouetteSprite = "Assets/Sprites/Boss_Silhouette.png";
+    private const string LockSprite = "Assets/Sprites/Lock.png";
     private const string WheelSprite = "Assets/Sprites/Wheel_Rim.png";
     private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
@@ -63,7 +63,7 @@ public static class SoulboundBatch {
                 if (select.slots == null || select.slots.Length != BossProgress.SlotsPerScreen) problems++;
                 if (select.wheelRim == null || !panel) problems++;
                 foreach (BossSlot slot in select.slots ?? new BossSlot[0])
-                    if (slot.silhouette == null || slot.pivot == null)
+                    if (slot.icon == null || slot.padlock == null || slot.pivot == null)
                         problems++;
             }
 
@@ -340,8 +340,9 @@ public static class SoulboundBatch {
             BossSlot slot = select.slots[i];
             float offset = ((i + half) % count) - half;
             float away   = Mathf.Abs(offset);
-            if (away > select.wheelReach) { slot.silhouette.enabled = false; continue; }
-            slot.silhouette.enabled = true;
+            if (away > select.wheelReach) {
+                slot.icon.enabled = false; slot.padlock.enabled = false; continue;
+            }
 
             float radians = offset * select.wheelStep * Mathf.Deg2Rad;
             slot.pivot.anchoredPosition = select.wheelCentre
@@ -350,11 +351,20 @@ public static class SoulboundBatch {
             float scale = Mathf.Lerp(0.55f, 1.35f, near);
             slot.pivot.localScale = new Vector3(scale, scale, 1f);
 
-            Color tint = i == 0 ? Color.white : new Color(0.34f, 0.34f, 0.34f, 1f);
-            tint.a = Mathf.Lerp(0.15f, 1f, near);
-            slot.silhouette.color = tint;
+            float fade = Mathf.Lerp(0.15f, 1f, near);
+            // Only the first boss has an icon so far, and only it is unlocked.
+            slot.icon.enabled = i == 0;
+            if (i == 0) {
+                slot.icon.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Mods/Soulbound/Sprites/Bosses/placeholder.png");
+                slot.icon.color  = new Color(1f, 1f, 1f, fade);
+            }
+            slot.padlock.enabled = i != 0;
+            slot.padlock.color   = new Color(1f, 1f, 1f, fade);
         }
-        select.portrait.color = Color.white;
+        select.portrait.sprite  = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Mods/Soulbound/Sprites/Bosses/placeholder.png");
+        select.portrait.color   = Color.white;
+        select.portrait.enabled = true;
+        select.portraitLock.enabled = false;
 
         Camera cam = Camera.main;
         Canvas canvas = Object.FindObjectOfType<Canvas>();
@@ -648,19 +658,17 @@ public static class SoulboundBatch {
     // ---------------------------------------------------------------- the boss select
 
     // The wheel sits off the left edge, so only its right hand side is on screen.
-    private const float WheelCx = -350f, WheelCy = 0f, WheelR = 230f, WheelStep = 27.5f;
+    // 360/13, so thirteen notches on the rim wrap exactly and an entry lands on each one.
+    // At 27.5 the notches drifted against the entries a little more every turn.
+    private const float WheelCx = -350f, WheelCy = 0f, WheelR = 230f, WheelStep = 360f / 13f;
 
     // The panel, to the right of the arc. Left edge of its text column.
     private const float PanelX = 130f;
 
-    // The ring drawn inside Wheel_Rim.png has a radius of about 168 of the sprite's 230, so
-    // the sprite is scaled by the ratio of where its ring should land to where its ring is.
-    //
-    // It lands inside the circle the entries ride on rather than underneath it. Sharing a
-    // radius put dark silhouettes on top of the rim's dark band and lost them entirely; a
-    // track the entries sit just outside of reads as a wheel and keeps them legible.
-    private const float RimRadius = 196f;
-    private const float RimSize   = 460f * (RimRadius / 168f);
+    // Wheel_Rim.png is drawn at the radius the scene uses, so it goes in at its own size and
+    // needs no scaling. Its track sits inside the circle the entries ride on rather than
+    // underneath it: sharing a radius put dark icons on the rim and lost them.
+    private const float RimSize = 400f;
 
     public static void BuildBossSelect() {
         UnityEngine.SceneManagement.Scene scene =
@@ -670,12 +678,21 @@ public static class SoulboundBatch {
         MakeSupport();
         Canvas canvas = MakeCanvas();
 
-        // The rim first, so everything else draws over it.
+        // The soul sits at the hub, which is off the left edge, so most of it is off screen.
+        GameObject hub = new GameObject("Hub", typeof(Image));
+        Image hubImage = hub.GetComponent<Image>();
+        hubImage.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(SoulSprite);
+        hubImage.raycastTarget = false;
+        // Seven times the sprite's 32px. A whole multiple, because anything else samples
+        // between pixels and a 32px sprite cannot afford that.
+        Place(hub, canvas.transform, new Vector2(224f, 224f), new Vector2(WheelCx, WheelCy));
+
+        // The rim next, so the entries draw over it.
         GameObject rim = new GameObject("WheelRim", typeof(Image));
         Image rimImage = rim.GetComponent<Image>();
         rimImage.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(WheelSprite);
         rimImage.raycastTarget = false;
-        rimImage.color         = new Color(1f, 1f, 1f, 0.38f);
+        rimImage.color         = new Color(1f, 1f, 1f, 0.55f);
         RectTransform rimRect = Place(rim, canvas.transform, new Vector2(RimSize, RimSize), new Vector2(WheelCx, WheelCy));
 
         MakeText("Heading", canvas.transform, "BOSS SELECT", 24, TextAnchor.MiddleLeft,
@@ -684,29 +701,43 @@ public static class SoulboundBatch {
         // The entries. Positions are set at runtime as the wheel turns; these are only
         // starting values so the scene is not a pile of objects at the origin.
         List<BossSlot> slots = new List<BossSlot>();
-        Sprite silhouette = AssetDatabase.LoadAssetAtPath<Sprite>(SilhouetteSprite);
+        Sprite padlock = AssetDatabase.LoadAssetAtPath<Sprite>(LockSprite);
         for (int i = 0; i < BossProgress.SlotsPerScreen; i++) {
             GameObject go = new GameObject("Slot" + (i + 1), typeof(RectTransform));
             float radians = (i - BossProgress.SlotsPerScreen / 2) * WheelStep * Mathf.Deg2Rad;
-            RectTransform pivot = Place(go, canvas.transform, new Vector2(48f, 48f),
+            RectTransform pivot = Place(go, canvas.transform, new Vector2(64f, 64f),
                                         new Vector2(WheelCx + Mathf.Cos(radians) * WheelR,
                                                     WheelCy - Mathf.Sin(radians) * WheelR));
 
-            GameObject art = new GameObject("Art", typeof(Image));
-            Image image = art.GetComponent<Image>();
-            image.sprite        = silhouette;
-            image.raycastTarget = false;
-            Place(art, pivot, new Vector2(40f, 40f), Vector2.zero);
+            // The icon itself, filled in at runtime from the mod by the boss's id.
+            GameObject art = new GameObject("Icon", typeof(Image));
+            Image icon = art.GetComponent<Image>();
+            icon.raycastTarget = false;
+            Place(art, pivot, new Vector2(64f, 64f), Vector2.zero);
 
-            slots.Add(new BossSlot { silhouette = image, pivot = pivot });
+            // The padlock over it. Half the icon's size and sat low and right, so it reads as
+            // something laid on top rather than as the boss's own art.
+            GameObject latch = new GameObject("Lock", typeof(Image));
+            Image lockImage = latch.GetComponent<Image>();
+            lockImage.sprite        = padlock;
+            lockImage.raycastTarget = false;
+            Place(latch, pivot, new Vector2(32f, 32f), new Vector2(12f, -12f));
+
+            slots.Add(new BossSlot { icon = icon, padlock = lockImage, pivot = pivot });
         }
 
         // The panel: portrait, who it is, then the record it has against the player.
         GameObject port = new GameObject("Portrait", typeof(Image));
         Image portrait = port.GetComponent<Image>();
-        portrait.sprite        = silhouette;
         portrait.raycastTarget = false;
-        Place(port, canvas.transform, new Vector2(112f, 112f), new Vector2(PanelX - 110f, 92f));
+        // Twice the 64px icon, a whole multiple, so the portrait stays crisp.
+        Place(port, canvas.transform, new Vector2(128f, 128f), new Vector2(PanelX - 110f, 92f));
+
+        GameObject portLatch = new GameObject("PortraitLock", typeof(Image));
+        Image portraitLock = portLatch.GetComponent<Image>();
+        portraitLock.sprite        = padlock;
+        portraitLock.raycastTarget = false;
+        Place(portLatch, canvas.transform, new Vector2(48f, 48f), new Vector2(PanelX - 76f, 58f));
 
         Text bossName = MakeText("Name",     canvas.transform, "", 22, TextAnchor.MiddleLeft, new Vector2(200f, 28f), new Vector2(PanelX + 60f, 118f));
         Text subtitle = MakeText("Subtitle", canvas.transform, "", 12, TextAnchor.UpperLeft,  new Vector2(200f, 46f), new Vector2(PanelX + 60f, 76f));
@@ -732,7 +763,8 @@ public static class SoulboundBatch {
         select.wheelCentre = new Vector2(WheelCx, WheelCy);
         select.wheelRadius = WheelR;
         select.wheelStep   = WheelStep;
-        select.portrait    = portrait;
+        select.portrait     = portrait;
+        select.portraitLock = portraitLock;
         select.bossName    = bossName;
         select.subtitle    = subtitle;
         select.tries       = values[0];

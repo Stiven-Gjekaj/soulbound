@@ -16,6 +16,10 @@ ones.
 
 ### Removed
 
+- `Boss_Silhouette.png`, the stand-in figure every boss select slot wore. Entries carry their
+  own icon now and a padlock says which are unavailable, so there is nothing for one shape
+  standing in for all of them to do.
+
 - `arenaborder.png`, the fork's arena frame, once nothing referenced it. It was the last
   inherited sprite the battle screen drew for the box itself.
 
@@ -123,15 +127,6 @@ ones.
   zero clears against a boss it knows is cleared, which is wrong by one at worst and only
   until the player beats it again. It is a new AlMighty global key, so nothing existing is
   renamed and old saves load unchanged.
-
-- A boss silhouette placeholder, `Assets/Sprites/Boss_Silhouette.png`, 40x40 at seed 6063. A
-  featureless grey figure, mid grey rather than black so it reads against the black every
-  Soulbound screen sits on.
-
-  Every slot on the boss select wears it this pass, the unlocked one included. That is
-  deliberate and it is the cheapest way to test the thing the silhouette exists for: the slot
-  has to keep its shape when an entry unlocks, so if the layout is going to jump, it jumps
-  here rather than at v0.8 when real art arrives.
 
 - `Assets/Editor/SoulboundBatch.cs`, which builds the rebuilt screens from batch mode. It is
   editor-only, so it never reaches a player's build.
@@ -251,13 +246,31 @@ ones.
   popping. The rim turns with them, which is the whole reason it has notches: a featureless
   circle rotating looks like a circle standing still.
 
-- `Assets/Sprites/Wheel_Rim.png`, the track the entries ride on, generated at seed 6082 and
-  then masked. `no_background` was ignored twice at this size, the model painting a hatched
-  field behind the ring both times, so the ring was measured out of the result instead: its
-  notches sit at radius 133 to 147, a dark band at 155 to 165 and the bright rim peaking at
-  168, and everything outside that band and everything matching the field's own luminance was
-  cut away. It is scaled in the scene so its ring lands just inside the circle the entries ride
-  on, because sharing a radius put dark silhouettes on a dark band and lost them.
+  A locked boss shows its own icon with a padlock over it, dimmed, rather than a silhouette
+  standing in for art nobody has drawn. That says what the boss is and that it is not available
+  yet, and the position is the same size either way, so nothing jumps when one opens. It is a
+  different answer to the one the design notes settled, where the silhouette hid what the boss
+  was; the notes are updated to match.
+
+- `Assets/Sprites/Wheel_Rim.png`, the track the entries ride on. Two thin rules with a notch at
+  every entry position, drawn rather than generated for the same reason the arena border is:
+  it has to line up with something exact. The wheel step is 360/13 so thirteen notches wrap
+  seamlessly and an entry lands on each one; at 27.5 degrees they drifted a little further out
+  of step every turn. It is drawn at the radius the scene uses, so it needs no scaling.
+
+  Two generations went at it first, at seeds 6082 and 6083. `no_background` was ignored both
+  times, the model painting a hatched field behind the ring, and a notched circle is geometry
+  rather than illustration anyway.
+
+- The soul sits at the hub of the wheel, seven times its sprite size. The hub is off the left
+  edge of the screen, so most of it is: it reads as something the wheel turns around rather
+  than as an element in its own right.
+
+- `Assets/Sprites/Lock.png` at seed 6084, and `Sprites/Bosses/placeholder.png` at seed 6085, a
+  paint brush crossing a paint bucket. Boss icons are mod content loaded by id at runtime,
+  which is what `SpriteUtil.FromFile` and `Sprites/Bosses` are for, so adding a boss stays a
+  registry line and a PNG with no scene edit and no import settings. The lock is engine UI
+  chrome and is referenced from the scene, because it is the same lock for every boss.
 
 - The boss select was seven slots and a real table, rebuilt from an empty scene. Each row is a
   silhouette, a name, and five columns: tries, clears, deaths, best time and no hit. Every

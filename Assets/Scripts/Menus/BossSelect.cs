@@ -13,7 +13,8 @@ using UnityEngine.UI;
 /// </summary>
 [Serializable]
 public class BossSlot {
-    public Image         silhouette;
+    public Image         icon;
+    public Image         padlock;
     public RectTransform pivot;
 }
 
@@ -31,10 +32,13 @@ public class BossSlot {
 /// roster grows by screens rather than by getting longer, so the wheel is built once and never
 /// rearranged. Positions past the end of the registry are drawn the same as locked ones.
 ///
-/// The silhouette is the reason a position holds its shape. A locked boss and an unlocked one
-/// occupy the same box wherever they are on the wheel, so nothing jumps when one unlocks. This
-/// pass every position carries the same placeholder silhouette, the unlocked one included,
-/// because that is what proves the claim.
+/// A locked boss shows its own icon with a padlock over it, dimmed. That says what the boss is
+/// and that it is not available yet, and it keeps the position exactly the same size locked as
+/// unlocked, so nothing on the wheel jumps when one opens.
+///
+/// Icons are mod content, loaded by id from Sprites/Bosses at runtime rather than referenced
+/// from the scene, so adding a boss is still a registry line and a PNG with no scene edit and
+/// no import settings. A boss with no icon yet simply shows none, which is most of them.
 ///
 /// Nothing on this screen explains the lock. The player works out that clearing the available
 /// one opens the rest.
@@ -44,6 +48,7 @@ public class BossSelect : MonoBehaviour {
 
     [Header("The panel")]
     public Image portrait;
+    public Image portraitLock;
     public Text  bossName;
     public Text  subtitle;
     public Text  tries;
@@ -84,7 +89,32 @@ public class BossSelect : MonoBehaviour {
     private static readonly Color ValueOpen = new Color(1f,    1f,    0f,    1f);
     private static readonly Color ValueShut = new Color(0.5f,  0.5f,  0.5f,  1f);
     private static readonly Color ArtOpen   = new Color(1f,    1f,    1f,    1f);
-    private static readonly Color ArtShut   = new Color(0.34f, 0.34f, 0.34f, 1f);
+    private static readonly Color ArtShut   = new Color(0.42f, 0.42f, 0.42f, 1f);
+
+    /// <summary>Boss icons, kept between redraws because the wheel redraws every frame it turns.</summary>
+    private readonly Dictionary<string, Sprite> icons = new Dictionary<string, Sprite>();
+
+    /// <summary>
+    /// A boss's icon, or null if it has none yet. Read from the mod by id, so a new boss needs
+    /// a registry line and a PNG rather than a scene edit.
+    /// </summary>
+    private Sprite Icon(int index) {
+        if (index >= bosses.Count)
+            return null;
+        string id = bosses[index].id;
+        if (icons.ContainsKey(id))
+            return icons[id];
+
+        FileLoader.absoluteSanitizationDictionary.Clear();
+        FileLoader.relativeSanitizationDictionary.Clear();
+
+        Sprite sprite;
+        try   { sprite = SpriteUtil.FromFile("Bosses/" + id + ".png"); }
+        catch { sprite = null; }
+
+        icons.Add(id, sprite);
+        return sprite;
+    }
 
     private void Start() {
         Destroy(GameObject.Find("Player"));
@@ -186,7 +216,7 @@ public class BossSelect : MonoBehaviour {
 
         for (int i = 0; i < slots.Length; i++) {
             BossSlot slot = slots[i];
-            if (slot.pivot == null || slot.silhouette == null)
+            if (slot.pivot == null || slot.icon == null)
                 continue;
 
             // Signed distance from the selection, wrapped, so the wheel is a loop rather than
@@ -195,10 +225,11 @@ public class BossSelect : MonoBehaviour {
             float away   = Mathf.Abs(offset);
 
             if (away > wheelReach) {
-                slot.silhouette.enabled = false;
+                slot.icon.enabled = false;
+                if (slot.padlock != null)
+                    slot.padlock.enabled = false;
                 continue;
             }
-            slot.silhouette.enabled = true;
 
             float radians = offset * wheelStep * Mathf.Deg2Rad;
             slot.pivot.anchoredPosition = wheelCentre + new Vector2(Mathf.Cos(radians), -Mathf.Sin(radians)) * wheelRadius;
@@ -209,9 +240,26 @@ public class BossSelect : MonoBehaviour {
             float scale = Mathf.Lerp(0.55f, 1.35f, near);
             slot.pivot.localScale = new Vector3(scale, scale, 1f);
 
-            Color tint = Unlocked(i) ? ArtOpen : ArtShut;
-            tint.a = Mathf.Lerp(0.15f, 1f, near);
-            slot.silhouette.color = tint;
+            bool   unlocked = Unlocked(i);
+            Sprite art      = Icon(i);
+            float  fade     = Mathf.Lerp(0.15f, 1f, near);
+
+            // A boss with no icon yet shows none. Most of them have none, and an empty box is
+            // a truer placeholder than a stand-in that says something about art nobody drew.
+            slot.icon.enabled = art != null;
+            if (art != null) {
+                slot.icon.sprite = art;
+                Color tint = unlocked ? ArtOpen : ArtShut;
+                tint.a = fade;
+                slot.icon.color = tint;
+            }
+
+            // The padlock rides over the icon, and shows on anything not yet available,
+            // including positions with no boss behind them at all.
+            if (slot.padlock != null) {
+                slot.padlock.enabled = !unlocked;
+                slot.padlock.color   = new Color(1f, 1f, 1f, fade);
+            }
         }
     }
 
@@ -262,8 +310,16 @@ public class BossSelect : MonoBehaviour {
         bool present  = selected < bosses.Count;
         bool unlocked = Unlocked(selected);
 
-        if (portrait != null)
-            portrait.color = unlocked ? ArtOpen : ArtShut;
+        if (portrait != null) {
+            Sprite art = present ? Icon(selected) : null;
+            portrait.enabled = art != null;
+            if (art != null) {
+                portrait.sprite = art;
+                portrait.color  = unlocked ? ArtOpen : ArtShut;
+            }
+        }
+        if (portraitLock != null)
+            portraitLock.enabled = !unlocked;
 
         if (bossName != null) {
             // A locked boss shows its name, so the player can see how much game is waiting.
