@@ -16,6 +16,18 @@ ones.
 
 ### Removed
 
+- `MenuButton.cs`, `ModButton.prefab` and `Keybinding.prefab`, which turned out to be one
+  closed island rather than three separate assets: the keybinding prefab referenced the mod
+  button prefab, which carried the script, and nothing outside the three named any of them.
+  No `Resources.Load` call reaches them and no scene, prefab or Lua file mentions them.
+
+  They were the mod picker's list button and the keybind screen's row. The boss select stopped
+  needing the first when it stopped being the mod picker, and the keybind screen stopped
+  needing the second when its rows started being built in code. Both prefabs sat under
+  `Assets/Resources`, which Unity compiles into the build whether or not anything reads it, so
+  they shipped in every release and were never drawn. That is the argument v0.6.5 used for Lu
+  and Punder.
+
 - The retro mode warning, both `RetromodeWarning.cs` and `Assets/Resources/Prefabs/Retromode
   Warning.prefab`, along with the last instance of it, which was sitting in `Error.unity`.
 
