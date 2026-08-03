@@ -39,7 +39,7 @@ public class KeyboardInput : IUndertaleInput {
     };
     /// <summary>
     /// Dictionary storing the various keybindings set by the user.
-    /// Can be modified through Create Your Frisk's Options menu.
+    /// Can be modified through the options menu.
     /// </summary>
     public static Dictionary<string, List<string>> playerKeys = new Dictionary<string, List<string>>();
     /// <summary>

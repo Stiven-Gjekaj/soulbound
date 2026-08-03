@@ -16,6 +16,8 @@ public static class SoulboundBatch {
     private const string CreditPath = "Assets/Scenes/Credits.unity";
     private const string DisclaimerPath = "Assets/Scenes/Disclaimer.unity";
     private const string BossSelectPath = "Assets/Scenes/ModSelect.unity";
+    private const string OptionsPath = "Assets/Scenes/Options.unity";
+    private const string KeybindPath = "Assets/Scenes/KeybindSettings.unity";
 
     private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
@@ -35,7 +37,7 @@ public static class SoulboundBatch {
             sb.AppendLine("  buildscene " + (s.enabled ? "on  " : "off ") + s.path);
 
         int problems = 0;
-        foreach (string path in new[] { DisclaimerPath, TitlePath, CreditPath, BossSelectPath }) {
+        foreach (string path in new[] { DisclaimerPath, TitlePath, CreditPath, BossSelectPath, OptionsPath, KeybindPath }) {
             EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             sb.AppendLine("  --- " + path);
 
@@ -57,6 +59,29 @@ public static class SoulboundBatch {
                     if (slot.silhouette == null || slot.bossName == null || slot.tries == null
                      || slot.clears == null || slot.deaths == null || slot.best == null || slot.nohit == null)
                         problems++;
+            }
+
+            OptionsScreen opts = Object.FindObjectOfType<OptionsScreen>();
+            if (opts != null) {
+                sb.AppendLine("    OptionsScreen rowRoot=" + (opts.rowRoot == null ? "NULL" : "bound")
+                              + " description=" + (opts.description == null ? "NULL" : "bound")
+                              + " cursor=" + (opts.cursor == null ? "NULL" : "bound")
+                              + " font=" + (opts.font == null ? "NULL" : opts.font.name));
+                if (opts.rowRoot == null || opts.description == null || opts.cursor == null || opts.font == null) problems++;
+            }
+
+            KeybindSettings binds = Object.FindObjectOfType<KeybindSettings>();
+            if (binds != null) {
+                KeybindEntry[] all = { binds.Confirm, binds.Cancel, binds.Menu, binds.Up, binds.Left, binds.Down, binds.Right };
+                int bound = 0;
+                foreach (KeybindEntry e in all)
+                    if (e != null && e.Edit != null && e.Reset != null && e.Clear != null
+                     && e.Text != null && e.KeyList != null && e.Image != null) bound++;
+                sb.AppendLine("    KeybindSettings rows bound = " + bound + "/7"
+                              + "  buttons=" + ((binds.Save && binds.ResetAll && binds.Restore && binds.Back) ? "ok" : "MISSING")
+                              + "  listening=" + (binds.Listening == null ? "NULL" : "bound"));
+                if (bound != 7 || binds.Listening == null
+                 || !binds.Save || !binds.ResetAll || !binds.Restore || !binds.Back) problems++;
             }
 
             MainMenu menu = Object.FindObjectOfType<MainMenu>();
@@ -121,7 +146,9 @@ public static class SoulboundBatch {
     }
 
     private static RectTransform Place(GameObject go, Transform parent, Vector2 size, Vector2 at) {
-        RectTransform rt = go.GetComponent<RectTransform>();
+        // A GameObject built around a plain MonoBehaviour gets a Transform, not a
+        // RectTransform, and every canvas child needs the latter.
+        RectTransform rt = go.GetComponent<RectTransform>() ?? go.AddComponent<RectTransform>();
         rt.SetParent(parent, false);
         rt.anchorMin        = new Vector2(0.5f, 0.5f);
         rt.anchorMax        = new Vector2(0.5f, 0.5f);
@@ -248,6 +275,130 @@ public static class SoulboundBatch {
         EditorSceneManager.SaveScene(scene, CreditPath);
         RegisterScene(CreditPath);
         Debug.Log("SOULBOUND-BATCH-CREDITS saved " + CreditPath);
+    }
+
+    // ---------------------------------------------------------------- shared widgets
+
+    /// <summary>A clickable label. Returns the Button; its Text child carries the wording.</summary>
+    private static Button MakeButton(string name, Transform parent, string label, int size,
+                                     Vector2 box, Vector2 at) {
+        GameObject go = new GameObject(name, typeof(Image), typeof(Button));
+        Image plate = go.GetComponent<Image>();
+        plate.color = new Color(1f, 1f, 1f, 0.10f);
+        Place(go, parent, box, at);
+
+        Text text = MakeText(name + " Label", go.transform, label, size, TextAnchor.MiddleCenter, box, Vector2.zero);
+        go.GetComponent<Button>().targetGraphic = plate;
+        return go.GetComponent<Button>();
+    }
+
+    // ---------------------------------------------------------------- the options screen
+
+    public static void BuildOptionsScreen() {
+        UnityEngine.SceneManagement.Scene scene =
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+        MakeCamera();
+        MakeSupport();
+        Canvas canvas = MakeCanvas();
+
+        MakeText("Heading", canvas.transform, "OPTIONS", 28, TextAnchor.MiddleCenter,
+                 new Vector2(600f, 34f), new Vector2(0f, 212f));
+
+        // The rows are made at runtime from OptionsScreen's own list, so the scene holds only
+        // the box they go in. That is the whole reason this screen was rebuilt.
+        GameObject root = new GameObject("Rows", typeof(RectTransform));
+        RectTransform rowRoot = Place(root, canvas.transform, new Vector2(640f, 480f), Vector2.zero);
+
+        Text description = MakeText("Description", canvas.transform, "", 13, TextAnchor.UpperLeft,
+                                    new Vector2(308f, 330f), new Vector2(150f, 15f));
+        description.horizontalOverflow = HorizontalWrapMode.Wrap;
+        description.verticalOverflow   = VerticalWrapMode.Truncate;
+
+        GameObject soul = new GameObject("Soul", typeof(Image));
+        Image soulImage = soul.GetComponent<Image>();
+        soulImage.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(SoulSprite);
+        soulImage.raycastTarget = false;
+        RectTransform soulRect = Place(soul, canvas.transform, new Vector2(24f, 24f), new Vector2(-298f, 160f));
+
+        GameObject script = new GameObject("OptionsScript", typeof(OptionsScreen));
+        OptionsScreen options = script.GetComponent<OptionsScreen>();
+        options.rowRoot     = rowRoot;
+        options.description = description;
+        options.cursor      = soulRect;
+        options.font        = AssetDatabase.LoadAssetAtPath<Font>(MenuFont);
+
+        EditorSceneManager.SaveScene(scene, OptionsPath);
+        Debug.Log("SOULBOUND-BATCH-OPTIONS saved " + OptionsPath);
+    }
+
+    // ---------------------------------------------------------------- the keybind screen
+
+    private static readonly string[] Binds = { "Confirm", "Cancel", "Menu", "Up", "Left", "Down", "Right" };
+
+    public static void BuildKeybinds() {
+        UnityEngine.SceneManagement.Scene scene =
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+        MakeCamera();
+        MakeSupport();
+        Canvas canvas = MakeCanvas();
+
+        MakeText("Heading", canvas.transform, "KEYBINDS", 28, TextAnchor.MiddleCenter,
+                 new Vector2(600f, 34f), new Vector2(0f, 212f));
+
+        Text listening = MakeText("Listening", canvas.transform, "", 13, TextAnchor.MiddleCenter,
+                                  new Vector2(620f, 20f), new Vector2(0f, 180f));
+
+        GameObject script = new GameObject("KeybindScript", typeof(KeybindSettings));
+        KeybindSettings keys = script.GetComponent<KeybindSettings>();
+        keys.Listening = listening;
+
+        KeybindEntry[] rows = new KeybindEntry[Binds.Length];
+        for (int i = 0; i < Binds.Length; i++) {
+            float y = 136f - i * 42f;
+
+            // The object's name IS the keybind: KeybindEntry.Start reads gameObject.name and
+            // looks it up in KeyboardInput.playerKeys, so these must match the dictionary.
+            GameObject go = new GameObject(Binds[i], typeof(RectTransform), typeof(KeybindEntry));
+            Place(go, canvas.transform, new Vector2(620f, 40f), new Vector2(0f, y));
+
+            KeybindEntry entry = go.GetComponent<KeybindEntry>();
+
+            GameObject rule = new GameObject("Rule", typeof(Image));
+            Image ruleImage = rule.GetComponent<Image>();
+            ruleImage.raycastTarget = false;
+            Place(rule, go.transform, new Vector2(600f, 1f), new Vector2(0f, -18f));
+
+            entry.Image   = ruleImage;
+            entry.Text    = MakeText("Name",    go.transform, Binds[i], 16, TextAnchor.MiddleLeft, new Vector2(90f,  22f), new Vector2(-255f, 0f));
+            entry.KeyList = MakeText("KeyList", go.transform, "",       13, TextAnchor.MiddleLeft, new Vector2(240f, 22f), new Vector2(-80f,  0f));
+            entry.Edit    = MakeButton("Edit",  go.transform, "Edit",   13, new Vector2(70f, 24f), new Vector2(90f,  0f));
+            entry.Reset   = MakeButton("Reset", go.transform, "Reset",  13, new Vector2(70f, 24f), new Vector2(170f, 0f));
+            entry.Clear   = MakeButton("Clear", go.transform, "Clear",  13, new Vector2(70f, 24f), new Vector2(250f, 0f));
+
+            rows[i] = entry;
+        }
+
+        keys.Confirm = rows[0];
+        keys.Cancel  = rows[1];
+        keys.Menu    = rows[2];
+        keys.Up      = rows[3];
+        keys.Left    = rows[4];
+        keys.Down    = rows[5];
+        keys.Right   = rows[6];
+
+        keys.Save     = MakeButton("Save",     canvas.transform, "Save",      14, new Vector2(140f, 28f), new Vector2(-240f, -180f));
+        keys.ResetAll = MakeButton("ResetAll", canvas.transform, "Reset All", 14, new Vector2(140f, 28f), new Vector2(-80f,  -180f));
+        keys.Restore  = MakeButton("Restore",  canvas.transform, "Restore",   14, new Vector2(140f, 28f), new Vector2(80f,   -180f));
+        keys.Back     = MakeButton("Back",     canvas.transform, "Back",      14, new Vector2(140f, 28f), new Vector2(240f,  -180f));
+
+        MakeText("Hint", canvas.transform,
+                 "Edit listens for a key. Press it again, or ESC, to stop.", 12,
+                 TextAnchor.MiddleCenter, new Vector2(620f, 18f), new Vector2(0f, -215f));
+
+        EditorSceneManager.SaveScene(scene, KeybindPath);
+        Debug.Log("SOULBOUND-BATCH-KEYBINDS saved " + KeybindPath + " with " + rows.Length + " binds");
     }
 
     // ---------------------------------------------------------------- the boss select
@@ -396,6 +547,8 @@ public static class SoulboundBatch {
         BuildMenu();
         BuildDisclaimer();
         BuildBossSelect();
+        BuildOptionsScreen();
+        BuildKeybinds();
         AssetDatabase.SaveAssets();
         Debug.Log("SOULBOUND-BATCH-DONE");
     }

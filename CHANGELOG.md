@@ -16,6 +16,12 @@ ones.
 
 ### Removed
 
+- `OptionsScript.cs`, 342 lines, and with it `AdoptRetiredRow`, `HideRetiredButtons` and
+  `StackButtons`. All three existed to work around a screen whose rows were fixed objects in
+  the scene: one took over a row belonging to a retired setting, one hid the rows nothing had
+  taken over, and one restacked what was left so hiding a row did not leave a hole. A screen
+  that makes its own rows needs none of them.
+
 - `SelectOMatic.cs`, 532 lines, the mod picker the boss select was built out of. It paged
   through one boss at a time behind a scrolling animation, kept a jump-to list in an overlay
   called `encounterBox`, and wrote all five records into the single spare line the scene had.
@@ -119,6 +125,25 @@ ones.
   that one is why it does it.
 
 ### Changed
+
+- The options screen builds its rows from a list instead of from objects in the scene, which
+  is what the milestone meant by an eleventh option having nowhere to go. There were ten rows
+  and no eleventh, so a new setting had to either wait for someone with Unity open or take
+  over a row left behind by a retired one. Two settings were doing exactly that: the name row
+  was living in the object called `Safe` and the in-fight timer in the one called `Crate`, and
+  the hover descriptions keyed off object names that no longer described the row. Adding an
+  option is now one entry in a list.
+
+  The rows are also reordered. Settings come first, then the three that destroy something,
+  then the way out, rather than the destructive three sitting in the middle of the settings.
+
+  Destructive rows still have to be pressed twice, and the confirmation now expires on a clock
+  rather than a frame counter, so leaving the screen alone is the same as saying no.
+
+- The Discord option stopped naming Create Your Frisk. Its hover description said the player
+  was playing the fork, twice, and `KeyboardInput` still described the fork's options menu in
+  a comment. v0.4 caught fourteen strings like this and v0.5 another set; these survived both
+  because they only render when the mouse is over one row of one screen.
 
 - The boss select is seven slots and a real table, rebuilt from an empty scene. Each row is a
   silhouette, a name, and five columns: tries, clears, deaths, best time and no hit. Every
