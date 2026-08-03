@@ -285,6 +285,30 @@ public static class SoulboundBatch {
         EditorBuildSettings.scenes = scenes.ToArray();
     }
 
+    /// <summary>
+    /// Builds a player, because there is no test suite here and the build is the check. Writes
+    /// outside the repository so a verification run never leaves anything to clean up.
+    /// </summary>
+    public static void BuildPlayer() {
+        List<string> scenes = new List<string>();
+        foreach (EditorBuildSettingsScene s in EditorBuildSettings.scenes)
+            if (s.enabled)
+                scenes.Add(s.path);
+
+        string target = System.Environment.GetEnvironmentVariable("SOULBOUND_BUILD_PATH");
+        if (string.IsNullOrEmpty(target))
+            target = "/tmp/soulbound-verify/Soulbound.app";
+
+        UnityEditor.Build.Reporting.BuildReport report = BuildPipeline.BuildPlayer(
+            scenes.ToArray(), target, BuildTarget.StandaloneOSX, BuildOptions.None);
+
+        UnityEditor.Build.Reporting.BuildSummary summary = report.summary;
+        Debug.Log("SOULBOUND-BATCH-BUILD " + summary.result
+                  + " errors=" + summary.totalErrors
+                  + " warnings=" + summary.totalWarnings
+                  + " scenes=" + scenes.Count);
+    }
+
     /// <summary>Everything the menu rebuild needs, in one run.</summary>
     public static void BuildAll() {
         BuildCredits();
