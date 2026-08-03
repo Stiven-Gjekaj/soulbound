@@ -1219,6 +1219,59 @@ public class UIController : MonoBehaviour {
     /// </summary>
     private void Update() {
         BattleTick.Advance(RunTick);
+
+        // Not part of the tick. The tick is the fight, and it drops steps under load on
+        // purpose; the pointer should keep answering at whatever rate the screen is drawing.
+        HoverActionButtons();
+    }
+
+    private Vector3 lastMousePosition;
+
+    /// <summary>
+    /// Highlights whichever action button the pointer is over, by moving the selection to it.
+    ///
+    /// Moving the selection rather than lighting the button on its own is deliberate: the
+    /// soul sits beside whatever is selected, so a button that highlighted without the soul
+    /// following would show two different answers to what Confirm is about to do.
+    ///
+    /// The battle canvas is world space and the scene has no GraphicRaycaster, so pointer
+    /// events never fire in here. The buttons are tested directly instead, which is exact:
+    /// every scene in this game runs on the same orthographic camera at a fixed 640x480.
+    /// </summary>
+    private void HoverActionButtons() {
+        if (state != "ACTIONSELECT")
+            return;
+
+        // A pointer that has not moved does not get to hold the selection. Without this a
+        // mouse left resting on a button re-selects it every frame, so the arrow keys appear
+        // dead: the selection moves and is dragged back before the next frame draws.
+        if (Input.mousePosition == lastMousePosition)
+            return;
+        lastMousePosition = Input.mousePosition;
+
+        Actions hovered = ActionUnderPointer();
+        if (hovered == Actions.NONE || hovered == action || disabledActions[(int)hovered])
+            return;
+
+        action = hovered;
+        SetPlayerOnAction(action);
+        PlaySound(AudioClipRegistry.GetSound("menumove"));
+    }
+
+    /// <summary>Which action button the pointer is inside, or NONE.</summary>
+    private Actions ActionUnderPointer() {
+        Camera cam = Camera.main;
+        if (cam == null)
+            return Actions.NONE;
+
+        Image[] buttons = { fightButton, actButton, itemButton, mercyButton };
+        for (int i = 0; i < buttons.Length; i++) {
+            if (buttons[i] == null || !buttons[i].isActiveAndEnabled)
+                continue;
+            if (RectTransformUtility.RectangleContainsScreenPoint(buttons[i].rectTransform, Input.mousePosition, cam))
+                return (Actions)i;
+        }
+        return Actions.NONE;
     }
 
     /// <summary>

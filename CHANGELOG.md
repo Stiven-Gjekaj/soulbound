@@ -255,6 +255,20 @@ ones.
   position rather than a named boss, so it works today against a registry of placeholders and
   applies to the tutorial boss the moment she is the one listed first.
 
+- The battle action buttons highlight when the pointer is over them. Hovering moves the
+  selection to that button, so the soul follows: a button that lit up on its own while the
+  soul stayed put would show two different answers to what Confirm is about to do.
+
+  A pointer that has not moved does not hold the selection, or the arrow keys appear dead,
+  the selection moving and being dragged straight back before the next frame draws. Disabled
+  actions are skipped, and it only applies while the fight is waiting for an action.
+
+  The battle canvas is world space and the scene has no `GraphicRaycaster`, so Unity's pointer
+  events never fire in there. The buttons are tested against the pointer directly, which is
+  exact here because every scene runs on the same orthographic camera at a fixed 640x480. It
+  runs in `Update` rather than in the fixed tick: the tick is the fight and drops steps under
+  load on purpose, and the pointer should keep answering at whatever rate the screen draws.
+
 - The in-fight timer has an object in `Battle.unity`, which is the last thing the milestone
   lists for the battle screen. It used to build its own at runtime from the prefab Lua's
   `CreateText` uses, because the scene had nothing for it: a `Resources.Load`, an `Instantiate`,
