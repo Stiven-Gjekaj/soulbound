@@ -233,7 +233,33 @@ ones.
   a comment. v0.4 caught fourteen strings like this and v0.5 another set; these survived both
   because they only render when the mouse is over one row of one screen.
 
-- The boss select is seven slots and a real table, rebuilt from an empty scene. Each row is a
+- The boss select is a turning wheel with a panel beside it, replacing the table. The bosses
+  ride a half circle down the left; whichever is selected is held at the middle of the arc and
+  the rest curve away above and below it and drop off the ends. Five are on screen at a time
+  out of seven. The panel carries that entry's portrait, name, the line under it, and the five
+  records with room to label each one, none of which a table row could hold at a readable size.
+
+  The wheel turns rather than the contents being shuffled between fixed seats. Each entry keeps
+  its own object and its angle is worked out from how far it is from the selection, plus
+  however much of the last turn is still outstanding. That outstanding amount decays over about
+  a seventh of a second, and a second press adds to it rather than resetting it, so holding a
+  direction gives a wheel that keeps up instead of one that stutters back to the start. The
+  selection changes immediately and the wheel catches up, so the panel can never be caught
+  showing a different boss than the one at the middle.
+
+  Positions near the ends taper in scale and fade out, so entries arrive and leave rather than
+  popping. The rim turns with them, which is the whole reason it has notches: a featureless
+  circle rotating looks like a circle standing still.
+
+- `Assets/Sprites/Wheel_Rim.png`, the track the entries ride on, generated at seed 6082 and
+  then masked. `no_background` was ignored twice at this size, the model painting a hatched
+  field behind the ring both times, so the ring was measured out of the result instead: its
+  notches sit at radius 133 to 147, a dark band at 155 to 165 and the bright rim peaking at
+  168, and everything outside that band and everything matching the field's own luminance was
+  cut away. It is scaled in the scene so its ring lands just inside the circle the entries ride
+  on, because sharing a radius put dark silhouettes on a dark band and lost them.
+
+- The boss select was seven slots and a real table, rebuilt from an empty scene. Each row is a
   silhouette, a name, and five columns: tries, clears, deaths, best time and no hit. Every
   boss's numbers are presented the same way, with no asterisks and no special case for the
   tutorial, because a death against the boss who gives you the turn back is still a death and

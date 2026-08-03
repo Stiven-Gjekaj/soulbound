@@ -24,6 +24,7 @@ public static class SoulboundBatch {
     private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
     private const string SilhouetteSprite = "Assets/Sprites/Boss_Silhouette.png";
+    private const string WheelSprite = "Assets/Sprites/Wheel_Rim.png";
     private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
 
@@ -54,13 +55,15 @@ public static class SoulboundBatch {
 
             BossSelect select = Object.FindObjectOfType<BossSelect>();
             if (select != null) {
-                sb.AppendLine("    BossSelect.slots  = " + (select.slots == null ? "NULL" : select.slots.Length.ToString()));
-                sb.AppendLine("    BossSelect.footer = " + (select.footer == null ? "NULL" : "bound"));
+                bool panel = select.portrait && select.bossName && select.subtitle && select.hint
+                          && select.tries && select.clears && select.deaths && select.best && select.nohit;
+                sb.AppendLine("    BossSelect slots = " + (select.slots == null ? "NULL" : select.slots.Length.ToString())
+                              + "  rim=" + (select.wheelRim == null ? "NULL" : "bound")
+                              + "  panel=" + (panel ? "bound" : "INCOMPLETE"));
                 if (select.slots == null || select.slots.Length != BossProgress.SlotsPerScreen) problems++;
-                if (select.footer == null) problems++;
+                if (select.wheelRim == null || !panel) problems++;
                 foreach (BossSlot slot in select.slots ?? new BossSlot[0])
-                    if (slot.silhouette == null || slot.bossName == null || slot.tries == null
-                     || slot.clears == null || slot.deaths == null || slot.best == null || slot.nohit == null)
+                    if (slot.silhouette == null || slot.pivot == null)
                         problems++;
             }
 
@@ -316,31 +319,42 @@ public static class SoulboundBatch {
         EditorSceneManager.OpenScene(BossSelectPath, OpenSceneMode.Single);
 
         BossSelect select = Object.FindObjectOfType<BossSelect>();
-        string[] names = { "Placeholder", "Second Placeholder", "Third Placeholder",
-                           "Stress Test", "???", "???", "???" };
 
-        Color open = new Color(1f, 1f, 0f, 1f);                  // slot 1, selected
-        Color shut = new Color(0.45f, 0.45f, 0.45f, 1f);
-        Color art  = new Color(0.35f, 0.35f, 0.35f, 1f);
-
-        for (int i = 0; i < select.slots.Length; i++) {
-            BossSlot s = select.slots[i];
-            bool unlocked = i == 0;                              // fresh save: only the first
-            Color tint = unlocked ? open : shut;
-
-            s.bossName.text  = names[i];
-            s.bossName.color = tint;
-            s.silhouette.color = unlocked ? Color.white : art;
-
-            s.tries.text  = unlocked ? "0" : "?";
-            s.clears.text = unlocked ? "0" : "?";
-            s.deaths.text = unlocked ? "0" : "?";
-            s.best.text   = unlocked ? "-" : "?";
-            s.nohit.text  = unlocked ? "-" : "?";
-            foreach (Text t in new[] { s.tries, s.clears, s.deaths, s.best, s.nohit })
-                t.color = tint;
+        // What the panel would show on a fresh save, with the first entry selected.
+        select.bossName.text  = "Placeholder";
+        select.bossName.color = Color.white;
+        select.subtitle.text  = "Not built yet";
+        select.subtitle.color = new Color(0.5f, 0.5f, 0.5f, 1f);
+        select.hint.text      = "Confirm to fight";
+        Text[] values = { select.tries, select.clears, select.deaths, select.best, select.nohit };
+        string[] shown = { "0", "0", "0", "-", "-" };
+        for (int i = 0; i < values.Length; i++) {
+            values[i].text  = shown[i];
+            values[i].color = new Color(1f, 1f, 0f, 1f);
         }
-        select.footer.text = "Not built yet";
+
+        // And the wheel, laid out the way BossSelect.TurnWheel would with nothing selected
+        // and nothing left to turn.
+        int count = BossProgress.SlotsPerScreen, half = count / 2;
+        for (int i = 0; i < select.slots.Length; i++) {
+            BossSlot slot = select.slots[i];
+            float offset = ((i + half) % count) - half;
+            float away   = Mathf.Abs(offset);
+            if (away > select.wheelReach) { slot.silhouette.enabled = false; continue; }
+            slot.silhouette.enabled = true;
+
+            float radians = offset * select.wheelStep * Mathf.Deg2Rad;
+            slot.pivot.anchoredPosition = select.wheelCentre
+                + new Vector2(Mathf.Cos(radians), -Mathf.Sin(radians)) * select.wheelRadius;
+            float near  = Mathf.Clamp01(1f - away / select.wheelReach);
+            float scale = Mathf.Lerp(0.55f, 1.35f, near);
+            slot.pivot.localScale = new Vector3(scale, scale, 1f);
+
+            Color tint = i == 0 ? Color.white : new Color(0.34f, 0.34f, 0.34f, 1f);
+            tint.a = Mathf.Lerp(0.15f, 1f, near);
+            slot.silhouette.color = tint;
+        }
+        select.portrait.color = Color.white;
 
         Camera cam = Camera.main;
         Canvas canvas = Object.FindObjectOfType<Canvas>();
@@ -633,14 +647,20 @@ public static class SoulboundBatch {
 
     // ---------------------------------------------------------------- the boss select
 
-    // Column centres, in canvas coordinates with the origin at the middle of a 640x480 screen.
-    private const float ArtX    = -290f;
-    private const float NameX   = -176f;
-    private const float TriesX  = -52f;
-    private const float ClearsX = 20f;
-    private const float DeathsX = 92f;
-    private const float BestX   = 180f;
-    private const float NoHitX  = 270f;
+    // The wheel sits off the left edge, so only its right hand side is on screen.
+    private const float WheelCx = -350f, WheelCy = 0f, WheelR = 230f, WheelStep = 27.5f;
+
+    // The panel, to the right of the arc. Left edge of its text column.
+    private const float PanelX = 130f;
+
+    // The ring drawn inside Wheel_Rim.png has a radius of about 168 of the sprite's 230, so
+    // the sprite is scaled by the ratio of where its ring should land to where its ring is.
+    //
+    // It lands inside the circle the entries ride on rather than underneath it. Sharing a
+    // radius put dark silhouettes on top of the rim's dark band and lost them entirely; a
+    // track the entries sit just outside of reads as a wheel and keeps them legible.
+    private const float RimRadius = 196f;
+    private const float RimSize   = 460f * (RimRadius / 168f);
 
     public static void BuildBossSelect() {
         UnityEngine.SceneManagement.Scene scene =
@@ -650,52 +670,80 @@ public static class SoulboundBatch {
         MakeSupport();
         Canvas canvas = MakeCanvas();
 
-        MakeText("Heading", canvas.transform, "BOSS SELECT", 28, TextAnchor.MiddleCenter,
-                 new Vector2(600f, 34f), new Vector2(0f, 212f));
+        // The rim first, so everything else draws over it.
+        GameObject rim = new GameObject("WheelRim", typeof(Image));
+        Image rimImage = rim.GetComponent<Image>();
+        rimImage.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(WheelSprite);
+        rimImage.raycastTarget = false;
+        rimImage.color         = new Color(1f, 1f, 1f, 0.38f);
+        RectTransform rimRect = Place(rim, canvas.transform, new Vector2(RimSize, RimSize), new Vector2(WheelCx, WheelCy));
 
-        // Column headings. The name column has none: the row's own name is its heading.
-        MakeText("HeadTries",  canvas.transform, "TRIES",  12, TextAnchor.MiddleCenter, new Vector2(70f, 16f), new Vector2(TriesX,  178f));
-        MakeText("HeadClears", canvas.transform, "CLEARS", 12, TextAnchor.MiddleCenter, new Vector2(70f, 16f), new Vector2(ClearsX, 178f));
-        MakeText("HeadDeaths", canvas.transform, "DEATHS", 12, TextAnchor.MiddleCenter, new Vector2(70f, 16f), new Vector2(DeathsX, 178f));
-        MakeText("HeadBest",   canvas.transform, "BEST",   12, TextAnchor.MiddleCenter, new Vector2(80f, 16f), new Vector2(BestX,   178f));
-        MakeText("HeadNoHit",  canvas.transform, "NO HIT", 12, TextAnchor.MiddleCenter, new Vector2(80f, 16f), new Vector2(NoHitX,  178f));
+        MakeText("Heading", canvas.transform, "BOSS SELECT", 24, TextAnchor.MiddleLeft,
+                 new Vector2(340f, 30f), new Vector2(PanelX, 200f));
 
-        Sprite silhouette = AssetDatabase.LoadAssetAtPath<Sprite>(SilhouetteSprite);
-
+        // The entries. Positions are set at runtime as the wheel turns; these are only
+        // starting values so the scene is not a pile of objects at the origin.
         List<BossSlot> slots = new List<BossSlot>();
+        Sprite silhouette = AssetDatabase.LoadAssetAtPath<Sprite>(SilhouetteSprite);
         for (int i = 0; i < BossProgress.SlotsPerScreen; i++) {
-            float y = 146f - i * 48f;
-            string tag = "Slot" + (i + 1);
+            GameObject go = new GameObject("Slot" + (i + 1), typeof(RectTransform));
+            float radians = (i - BossProgress.SlotsPerScreen / 2) * WheelStep * Mathf.Deg2Rad;
+            RectTransform pivot = Place(go, canvas.transform, new Vector2(48f, 48f),
+                                        new Vector2(WheelCx + Mathf.Cos(radians) * WheelR,
+                                                    WheelCy - Mathf.Sin(radians) * WheelR));
 
-            GameObject art = new GameObject(tag + " Art", typeof(Image));
+            GameObject art = new GameObject("Art", typeof(Image));
             Image image = art.GetComponent<Image>();
             image.sprite        = silhouette;
             image.raycastTarget = false;
-            Place(art, canvas.transform, new Vector2(40f, 40f), new Vector2(ArtX, y));
+            Place(art, pivot, new Vector2(40f, 40f), Vector2.zero);
 
-            slots.Add(new BossSlot {
-                silhouette = image,
-                bossName   = MakeText(tag + " Name",   canvas.transform, "", 16, TextAnchor.MiddleLeft,   new Vector2(172f, 22f), new Vector2(NameX,   y)),
-                tries      = MakeText(tag + " Tries",  canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(70f,  22f), new Vector2(TriesX,  y)),
-                clears     = MakeText(tag + " Clears", canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(70f,  22f), new Vector2(ClearsX, y)),
-                deaths     = MakeText(tag + " Deaths", canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(70f,  22f), new Vector2(DeathsX, y)),
-                best       = MakeText(tag + " Best",   canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(80f,  22f), new Vector2(BestX,   y)),
-                nohit      = MakeText(tag + " NoHit",  canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(80f,  22f), new Vector2(NoHitX,  y))
-            });
+            slots.Add(new BossSlot { silhouette = image, pivot = pivot });
         }
 
-        // The selected boss's one line. Seven rows cannot each carry a subtitle, so the screen
-        // shows the one belonging to whatever is highlighted.
-        Text footer = MakeText("Footer", canvas.transform, "", 14, TextAnchor.MiddleCenter,
-                               new Vector2(620f, 20f), new Vector2(0f, -196f));
+        // The panel: portrait, who it is, then the record it has against the player.
+        GameObject port = new GameObject("Portrait", typeof(Image));
+        Image portrait = port.GetComponent<Image>();
+        portrait.sprite        = silhouette;
+        portrait.raycastTarget = false;
+        Place(port, canvas.transform, new Vector2(112f, 112f), new Vector2(PanelX - 110f, 92f));
+
+        Text bossName = MakeText("Name",     canvas.transform, "", 22, TextAnchor.MiddleLeft, new Vector2(200f, 28f), new Vector2(PanelX + 60f, 118f));
+        Text subtitle = MakeText("Subtitle", canvas.transform, "", 12, TextAnchor.UpperLeft,  new Vector2(200f, 46f), new Vector2(PanelX + 60f, 76f));
+        subtitle.horizontalOverflow = HorizontalWrapMode.Wrap;
+
+        string[] labels = { "TRIES", "CLEARS", "DEATHS", "BEST", "NO HIT" };
+        Text[] values = new Text[5];
+        for (int i = 0; i < labels.Length; i++) {
+            float y = -20f - i * 30f;
+            MakeText("Label" + i, canvas.transform, labels[i], 12, TextAnchor.MiddleLeft,
+                     new Vector2(140f, 20f), new Vector2(PanelX - 100f, y));
+            values[i] = MakeText("Value" + i, canvas.transform, "", 16, TextAnchor.MiddleRight,
+                                 new Vector2(140f, 20f), new Vector2(PanelX + 100f, y));
+        }
+
+        Text hint = MakeText("Hint", canvas.transform, "", 12, TextAnchor.MiddleLeft,
+                             new Vector2(340f, 20f), new Vector2(PanelX, -190f));
 
         GameObject script = new GameObject("BossSelectScript", typeof(BossSelect));
         BossSelect select = script.GetComponent<BossSelect>();
-        select.slots  = slots.ToArray();
-        select.footer = footer;
+        select.slots       = slots.ToArray();
+        select.wheelRim    = rimRect;
+        select.wheelCentre = new Vector2(WheelCx, WheelCy);
+        select.wheelRadius = WheelR;
+        select.wheelStep   = WheelStep;
+        select.portrait    = portrait;
+        select.bossName    = bossName;
+        select.subtitle    = subtitle;
+        select.tries       = values[0];
+        select.clears      = values[1];
+        select.deaths      = values[2];
+        select.best        = values[3];
+        select.nohit       = values[4];
+        select.hint        = hint;
 
         EditorSceneManager.SaveScene(scene, BossSelectPath);
-        Debug.Log("SOULBOUND-BATCH-BOSSSELECT saved " + BossSelectPath + " with " + slots.Count + " slots");
+        Debug.Log("SOULBOUND-BATCH-BOSSSELECT saved " + BossSelectPath + " with " + slots.Count + " slots on the wheel");
     }
 
     // ---------------------------------------------------------------- the disclaimer

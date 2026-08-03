@@ -7,55 +7,84 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// One row of the boss select: the art, the name, and the five records.
+/// One boss's place on the wheel. Every entry keeps its own object; where it sits is worked out
+/// each frame from how far it is from the selection, so the wheel turns rather than the
+/// contents being shuffled between fixed seats.
 /// </summary>
 [Serializable]
 public class BossSlot {
-    public Image silhouette;
-    public Text  bossName;
-    public Text  tries;
-    public Text  clears;
-    public Text  deaths;
-    public Text  best;
-    public Text  nohit;
+    public Image         silhouette;
+    public RectTransform pivot;
 }
 
 /// <summary>
 /// The screen the game opens on and returns to. It lists the bosses, shows what the player has
 /// done against each one, and is the only place progression is visible.
 ///
-/// Seven slots, always. A screen is a batch and the roster grows by screens rather than by
-/// getting longer, so the layout is laid out once and never rearranged: arrivals fill slots
-/// that were already there rather than pushing anything around. Slots past the end of the
-/// registry are drawn the same as locked ones, which is what "announced but not built" looks
-/// like and is honest about there being more to come.
+/// The bosses sit on a wheel down the left, turning past a fixed point: whichever entry is
+/// selected is held at the middle of the arc, and the rest curve away above and below it and
+/// drop off the ends. The panel beside it carries that entry's portrait, name, the line under
+/// it, and the five records. A row in a table could hold none of those at a readable size,
+/// which is what this layout buys and what the table it replaced could not do.
 ///
-/// The silhouette is the reason the slot holds its shape. A locked entry and an unlocked one
-/// occupy exactly the same box, so nothing on the screen moves when a boss unlocks. This pass
-/// every slot carries the same placeholder silhouette, including the unlocked one, because
-/// that is what proves the claim: if the layout is going to jump, it jumps here.
+/// Seven positions, always, however many bosses the registry holds. A screen is a batch and the
+/// roster grows by screens rather than by getting longer, so the wheel is built once and never
+/// rearranged. Positions past the end of the registry are drawn the same as locked ones.
+///
+/// The silhouette is the reason a position holds its shape. A locked boss and an unlocked one
+/// occupy the same box wherever they are on the wheel, so nothing jumps when one unlocks. This
+/// pass every position carries the same placeholder silhouette, the unlocked one included,
+/// because that is what proves the claim.
 ///
 /// Nothing on this screen explains the lock. The player works out that clearing the available
-/// one opens the rest, and a line of text saying so would be telling them what the layout
-/// already said.
+/// one opens the rest.
 /// </summary>
 public class BossSelect : MonoBehaviour {
     public BossSlot[] slots;
 
-    /// <summary>The selected boss's one-line description, under the table.</summary>
-    public Text footer;
+    [Header("The panel")]
+    public Image portrait;
+    public Text  bossName;
+    public Text  subtitle;
+    public Text  tries;
+    public Text  clears;
+    public Text  deaths;
+    public Text  best;
+    public Text  nohit;
+    public Text  hint;
+
+    [Header("The wheel")]
+    /// <summary>
+    /// The rim the entries ride on. Turned by the same amount they are, which is the whole
+    /// reason it has notches: a featureless circle rotating looks like a circle standing
+    /// still, so the notches are what makes the movement readable.
+    /// </summary>
+    public RectTransform wheelRim;
+
+    /// <summary>Centre of the circle, in canvas coordinates. Sits off the left edge.</summary>
+    public Vector2 wheelCentre = new Vector2(-350f, 0f);
+    public float   wheelRadius = 230f;
+    /// <summary>Degrees between one position and the next.</summary>
+    public float   wheelStep = 27.5f;
+    /// <summary>How far from the middle a position can be before it is off the wheel.</summary>
+    public float   wheelReach = 2.6f;
+    /// <summary>Seconds the wheel takes to settle after a move.</summary>
+    public float   spinTime = 0.14f;
 
     private static int selected;
     private List<BossEntry> bosses;
     private bool ready;
     private bool launching;
 
-    private static readonly Color NameIdle     = new Color(1f,    1f,    1f,   1f);
-    private static readonly Color NamePicked   = new Color(1f,    1f,    0f,   1f);
-    private static readonly Color LockedIdle   = new Color(0.45f, 0.45f, 0.45f, 1f);
-    private static readonly Color LockedPicked = new Color(0.65f, 0.65f, 0.35f, 1f);
-    private static readonly Color ArtOpen      = new Color(1f,    1f,    1f,   1f);
-    private static readonly Color ArtLocked    = new Color(0.35f, 0.35f, 0.35f, 1f);
+    /// <summary>How far the wheel still has to turn, in positions. Decays to zero.</summary>
+    private float spin;
+
+    private static readonly Color NameOpen  = new Color(1f,    1f,    1f,    1f);
+    private static readonly Color NameShut  = new Color(0.5f,  0.5f,  0.5f,  1f);
+    private static readonly Color ValueOpen = new Color(1f,    1f,    0f,    1f);
+    private static readonly Color ValueShut = new Color(0.5f,  0.5f,  0.5f,  1f);
+    private static readonly Color ArtOpen   = new Color(1f,    1f,    1f,    1f);
+    private static readonly Color ArtShut   = new Color(0.34f, 0.34f, 0.34f, 1f);
 
     private void Start() {
         Destroy(GameObject.Find("Player"));
@@ -79,30 +108,43 @@ public class BossSelect : MonoBehaviour {
         if (bosses.Count == 0)
             return;
 
-        // Arriving from anywhere but a fight is a fresh run, so start at the top. Coming back
-        // from a fight keeps the cursor on the boss just fought.
+        // Arriving from anywhere but a fight is a fresh run, so start at the top of the wheel.
+        // Coming back from a fight keeps the cursor on the boss just fought.
         if (StaticInits.ENCOUNTER == "")
             selected = 0;
         if (selected >= BossProgress.SlotsPerScreen)
             selected = 0;
 
-        // Reset it to tell a later arrival from the disclaimer apart from one from a battle.
+        // Reset it to tell a later arrival from the menu apart from one from a battle.
         StaticInits.ENCOUNTER = "";
 
-        Refresh();
+        spin = 0f;
+        DrawPanel();
+        TurnWheel();
         ready = true;
     }
 
     private void Update() {
-        if (!ready || launching)
+        if (!ready)
             return;
 
-        if (GlobalControls.input.Down == ButtonState.PRESSED) {
-            selected = Math.Mod(selected + 1, BossProgress.SlotsPerScreen);
-            Refresh();
-        } else if (GlobalControls.input.Up == ButtonState.PRESSED) {
-            selected = Math.Mod(selected - 1, BossProgress.SlotsPerScreen);
-            Refresh();
+        // The wheel keeps settling even while a fight is loading, so the screen does not
+        // freeze mid-turn on the way out.
+        if (spin != 0f) {
+            float step = Time.deltaTime / Mathf.Max(0.01f, spinTime);
+            spin = spin > 0f ? Mathf.Max(0f, spin - step) : Mathf.Min(0f, spin + step);
+            TurnWheel();
+        }
+
+        if (launching)
+            return;
+
+        // Down and Right both turn the wheel the same way. On an arc there is no useful
+        // difference between along and around.
+        if (GlobalControls.input.Down == ButtonState.PRESSED || GlobalControls.input.Right == ButtonState.PRESSED) {
+            Move(1);
+        } else if (GlobalControls.input.Up == ButtonState.PRESSED || GlobalControls.input.Left == ButtonState.PRESSED) {
+            Move(-1);
         } else if (GlobalControls.input.Confirm == ButtonState.PRESSED) {
             Choose();
         } else if (GlobalControls.input.Cancel == ButtonState.PRESSED) {
@@ -113,12 +155,77 @@ public class BossSelect : MonoBehaviour {
     }
 
     /// <summary>
-    /// Starts the selected fight, if it is one. A slot past the end of the registry and a
-    /// locked slot both do nothing: the screen says no by not responding, which is the same
+    /// Turns the wheel one position. The selection changes immediately and the wheel catches
+    /// up, so holding a direction cannot outrun the panel or leave it showing the wrong boss.
+    /// </summary>
+    private void Move(int direction) {
+        selected = Math.Mod(selected + direction, BossProgress.SlotsPerScreen);
+
+        // Carry over whatever is left of the last turn rather than resetting, so a fast player
+        // gets a wheel that keeps up instead of one that stutters back to the start each time.
+        spin = Mathf.Clamp(spin + direction, -2f, 2f);
+
+        DrawPanel();
+        TurnWheel();
+    }
+
+    /// <summary>
+    /// Places every position on the arc according to how far it is from the selection, plus
+    /// however much of the turn is still outstanding.
+    /// </summary>
+    private void TurnWheel() {
+        int count = BossProgress.SlotsPerScreen;
+        int half  = count / 2;
+
+        // The rim turns with the entries rather than sitting still behind them. Entries move
+        // up the arc as the selection advances, which is counter-clockwise on the right hand
+        // side of the circle, so the rotation runs with the selection and against the spin
+        // still outstanding.
+        if (wheelRim != null)
+            wheelRim.localRotation = Quaternion.Euler(0f, 0f, (selected - spin) * wheelStep);
+
+        for (int i = 0; i < slots.Length; i++) {
+            BossSlot slot = slots[i];
+            if (slot.pivot == null || slot.silhouette == null)
+                continue;
+
+            // Signed distance from the selection, wrapped, so the wheel is a loop rather than
+            // a list with two ends.
+            float offset = Math.Mod(i - selected + half, count) - half + spin;
+            float away   = Mathf.Abs(offset);
+
+            if (away > wheelReach) {
+                slot.silhouette.enabled = false;
+                continue;
+            }
+            slot.silhouette.enabled = true;
+
+            float radians = offset * wheelStep * Mathf.Deg2Rad;
+            slot.pivot.anchoredPosition = wheelCentre + new Vector2(Mathf.Cos(radians), -Mathf.Sin(radians)) * wheelRadius;
+
+            // Nearest the middle is biggest and brightest; the ends taper off so entries
+            // arrive and leave rather than popping.
+            float near  = Mathf.Clamp01(1f - away / wheelReach);
+            float scale = Mathf.Lerp(0.55f, 1.35f, near);
+            slot.pivot.localScale = new Vector3(scale, scale, 1f);
+
+            Color tint = Unlocked(i) ? ArtOpen : ArtShut;
+            tint.a = Mathf.Lerp(0.15f, 1f, near);
+            slot.silhouette.color = tint;
+        }
+    }
+
+    private bool Unlocked(int index) {
+        return index < bosses.Count && BossProgress.Unlocked(index);
+    }
+
+    /// <summary>
+    /// Starts the selected fight, if it is one. A position past the end of the registry and a
+    /// locked one both do nothing: the screen says no by not responding, which is the same
     /// answer the greying already gave.
     /// </summary>
     private void Choose() {
-        if (selected >= bosses.Count || !BossProgress.Unlocked(selected))
+        if (!Unlocked(selected))
             return;
         launching = true;
         StartCoroutine(LaunchBoss(bosses[selected]));
@@ -151,54 +258,45 @@ public class BossSelect : MonoBehaviour {
         }
     }
 
-    /// <summary>Redraws every slot from the registry and the records.</summary>
-    private void Refresh() {
-        for (int i = 0; i < slots.Length; i++)
-            Draw(slots[i], i);
+    private void DrawPanel() {
+        bool present  = selected < bosses.Count;
+        bool unlocked = Unlocked(selected);
 
-        if (footer != null)
-            footer.text = selected < bosses.Count && BossProgress.Unlocked(selected)
-                        ? bosses[selected].subtitle
-                        : "";
-    }
+        if (portrait != null)
+            portrait.color = unlocked ? ArtOpen : ArtShut;
 
-    private void Draw(BossSlot slot, int index) {
-        bool picked   = index == selected;
-        bool present  = index < bosses.Count;
-        bool unlocked = present && BossProgress.Unlocked(index);
-
-        // Every slot keeps its silhouette whether or not there is a boss behind it. That is
-        // the whole point of the silhouette: the box is the same size either way.
-        if (slot.silhouette != null)
-            slot.silhouette.color = unlocked ? ArtOpen : ArtLocked;
-
-        Color tint = unlocked ? (picked ? NamePicked : NameIdle)
-                              : (picked ? LockedPicked : LockedIdle);
-
-        if (slot.bossName != null) {
+        if (bossName != null) {
             // A locked boss shows its name, so the player can see how much game is waiting.
-            // A slot with nothing behind it yet has no name to show.
-            slot.bossName.text  = present ? bosses[index].name : "???";
-            slot.bossName.color = tint;
+            // A position with nothing behind it yet has no name to show.
+            bossName.text  = present ? bosses[selected].name : "???";
+            bossName.color = unlocked ? NameOpen : NameShut;
+        }
+
+        if (subtitle != null) {
+            subtitle.text  = unlocked ? bosses[selected].subtitle : "";
+            subtitle.color = NameShut;
         }
 
         if (unlocked) {
-            BossEntry boss = bosses[index];
-            Set(slot.tries,  tint, BossRecords.Attempts(boss.id).ToString());
-            Set(slot.clears, tint, BossRecords.Clears(boss.id).ToString());
-            Set(slot.deaths, tint, BossRecords.Deaths(boss.id).ToString());
-            float best = BossRecords.BestTime(boss.id);
-            Set(slot.best,   tint, best >= 0f ? BossRecords.FormatTime(best) : "-");
-            Set(slot.nohit,  tint, BossRecords.NoHit(boss.id) ? "YES" : "-");
+            BossEntry boss = bosses[selected];
+            Set(tries,  ValueOpen, BossRecords.Attempts(boss.id).ToString());
+            Set(clears, ValueOpen, BossRecords.Clears(boss.id).ToString());
+            Set(deaths, ValueOpen, BossRecords.Deaths(boss.id).ToString());
+            float b = BossRecords.BestTime(boss.id);
+            Set(best,   ValueOpen, b >= 0f ? BossRecords.FormatTime(b) : "-");
+            Set(nohit,  ValueOpen, BossRecords.NoHit(boss.id) ? "YES" : "-");
         } else {
             // The question mark stands in for the records, which are the part that genuinely
             // has no value yet. The name and the shape are known; these are not.
-            Set(slot.tries,  tint, "?");
-            Set(slot.clears, tint, "?");
-            Set(slot.deaths, tint, "?");
-            Set(slot.best,   tint, "?");
-            Set(slot.nohit,  tint, "?");
+            Set(tries,  ValueShut, "?");
+            Set(clears, ValueShut, "?");
+            Set(deaths, ValueShut, "?");
+            Set(best,   ValueShut, "?");
+            Set(nohit,  ValueShut, "?");
         }
+
+        if (hint != null)
+            hint.text = unlocked ? "Confirm to fight" : "";
     }
 
     private static void Set(Text text, Color color, string value) {
