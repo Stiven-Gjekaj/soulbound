@@ -47,6 +47,17 @@ ones.
 
 ### Added
 
+- `BossRecords.Clears`, a count of how many times a boss has been beaten. The records already
+  held whether a boss had ever been cleared, as a boolean, but the select screen's table wants
+  a number in that column and the design notes describe clears alongside attempts and deaths
+  as though it were one.
+
+  The boolean stays rather than being derived from the counter, because it is what the unlock
+  reads and what saves written before this counter existed still carry. Such a save reports
+  zero clears against a boss it knows is cleared, which is wrong by one at worst and only
+  until the player beats it again. It is a new AlMighty global key, so nothing existing is
+  renamed and old saves load unchanged.
+
 - A boss silhouette placeholder, `Assets/Sprites/Boss_Silhouette.png`, 40x40 at seed 6063. A
   featureless grey figure, mid grey rather than black so it reads against the black every
   Soulbound screen sits on.

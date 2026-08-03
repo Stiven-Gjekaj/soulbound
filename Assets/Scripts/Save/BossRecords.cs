@@ -60,6 +60,7 @@ public static class BossRecords {
         clockRunning = false;
 
         SetBool(currentId, "cleared", true);
+        SetNumber(currentId, "clears", Clears(currentId) + 1);
 
         float best = BestTime(currentId);
         if (best < 0f || time < best)
@@ -128,6 +129,19 @@ public static class BossRecords {
     public static bool Cleared(string id) {
         DynValue v = Get(id, "cleared");
         return v != null && v.Type == DataType.Boolean && v.Boolean;
+    }
+
+    /// <summary>
+    /// How many times the boss has been beaten, as opposed to whether it ever has.
+    ///
+    /// The boolean above came first and stays, because it is what the lock reads and what
+    /// saves written before this counter existed still carry. A save from then reports zero
+    /// clears against a boss it knows is cleared, which is wrong by one at worst and only
+    /// until the player beats it again.
+    /// </summary>
+    public static int Clears(string id) {
+        DynValue v = Get(id, "clears");
+        return v != null && v.Type == DataType.Number ? (int)v.Number : 0;
     }
 
     public static int Attempts(string id) {
