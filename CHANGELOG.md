@@ -85,6 +85,21 @@ ones.
 
 ### Added
 
+- Soulbound's own battle buttons, replacing Undertale's in
+  `Assets/Default/Sprites/UI/Buttons`. Four words, two states each, 110x42 to match the slot
+  the battle scene gives them. The states differ only in colour, orange unselected and yellow
+  selected, so choosing a button cannot shift it by a pixel. They are loaded by name through
+  `SpriteRegistry`, so replacing the files was the whole job and no scene changed.
+
+  The words are drawn from a small alphabet rather than generated, and the reason is worth
+  recording. Six generations went on the attempt: seeds 6064 and 6065 produced a whole button,
+  first as a heavy stone-framed panel and then in the right flat style but with the box filling
+  less than half the canvas, and seeds 6066 to 6069 produced the four words on their own. Those
+  four are each fine alone and wrong together: FIGHT came out as blocky capitals and MERCY as
+  rounded title case, because independent generations do not share a typeface. Four buttons sit
+  in a row where that is the first thing you see. Uniform UI lettering wants a font, so the
+  words are drawn from one and the set is coherent.
+
 - Soulbound's own arena border, `Assets/Sprites/Arena_Border.png`, replacing the one inherited
   from Create Your Frisk. A 25x25 nine-slice with a 5 pixel border: two pixels of outer rule, a
   gap, then one pixel of inner rule, so the box reads as a drawn frame rather than a plain
