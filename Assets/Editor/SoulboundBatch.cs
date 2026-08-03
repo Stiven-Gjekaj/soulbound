@@ -356,7 +356,7 @@ public static class SoulboundBatch {
 
         // The registry as it stands: four playable entries, then the teased one, then nothing.
         string[] names    = { "Illia, The Tutor", "???", "???", "???", "???", "???", "???" };
-        string[] arts     = { "placeholder", "teased", null, null, null, null, null };
+        string[] arts     = { "illia", "teased", null, null, null, null, null };
         string[] subs     = { "Not built yet", "", "", "", "", "", "" };
         bool[]   playable = { true, false, false, false, false, false, false };
         bool[]   teased   = { false, true, false, false, false, false, false };

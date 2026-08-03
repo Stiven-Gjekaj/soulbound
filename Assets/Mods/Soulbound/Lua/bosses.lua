@@ -12,7 +12,7 @@
 -- music track can be added here before the menu is ready to read them.
 
 return {
-    { id = "placeholder",       name = "Illia, The Tutor",   subtitle = "Not built yet" },
+    { id = "illia",             name = "Illia, The Tutor",   subtitle = "Not built yet" },
 
     -- Advertised rather than playable. It has no encounter script and no records, because it
     -- can never be started, and its logo is the whole tease, so the name stays hidden. It sits

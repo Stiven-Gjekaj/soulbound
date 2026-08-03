@@ -216,6 +216,16 @@ ones.
 
 ### Changed
 
+- The tutorial boss's id is `illia` rather than `placeholder`, so her encounter is
+  `Lua/Encounters/illia.lua` and her icon is `Sprites/Bosses/illia.png`. The id is what names
+  both, and what her records are keyed on, so this is the last moment it is free: nothing has
+  been recorded against the old key that anyone would miss, and once a boss has been fought
+  renaming its id orphans a real record.
+
+  The monster and the wave keep their placeholder names. The boss is hers and the fight is not
+  built, and naming a stand-in after her would claim otherwise. What the player reads in the
+  fight is "Illia", because that is who it is meant to be.
+
 - The keybind screen is driven by the keyboard, so the pointer is gone from every menu. Arrows
   move a selection across a grid, one row per keybind holding its Edit, Reset and Clear and a
   last row holding Save, Reset All, Restore and Back; Confirm presses whichever is selected and

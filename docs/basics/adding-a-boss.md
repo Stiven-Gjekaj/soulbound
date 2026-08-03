@@ -12,8 +12,8 @@ The registry is a Lua data file that returns a list of tables, one per boss:
 
 ```lua
 return {
-    { id = "placeholder", name = "Illia, The Tutor", subtitle = "Not built yet" },
-    { id = "teased",      name = "???",              teased = true },
+    { id = "illia",  name = "Illia, The Tutor", subtitle = "Not built yet" },
+    { id = "teased", name = "???",              teased = true },
 }
 ```
 

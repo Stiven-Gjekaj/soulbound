@@ -7,7 +7,7 @@ commands = { "Check" }
 randomdialogue = { "..." }
 
 sprite = "empty"
-name = "Placeholder"
+name = "Illia"
 hp = 10
 atk = 1
 def = 0

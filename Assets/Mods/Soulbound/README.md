@@ -26,7 +26,8 @@ encounter script by `id`, and the screen shows them in the order listed:
 
 ```lua
 return {
-    { id = "placeholder", name = "Placeholder", subtitle = "Not built yet" },
+    { id = "illia",  name = "Illia, The Tutor", subtitle = "Not built yet" },
+    { id = "teased", name = "???",              teased = true },
 }
 ```
 
@@ -35,11 +36,17 @@ boss, rather than showing a row that does nothing. See `docs/basics/adding-a-bos
 
 ## Placeholders
 
-`Lua/Encounters/placeholder.lua`, `Lua/Monsters/placeholder.lua` and
-`Lua/Waves/placeholder.lua` exist so the engine has something to boot into.
-`placeholder_two.lua` and `placeholder_three.lua` exist so the boss select has a list
-worth paging through. Delete them once real encounters exist, and take their registry
-entries with them.
+`Lua/Encounters/illia.lua` is the tutorial boss. The boss is hers; the fight is not built,
+so the monster and the wave it pulls in are still `Lua/Monsters/placeholder.lua` and
+`Lua/Waves/placeholder.lua`. They keep those names until there is something of hers to put
+in their place, because naming them after her would claim they were her fight.
+
+`Sprites/Bosses/<id>.png` is a boss's icon on the select screen, loaded by id when the
+screen opens. It takes no import settings and needs no scene edit, and a boss without one
+simply shows none.
+
+The `teased` entry has no encounter script at all. It is advertised rather than playable,
+which is what `teased = true` means, and the registry does not ask it for one.
 
 The placeholder monster uses `empty`, a sprite from `Assets/Default/Sprites`. Sprite
 lookups fall back to that folder, so the placeholders ship no art of their own.
