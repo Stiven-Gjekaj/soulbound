@@ -4,36 +4,42 @@ This page describes how the Soulbound engine is put together, so you know which 
 touch and which to leave alone. It began as Create Your Frisk v0.6.6 LTS 3, itself a fork
 of Unitale, and has diverged since.
 
-Unity 2018.4.36f1, C#, with MoonSharp as the Lua interpreter. 111 C# files under
+Unity 2018.4.36f1, C#, with MoonSharp as the Lua interpreter. 116 C# files under
 `Assets/Scripts`.
 
 ## Scene flow
 
-Nine scenes ship in the build. Every one of them is loaded **by name** from C#, never by
+Ten scenes ship in the build. Every one of them is loaded **by name** from C#, never by
 build index, so reordering `EditorBuildSettings.asset` is safe but renaming a scene is not.
 
 ```
-Disclaimer --[Menu]----> Intro -> TitleScreen -> EnterName --+
-     |                                                       |
-     +--[Confirm]-----------------------------------------> ModSelect -> Battle
-                                                             |
-                                                             +-> Options -> KeybindSettings
+Disclaimer --[any key]--> TitleScreen --+--> ModSelect -> Battle
+                                        |        |
+                                        |        +--> EnterName
+                                        +--> Options -> KeybindSettings
+                                        +--> Credits
+                                        +--> Quit
 ```
 
 | Scene | Role | Loaded from |
 | --- | --- | --- |
-| `Disclaimer` | entry point, always start play mode here | `SelectOMatic`, `GlobalControls` |
-| `Intro` | the intro sequence | `DisclaimerScript` |
-| `TitleScreen` | title screen | `Title`, `EnterNameScript` |
-| `EnterName` | name entry | `Title`, `SelectOMatic`, `OptionsScript` |
-| `ModSelect` | the boss select, still named for the mod picker it was | `DisclaimerScript`, `OptionsScript`, `UIController`, `GameOverBehavior`, `Title`, `EnterNameScript` |
-| `Options` | options menu | `SelectOMatic`, `KeybindSettings` |
+| `Disclaimer` | entry point, always start play mode here | `GlobalControls` |
+| `TitleScreen` | the menu: title, boss select, options, credits, quit | `DisclaimerScript`, `CreditsScreen`, `BossSelect`, `EnterNameScript` |
+| `Credits` | attribution, reached from the menu | `MainMenu` |
+| `EnterName` | name entry | `BossSelect`, `OptionsScript` |
+| `ModSelect` | the boss select, still named for the mod picker it was | `MainMenu`, `OptionsScript`, `UIController`, `GameOverBehavior`, `EnterNameScript` |
+| `Options` | options menu | `MainMenu`, `BossSelect`, `KeybindSettings` |
 | `KeybindSettings` | key rebinding | `OptionsScript` |
-| `Battle` | the encounter | `SelectOMatic` |
+| `Battle` | the encounter | `BossSelect` |
 | `Error` | the Lua error screen | `UnitaleUtil` |
+| `Intro` | the fork's intro sequence, no longer reachable | nothing |
 
-Both routes end at the boss select, and every battle returns to it, win or lose. That is
-the whole loop: pick a boss, fight it, come back to the list.
+Everything goes through the menu, and every battle returns to the boss select, win or lose.
+That is the whole loop: pick a boss, fight it, come back to the list.
+
+`Intro` is still in the build and still in the scene list, but nothing loads it since the
+disclaimer stopped being the game's navigation at v0.6. It is kept rather than deleted
+because removing a scene is a deliberate act and this milestone was for building screens.
 
 There is no longer a mode flag. Up to v0.1 the engine asked `UnitaleUtil.IsOverworld` in 40
 places to decide whether it was in a battle or on a map; v0.2 removed the flag and every
@@ -65,17 +71,25 @@ The registry is data, not gameplay, so it runs in a bare MoonSharp sandbox
 (`CoreModules.Preset_HardSandbox`) rather than through `ScriptWrapper`. `ScriptWrapper`
 binds the battle API, and most of that API is null outside the Battle scene.
 
-`SelectOMatic` reloads the registry every time the screen opens, so editing `bosses.lua`
+`BossSelect` reloads the registry every time the screen opens, so editing `bosses.lua`
 does not need a restart. Everything it validates, and what happens when a check fails, is
 in [Adding a boss](../basics/adding-a-boss.md).
 
-`SelectOMatic` binds to `ModSelect.unity` entirely through inspector fields, so changing
-what it lists needs no scene edit. That is why the screen is still built out of objects
-named `ModTitle`, `EncounterCount` and `encounterBox`: renaming them would mean editing the
-scene, and a purpose-built boss select is v0.6 work, done before the art rather than with
-it.
+The screen draws **seven slots, always**, however many bosses the registry holds. A screen
+is a batch and the roster grows by screens rather than by getting longer, so the layout is
+laid out once and never rearranged. Slots past the end of the registry are drawn the same as
+locked ones.
 
-Starting a fight is four lines, at the end of `SelectOMatic.LaunchBoss`:
+`BossProgress` owns what is open: the first entry in the registry is the tutorial and is
+always available, and clearing it unlocks the rest. The rule is written against the first
+position rather than a named boss, so it keeps working while the registry holds placeholders
+and applies to the tutorial boss automatically once she is listed first.
+
+The scene file is still called `ModSelect.unity`, because it is loaded by name from six
+places and renaming a scene is not a safe edit. Its contents are no longer the mod picker's:
+v0.6 rebuilt it from an empty scene.
+
+Starting a fight is four lines, at the end of `BossSelect.LaunchBoss`:
 
 ```csharp
 StaticInits.InitAll(StaticInits.MODFOLDER, true);
@@ -89,12 +103,11 @@ Where the record and the clock hook into that, and what they store, is in
 
 ## The `@Title` dependency
 
-`Assets/Mods/@Title` is not optional and not example content. Five engine files reference the
+`Assets/Mods/@Title` is not optional and not example content. Four engine files reference the
 literal string `"@Title"`:
 
 - `Assets/Scripts/Util/StaticInits.cs`, `EDITOR_MODFOLDER`
 - `Assets/Scripts/Util/UnitaleUtil.cs`, `InitAll("@Title")`
-- `Assets/Scripts/PregamePlaceholder/Title.cs`
 - `Assets/Scripts/PregamePlaceholder/IntroManager.cs`
 - `Assets/Scripts/Device/GlobalControls.cs`
 

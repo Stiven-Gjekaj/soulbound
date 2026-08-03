@@ -15,9 +15,11 @@ public static class SoulboundBatch {
     private const string TitlePath  = "Assets/Scenes/TitleScreen.unity";
     private const string CreditPath = "Assets/Scenes/Credits.unity";
     private const string DisclaimerPath = "Assets/Scenes/Disclaimer.unity";
+    private const string BossSelectPath = "Assets/Scenes/ModSelect.unity";
 
     private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
+    private const string SilhouetteSprite = "Assets/Sprites/Boss_Silhouette.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
 
     /// <summary>
@@ -33,7 +35,7 @@ public static class SoulboundBatch {
             sb.AppendLine("  buildscene " + (s.enabled ? "on  " : "off ") + s.path);
 
         int problems = 0;
-        foreach (string path in new[] { DisclaimerPath, TitlePath, CreditPath }) {
+        foreach (string path in new[] { DisclaimerPath, TitlePath, CreditPath, BossSelectPath }) {
             EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             sb.AppendLine("  --- " + path);
 
@@ -43,6 +45,18 @@ public static class SoulboundBatch {
                     sb.AppendLine("      " + child.name
                                   + Describe(child.GetComponent<Image>())
                                   + Describe(child.GetComponent<Text>()));
+            }
+
+            BossSelect select = Object.FindObjectOfType<BossSelect>();
+            if (select != null) {
+                sb.AppendLine("    BossSelect.slots  = " + (select.slots == null ? "NULL" : select.slots.Length.ToString()));
+                sb.AppendLine("    BossSelect.footer = " + (select.footer == null ? "NULL" : "bound"));
+                if (select.slots == null || select.slots.Length != BossProgress.SlotsPerScreen) problems++;
+                if (select.footer == null) problems++;
+                foreach (BossSlot slot in select.slots ?? new BossSlot[0])
+                    if (slot.silhouette == null || slot.bossName == null || slot.tries == null
+                     || slot.clears == null || slot.deaths == null || slot.best == null || slot.nohit == null)
+                        problems++;
             }
 
             MainMenu menu = Object.FindObjectOfType<MainMenu>();
@@ -236,6 +250,73 @@ public static class SoulboundBatch {
         Debug.Log("SOULBOUND-BATCH-CREDITS saved " + CreditPath);
     }
 
+    // ---------------------------------------------------------------- the boss select
+
+    // Column centres, in canvas coordinates with the origin at the middle of a 640x480 screen.
+    private const float ArtX    = -290f;
+    private const float NameX   = -176f;
+    private const float TriesX  = -52f;
+    private const float ClearsX = 20f;
+    private const float DeathsX = 92f;
+    private const float BestX   = 180f;
+    private const float NoHitX  = 270f;
+
+    public static void BuildBossSelect() {
+        UnityEngine.SceneManagement.Scene scene =
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+        MakeCamera();
+        MakeSupport();
+        Canvas canvas = MakeCanvas();
+
+        MakeText("Heading", canvas.transform, "BOSS SELECT", 28, TextAnchor.MiddleCenter,
+                 new Vector2(600f, 34f), new Vector2(0f, 212f));
+
+        // Column headings. The name column has none: the row's own name is its heading.
+        MakeText("HeadTries",  canvas.transform, "TRIES",  12, TextAnchor.MiddleCenter, new Vector2(70f, 16f), new Vector2(TriesX,  178f));
+        MakeText("HeadClears", canvas.transform, "CLEARS", 12, TextAnchor.MiddleCenter, new Vector2(70f, 16f), new Vector2(ClearsX, 178f));
+        MakeText("HeadDeaths", canvas.transform, "DEATHS", 12, TextAnchor.MiddleCenter, new Vector2(70f, 16f), new Vector2(DeathsX, 178f));
+        MakeText("HeadBest",   canvas.transform, "BEST",   12, TextAnchor.MiddleCenter, new Vector2(80f, 16f), new Vector2(BestX,   178f));
+        MakeText("HeadNoHit",  canvas.transform, "NO HIT", 12, TextAnchor.MiddleCenter, new Vector2(80f, 16f), new Vector2(NoHitX,  178f));
+
+        Sprite silhouette = AssetDatabase.LoadAssetAtPath<Sprite>(SilhouetteSprite);
+
+        List<BossSlot> slots = new List<BossSlot>();
+        for (int i = 0; i < BossProgress.SlotsPerScreen; i++) {
+            float y = 146f - i * 48f;
+            string tag = "Slot" + (i + 1);
+
+            GameObject art = new GameObject(tag + " Art", typeof(Image));
+            Image image = art.GetComponent<Image>();
+            image.sprite        = silhouette;
+            image.raycastTarget = false;
+            Place(art, canvas.transform, new Vector2(40f, 40f), new Vector2(ArtX, y));
+
+            slots.Add(new BossSlot {
+                silhouette = image,
+                bossName   = MakeText(tag + " Name",   canvas.transform, "", 16, TextAnchor.MiddleLeft,   new Vector2(172f, 22f), new Vector2(NameX,   y)),
+                tries      = MakeText(tag + " Tries",  canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(70f,  22f), new Vector2(TriesX,  y)),
+                clears     = MakeText(tag + " Clears", canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(70f,  22f), new Vector2(ClearsX, y)),
+                deaths     = MakeText(tag + " Deaths", canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(70f,  22f), new Vector2(DeathsX, y)),
+                best       = MakeText(tag + " Best",   canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(80f,  22f), new Vector2(BestX,   y)),
+                nohit      = MakeText(tag + " NoHit",  canvas.transform, "", 16, TextAnchor.MiddleCenter, new Vector2(80f,  22f), new Vector2(NoHitX,  y))
+            });
+        }
+
+        // The selected boss's one line. Seven rows cannot each carry a subtitle, so the screen
+        // shows the one belonging to whatever is highlighted.
+        Text footer = MakeText("Footer", canvas.transform, "", 14, TextAnchor.MiddleCenter,
+                               new Vector2(620f, 20f), new Vector2(0f, -196f));
+
+        GameObject script = new GameObject("BossSelectScript", typeof(BossSelect));
+        BossSelect select = script.GetComponent<BossSelect>();
+        select.slots  = slots.ToArray();
+        select.footer = footer;
+
+        EditorSceneManager.SaveScene(scene, BossSelectPath);
+        Debug.Log("SOULBOUND-BATCH-BOSSSELECT saved " + BossSelectPath + " with " + slots.Count + " slots");
+    }
+
     // ---------------------------------------------------------------- the disclaimer
 
     public static void BuildDisclaimer() {
@@ -314,6 +395,7 @@ public static class SoulboundBatch {
         BuildCredits();
         BuildMenu();
         BuildDisclaimer();
+        BuildBossSelect();
         AssetDatabase.SaveAssets();
         Debug.Log("SOULBOUND-BATCH-DONE");
     }

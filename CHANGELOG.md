@@ -16,6 +16,11 @@ ones.
 
 ### Removed
 
+- `SelectOMatic.cs`, 532 lines, the mod picker the boss select was built out of. It paged
+  through one boss at a time behind a scrolling animation, kept a jump-to list in an overlay
+  called `encounterBox`, and wrote all five records into the single spare line the scene had.
+  The screen is rebuilt, and none of that survived the rebuild.
+
 - `DisclaimerScript.Rebrand`, which rebranded the disclaimer screen at runtime because none of
   it was reachable from C# by field: it hid the inherited logo, cloned a title out of the
   version label and copied the logo's anchors onto it, then overwrote four labels by name. The
@@ -114,6 +119,35 @@ ones.
   that one is why it does it.
 
 ### Changed
+
+- The boss select is seven slots and a real table, rebuilt from an empty scene. Each row is a
+  silhouette, a name, and five columns: tries, clears, deaths, best time and no hit. Every
+  boss's numbers are presented the same way, with no asterisks and no special case for the
+  tutorial, because a death against the boss who gives you the turn back is still a death and
+  a second reading convention for one row would cost the screen more than it explains.
+
+  **Seven slots are drawn whatever the registry holds.** A screen is a batch and the roster
+  grows by screens rather than by getting longer, so the layout is laid out once and never
+  rearranged: arrivals fill slots that were already there. With four placeholders registered,
+  three slots are empty, and they are drawn the same as locked ones.
+
+  A locked entry is greyed, shows its name, keeps its silhouette, and shows a question mark in
+  every record column. Those four are doing different jobs: the greying says it is not
+  available, the name says the game is not hiding anything, the silhouette holds the slot's
+  shape so nothing moves when it unlocks, and the question mark stands in for the records,
+  which are the part that genuinely has no value yet.
+
+  Nothing on the screen explains the lock. The player works out that clearing the available
+  one opens the rest, and a line of text saying so would be telling them what the layout
+  already said.
+
+  Seven rows cannot each carry a subtitle, so the one belonging to the highlighted row shows
+  under the table instead. That is a real cost of seven per screen and worth naming.
+
+- `BossProgress`, which owns what is open. The first entry in the registry is the tutorial and
+  is always available; clearing it unlocks the rest. The rule is written against the first
+  position rather than a named boss, so it works today against a registry of placeholders and
+  applies to the tutorial boss the moment she is the one listed first.
 
 - The disclaimer is a disclaimer. It shows what Soulbound is, what it is not, whose engine it
   runs on, and the build number, and any key opens the menu.

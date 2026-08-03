@@ -9,8 +9,8 @@ list, see [Adding a boss](../basics/adding-a-boss.md).
 | Step | What happens | Where |
 | --- | --- | --- |
 | Boot | `GlobalControls.Awake` loads the AlMighty globals, so the records are ready | `GlobalControls` |
-| Boss select opens | the registry is re-read, the list is drawn | `SelectOMatic.Start` |
-| The player picks a boss | the attempt is counted, `StaticInits.ENCOUNTER` is set, the Battle scene loads | `SelectOMatic.LaunchBoss` |
+| Boss select opens | the registry is re-read, the seven slots are drawn | `BossSelect.Start` |
+| The player picks a boss | the attempt is counted, `StaticInits.ENCOUNTER` is set, the Battle scene loads | `BossSelect.LaunchBoss` |
 | The fight begins | the encounter script has run and the first state is entered, so the clock starts | `UIController.Start` |
 | The last enemy leaves | the boss is marked cleared and the time is kept if it beats the stored one | `UIController.CheckAndTriggerVictory` |
 | The battle ends | the clock stops, the boss select loads again | `UIController.EndBattle` |
