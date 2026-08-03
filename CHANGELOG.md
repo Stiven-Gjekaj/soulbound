@@ -14,6 +14,14 @@ ones.
 
 ## 0.6 (unreleased)
 
+### Removed
+
+- Lu and Punder, Create Your Frisk's own characters, are out of `Assets/Resources/Sprites`.
+  Fifty sprites and 433 KB, none of them loaded by anything: no `Resources.Load` call names
+  either folder, and their GUIDs appear in no scene, prefab or asset in the project. They were
+  in a `Resources` folder, which Unity compiles into the build whether or not anything reads
+  it, so they shipped in every release and were never drawn.
+
 ### Added
 
 - The read me points at [Soulbound Notes](https://github.com/Stiven-Gjekaj/soulbound-notes),
