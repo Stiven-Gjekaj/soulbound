@@ -136,6 +136,13 @@ ones.
 - `Assets/Editor/SoulboundBatch.cs`, which builds the rebuilt screens from batch mode. It is
   editor-only, so it never reaches a player's build.
 
+  It can also render a screen to a PNG, which is how a layout gets looked at without running
+  the game. Two things make that work: the shot fills the rows with what the screen would draw
+  at runtime, because the scene stores them empty, and it switches the canvas off Overlay
+  first, because an Overlay canvas is drawn after the camera rather than through it and so
+  never reaches a RenderTexture. It must run without `-nographics`, and it does not save the
+  scene it opened.
+
   v0.6 is scene work, and a scene is 2000 lines of generated YAML where a wrong reference does
   not fail the build, it fails when somebody presses a key. Writing the scenes from an editor
   script means the editor that owns the format writes it, the layout is reviewable as code

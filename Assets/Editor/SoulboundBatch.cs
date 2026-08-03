@@ -303,6 +303,71 @@ public static class SoulboundBatch {
         return go.GetComponent<Button>();
     }
 
+    /// <summary>
+    /// Renders a screen to a PNG so it can be looked at without running the game.
+    ///
+    /// The rows are filled here with what BossSelect would draw on a fresh save, because the
+    /// scene stores them empty and the real values only arrive at runtime. Must run WITHOUT
+    /// -nographics, and the canvas is switched off Overlay for the shot: an Overlay canvas is
+    /// drawn after the camera rather than through it, so it never reaches a RenderTexture.
+    /// The scene is not saved.
+    /// </summary>
+    public static void ShotBossSelect() {
+        EditorSceneManager.OpenScene(BossSelectPath, OpenSceneMode.Single);
+
+        BossSelect select = Object.FindObjectOfType<BossSelect>();
+        string[] names = { "Placeholder", "Second Placeholder", "Third Placeholder",
+                           "Stress Test", "???", "???", "???" };
+
+        Color open = new Color(1f, 1f, 0f, 1f);                  // slot 1, selected
+        Color shut = new Color(0.45f, 0.45f, 0.45f, 1f);
+        Color art  = new Color(0.35f, 0.35f, 0.35f, 1f);
+
+        for (int i = 0; i < select.slots.Length; i++) {
+            BossSlot s = select.slots[i];
+            bool unlocked = i == 0;                              // fresh save: only the first
+            Color tint = unlocked ? open : shut;
+
+            s.bossName.text  = names[i];
+            s.bossName.color = tint;
+            s.silhouette.color = unlocked ? Color.white : art;
+
+            s.tries.text  = unlocked ? "0" : "?";
+            s.clears.text = unlocked ? "0" : "?";
+            s.deaths.text = unlocked ? "0" : "?";
+            s.best.text   = unlocked ? "-" : "?";
+            s.nohit.text  = unlocked ? "-" : "?";
+            foreach (Text t in new[] { s.tries, s.clears, s.deaths, s.best, s.nohit })
+                t.color = tint;
+        }
+        select.footer.text = "Not built yet";
+
+        Camera cam = Camera.main;
+        Canvas canvas = Object.FindObjectOfType<Canvas>();
+        canvas.renderMode   = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera  = cam;
+        canvas.planeDistance = 5f;
+        Canvas.ForceUpdateCanvases();
+
+        RenderTexture rt = new RenderTexture(640, 480, 24);
+        cam.targetTexture = rt;
+        cam.Render();
+        RenderTexture.active = rt;
+
+        Texture2D shot = new Texture2D(640, 480, TextureFormat.RGB24, false);
+        shot.ReadPixels(new Rect(0, 0, 640, 480), 0, 0);
+        shot.Apply();
+
+        cam.targetTexture = null;
+        RenderTexture.active = null;
+
+        string outPath = System.Environment.GetEnvironmentVariable("SOULBOUND_SHOT");
+        if (string.IsNullOrEmpty(outPath))
+            outPath = "/tmp/bossselect.png";
+        System.IO.File.WriteAllBytes(outPath, shot.EncodeToPNG());
+        Debug.Log("SOULBOUND-BATCH-SHOT wrote " + outPath);
+    }
+
     // ---------------------------------------------------------------- the battle box
 
     /// <summary>
