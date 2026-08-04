@@ -16,6 +16,16 @@ ones.
 
 ### Removed
 
+- The menu's backdrop, its scrim and the old title: `Menu_Backdrop.png`, `Menu_Scrim.png`,
+  `Soulbound_Title.png` and `MenuBackdrop.cs`. The corridor painting was one milestone old and
+  is going anyway when the screen's vibe changes, the scrim existed only to keep the words
+  legible over it, and the title has been replaced by the logo the menu is now built around.
+
+  `MenuBackdrop.cs` went with them because its subject did. It panned the painting under the
+  pointer, and that behaviour is not lost: it moved into `MainMenu` as a lean applied to the
+  logo and the entries by different amounts, which is worth more as depth than it ever was
+  applied to one flat picture.
+
 - `Boss_Silhouette.png`, the stand-in figure every boss select slot wore. Entries carry their
   own icon now and a padlock says which are unavailable, so there is nothing for one shape
   standing in for all of them to do.
