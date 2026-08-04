@@ -89,6 +89,32 @@ ones.
 
 ### Added
 
+- The menu logo, in five sprites rather than one picture: `Soul.png` at seed 6100 and
+  `Sword.png` at seed 6103, `Soul_Title.png` drawn, and `Menu_Scope.png` and `Menu_Mote.png`
+  drawn.
+
+  It is three pieces because the menu's opening reveals them one at a time, and a single
+  composed image cannot have a sword arrive after the soul it is driven through.
+
+  Seed 6101 came first for the sword and is not the one that shipped. It returned a blade
+  notched down both edges, a saw rather than a sword, because the prompt described the hilt
+  and the steel and left the edges to the model. Seed 6103 asks for smooth straight edges in
+  as many words and gets them.
+
+  `Soul_Title.png` sets SOUL and BOUND across the soul and then clips them to it, so the
+  silhouette is what ends the letters. That clipping is the effect: letters stopping short of
+  the edge look printed on the soul, letters the edge cuts through look held inside it. The
+  two rows are deliberately not the same size, because the soul narrows toward its point and
+  BOUND is a letter longer than SOUL: set to match, the lower row loses its B and its D
+  outright and stops being a word.
+
+  The lettering is drawn rather than generated, for the reason the battle buttons were.
+  `Menu_Scope.png` is drawn for a different reason: seeds 6102 and 6104 both returned a filled
+  box where the prompt asked for four corner brackets around an empty middle, and a highlight
+  that fills its own centre covers the word it is highlighting. Hollow UI chrome is the one
+  thing the generator has now failed at twice, and it is geometry, which is cheap to draw and
+  lands on the pixel grid for free.
+
 - `Disclaimer_Wall.png` at seed 6092 and `Cobweb.png` at seed 6093, the disclaimer's backing
   and its corners.
 
