@@ -242,17 +242,25 @@ ones.
   between them reads as the screen redrawing rather than as a selection moving.
 
 - The backdrop moves. It drifts on its own on two periods that do not divide into each other,
-  so the pattern does not visibly repeat, and it leans a little towards the pointer.
+  so the pattern does not visibly repeat, and it pans towards the pointer through a critically
+  damped spring, shaped by a curve so the middle of the screen is calm and the edges pull.
 
-  The pointer is not input here, and this does not undo the menus being keyboard only: it
-  tilts the picture the way looking around a room does, and the keyboard still decides
-  everything. Both movements share the overscan, and their limits are set so that both at once
-  still cannot pull an edge onto the screen.
+  The pointer is not input here, and this does not undo the menus being keyboard only: it tilts
+  the picture the way looking around a room does, and the keyboard still decides everything.
 
-  Every offset is snapped to an even number, because the backdrop is drawn at twice its
-  sprite's size: one source pixel is two on screen, and any position between them samples
-  across the boundary and crawls. It is the argument the arena border is drawn under, that
-  pixel art has to land on the grid it was drawn for.
+  Nothing is snapped to whole pixels, and that is a reversal. The first version rounded every
+  offset to an even number, because the backdrop is drawn at about twice its sprite and a
+  position between two source pixels samples across the boundary. That is true and it still
+  costs something, but at drift speed it meant the picture standing still for seconds and then
+  jumping two pixels, which reads far worse than the sampling does. The sprites that have to
+  stay on the grid are the ones the player reads; this is a wall.
+
+  The backdrop is stretched to the canvas with a margin on every side rather than given a
+  size, and the offset is clamped against the rects rather than against 640x480. A fixed size
+  was wrong: the canvas scales with the window, and in fullscreen on a wide monitor it reports
+  something nearer 740 by 416 than the 640 by 480 the layout is authored against, so a backdrop
+  sized to cover one left a strip of nothing down each side of the other. The scrim is pinned
+  to the left edge and the full height for the same reason.
 
 - The tutorial boss's id is `illia` rather than `placeholder`, so her encounter is
   `Lua/Encounters/illia.lua` and her icon is `Sprites/Bosses/illia.png`. The id is what names

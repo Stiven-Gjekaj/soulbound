@@ -196,6 +196,27 @@ public static class SoulboundBatch {
         return rt;
     }
 
+    /// <summary>
+    /// Stretches an object to its parent plus a margin on every side, so it covers the canvas
+    /// whatever size the canvas turns out to be and has that margin spare to move inside.
+    ///
+    /// A fixed size cannot do this. The canvas scales with the window, and in fullscreen on a
+    /// wide monitor it reports something like 740 by 416 rather than the 640 by 480 the layout
+    /// is authored against, which is wider than a backdrop sized for 640 and leaves a strip of
+    /// nothing down each side.
+    /// </summary>
+    private static RectTransform PlaceStretched(GameObject go, Transform parent, float margin) {
+        RectTransform rt = go.GetComponent<RectTransform>() ?? go.AddComponent<RectTransform>();
+        rt.SetParent(parent, false);
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.pivot     = new Vector2(0.5f, 0.5f);
+        rt.offsetMin = new Vector2(-margin, -margin);
+        rt.offsetMax = new Vector2(margin, margin);
+        rt.anchoredPosition = Vector2.zero;
+        return rt;
+    }
+
     private static Text MakeText(string name, Transform parent, string value, int size,
                                  TextAnchor align, Vector2 box, Vector2 at) {
         GameObject go = new GameObject(name, typeof(Text));
@@ -224,13 +245,15 @@ public static class SoulboundBatch {
         MakeSupport();
         Canvas canvas = MakeCanvas();
 
-        // The painting, at exactly twice its sprite so it stays on the pixel grid, and larger
-        // than the screen so it has somewhere to drift to without showing an edge.
+        // The painting, stretched to the canvas with 48 spare on every side. Stretched rather
+        // than sized, because the canvas is not always the 640x480 the layout is authored
+        // against: in fullscreen it reports whatever the window scaler makes of the monitor,
+        // and a fixed size that covers one of those does not cover the other.
         GameObject art = new GameObject("Backdrop", typeof(Image));
         Image backdrop = art.GetComponent<Image>();
         backdrop.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(BackdropSprite);
         backdrop.raycastTarget = false;
-        RectTransform backdropRect = Place(art, canvas.transform, new Vector2(704f, 528f), Vector2.zero);
+        RectTransform backdropRect = PlaceStretched(art, canvas.transform, 48f);
 
         // A scrim down the left, so the words stay legible over whatever the painting does
         // there. Drawn at the size it is used, and anchored to the screen rather than to the
@@ -239,7 +262,15 @@ public static class SoulboundBatch {
         Image scrim = veil.GetComponent<Image>();
         scrim.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(ScrimSprite);
         scrim.raycastTarget = false;
-        Place(veil, canvas.transform, new Vector2(320f, 480f), new Vector2(-160f, 0f));
+        // Pinned to the left edge and the full height of the canvas, so it keeps covering the
+        // words when the canvas is not the size the layout was authored against.
+        RectTransform scrimRect = veil.GetComponent<RectTransform>();
+        scrimRect.SetParent(canvas.transform, false);
+        scrimRect.anchorMin = new Vector2(0f, 0f);
+        scrimRect.anchorMax = new Vector2(0f, 1f);
+        scrimRect.pivot     = new Vector2(0f, 0.5f);
+        scrimRect.sizeDelta = new Vector2(320f, 0f);
+        scrimRect.anchoredPosition = Vector2.zero;
 
         // The title, top left, at half size. Full size is 528 of a 640 wide screen, which
         // leaves the layout no room to be a layout.
