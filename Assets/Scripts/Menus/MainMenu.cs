@@ -116,6 +116,10 @@ public class MainMenu : MonoBehaviour {
     /// to bring the screen up out of the black the previous scene faded down to.
     /// </summary>
     private IEnumerator Resume() {
+        // First, before any of the presentation. Nothing below decides whether the menu can
+        // be used, so nothing below should be able to stop it being usable.
+        ready = true;
+
         Show(soul, 1f);
         Show(sword, 1f);
         Show(title, 1f);
@@ -124,7 +128,6 @@ public class MainMenu : MonoBehaviour {
         if (scopeInk != null) Show(scopeInk, 1f);
         if (motes != null) motes.SetVisible(1f);
         StartMusic();
-        ready = true;
 
         if (fade == null)
             yield break;
@@ -181,9 +184,9 @@ public class MainMenu : MonoBehaviour {
             yield return RiseGraphic(scopeInk, 0.25f);
         if (Skipped()) yield break;
 
+        ready = true;
         StartMusic();
         if (motes != null) motes.SetVisible(1f);
-        ready = true;
     }
 
     /// <summary>Drives the sword down through the soul and shakes what it hits.</summary>
@@ -240,6 +243,11 @@ public class MainMenu : MonoBehaviour {
 
     /// <summary>Puts the screen in the state the opening would have left it in.</summary>
     private void Finish() {
+        // First, for the reason Resume sets it first. This method is reached by pressing a
+        // key, so anything that stops it short leaves a menu that has swallowed a keypress
+        // and will swallow every one after it.
+        ready = true;
+
         Show(soul, 1f);
         Show(sword, 1f);
         Show(title, 1f);
@@ -253,7 +261,6 @@ public class MainMenu : MonoBehaviour {
         if (fade != null) fade.color = new Color(0f, 0f, 0f, 0f);
         if (motes != null) motes.SetVisible(1f);
         StartMusic();
-        ready = true;
     }
 
     // ------------------------------------------------------------------ input
@@ -388,26 +395,21 @@ public class MainMenu : MonoBehaviour {
 
     // ------------------------------------------------------------------ small helpers
 
+    /// <summary>
+    /// The menu has no track of its own yet. When one is dropped into the mod's Audio folder
+    /// this is what finds it, and until then the screen is quiet on purpose rather than
+    /// borrowing a track from the fork it came from.
+    ///
+    /// Through MenuAudio rather than the registry, because a missing clip arrives as a thrown
+    /// exception and not as a null. Asking directly here took out the line after it, which was
+    /// the one that let the menu accept a keypress.
+    /// </summary>
     private void StartMusic() {
-        AudioSource music = Camera.main ? Camera.main.GetComponent<AudioSource>() : null;
-        if (music == null || music.isPlaying)
-            return;
-        // The menu has no track of its own yet. When one is dropped into the mod's Audio
-        // folder this is the line that finds it, and until then the screen is quiet on
-        // purpose rather than borrowing a track from the fork it came from.
-        AudioClip clip = AudioClipRegistry.GetMusic("mus_menu");
-        if (clip == null)
-            return;
-        music.clip = clip;
-        music.loop = true;
-        music.Play();
+        MenuAudio.PlayMusic("mus_menu");
     }
 
     private void PlayOnce(string sound) {
-        AudioSource source = Camera.main ? Camera.main.GetComponent<AudioSource>() : null;
-        AudioClip clip = AudioClipRegistry.GetSound(sound);
-        if (source != null && clip != null)
-            source.PlayOneShot(clip);
+        MenuAudio.PlaySound(sound);
     }
 
     private static void Show(Graphic g, float alpha) {

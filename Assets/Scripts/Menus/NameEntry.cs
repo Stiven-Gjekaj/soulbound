@@ -51,11 +51,13 @@ public class NameEntry : MonoBehaviour {
             playerName = PlayerCharacter.instance.Name;
 
         audio = Camera.main ? Camera.main.GetComponent<AudioSource>() : null;
-        if (audio != null && isNewGame) {
-            audio.clip = AudioClipRegistry.GetMusic("mus_menu");
-            audio.loop = true;
-            audio.Play();
-        }
+        // Through MenuAudio, because a clip the registry cannot reach arrives as a thrown
+        // exception rather than as a null. mus_menu is on disk but inside the @Title mod, and
+        // the registry only searches the loaded mod and Default, so the lookup misses. Asked
+        // for directly it took out everything below: the fade cover was left opaque and the
+        // heading unwritten, on a screen with no way to report either.
+        if (isNewGame)
+            MenuAudio.PlayMusic("mus_menu");
 
         if (fade != null)
             fade.color = new Color(0f, 0f, 0f, 0f);
@@ -190,7 +192,12 @@ public class NameEntry : MonoBehaviour {
 
         if (audio != null) {
             audio.Stop();
-            audio.PlayOneShot(AudioClipRegistry.GetSound("intro_holdup"));
+            // intro_holdup is in the @Title mod, which the registry does not search from here,
+            // so it is a miss and a miss throws. This coroutine still has to fade the screen
+            // out and load the boss select, so the screen would stop half faded and stay there.
+            AudioClip holdup = MenuAudio.Sound("intro_holdup");
+            if (holdup != null)
+                audio.PlayOneShot(holdup);
         }
 
         while (fade != null && fade.color.a < 1f) {
@@ -206,8 +213,9 @@ public class NameEntry : MonoBehaviour {
     }
 
     private void Play(string sound) {
-        if (audio != null)
-            audio.PlayOneShot(AudioClipRegistry.GetSound(sound));
+        AudioClip clip = MenuAudio.Sound(sound);
+        if (audio != null && clip != null)
+            audio.PlayOneShot(clip);
     }
 
     private void Refresh() {

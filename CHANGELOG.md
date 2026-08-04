@@ -725,6 +725,35 @@ art for them, so the artists at v0.8 get a settled target rather than a moving o
 
 ### Fixed
 
+- Coming back to the menu from the boss select showed a black screen and then a menu that
+  ignored the keyboard for good. Both halves were one thrown exception.
+
+  `AudioClipRegistry` does not return a miss, it raises one. The miss path in `TryLoad` warns
+  and returns null, which reads like the whole story, but underneath `FileLoader.SanitizePath`
+  throws a `CYFException` for a file that is not there. The menu asked for `mus_menu` and the
+  throw took out every line after the call, one of which set the flag that let the screen
+  accept input, and another of which cleared the black cover the scene is saved with. So: a
+  black screen, then a keypress reaching the skip path, which cleared the cover and revealed
+  the menu and then threw at the same call before setting the flag again. Every later keypress
+  did the same thing. The menu was never ready and had no way to say so.
+
+  It only appeared this milestone because the old menu made the same call and did not care.
+  Its `Update` was unconditional, so a half run `Start` cost it nothing visible. Gating input
+  on the opening having finished is what turned a harmless throw into a locked screen.
+
+  `mus_menu` is worth a note, because it looks present and is not. It ships inside the @Title
+  mod, and the registry searches the loaded mod and then Default and never the other mods. The
+  loaded mod is Soulbound, so the file is on disk, three folders away, and unreachable. The
+  same is true of `intro_holdup`, which the name entry asks for inside the coroutine that fades
+  the screen out and loads the boss select: that one would have stopped half faded and stayed
+  there.
+
+  Fixed in three parts. `MenuAudio.cs` now stands between the menus and the registry and turns
+  a miss back into a null. `ready` is set before the presentation work rather than after it, so
+  nothing optional can decide whether the screen accepts input. And `Verify` asks for every
+  clip key the menus use and fails if any of them throws, because this class of bug is
+  invisible until someone presses a key in the right screen.
+
 - The rebuilt screens get their camera prefab back, which is what let the disclaimer ignore
   every key. `Assets/Resources/Prefabs/Main Camera.prefab` is not just a camera: it carries
   `ScreenResolution`, `GlobalControls`, the `AudioListener` and the hitbox renderer. Every

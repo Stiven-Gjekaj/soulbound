@@ -156,6 +156,34 @@ public static class SoulboundBatch {
             }
         }
 
+        // Every clip key the menus ask for, and whether asking is safe.
+        //
+        // The registry raises a miss rather than returning one, so a key it cannot reach
+        // throws out of whatever called it. That is not a hypothetical: mus_menu is on disk
+        // inside the @Title mod, the registry only searches the loaded mod and Default, and
+        // the resulting throw landed in front of the line that let the menu accept a keypress.
+        // The menu came up looking finished and ignored the keyboard.
+        //
+        // MenuAudio is what turns those misses back into nulls. What matters is not whether a
+        // key resolves, since a silent menu is fine, but that asking never throws.
+        sb.AppendLine("  --- menu audio");
+        foreach (string key in new[] { "mus_menu", "mus_barrier" }) {
+            try {
+                sb.AppendLine("    music " + key + " = " + (MenuAudio.Music(key) == null ? "absent, handled" : "resolves"));
+            } catch (System.Exception e) {
+                sb.AppendLine("    music " + key + " THREW " + e.GetType().Name);
+                problems++;
+            }
+        }
+        foreach (string key in new[] { "menumove", "menuconfirm", "slice", "intro_holdup" }) {
+            try {
+                sb.AppendLine("    sound " + key + " = " + (MenuAudio.Sound(key) == null ? "absent, handled" : "resolves"));
+            } catch (System.Exception e) {
+                sb.AppendLine("    sound " + key + " THREW " + e.GetType().Name);
+                problems++;
+            }
+        }
+
         sb.AppendLine(problems == 0 ? "SOULBOUND-BATCH-VERIFY-OK" : "SOULBOUND-BATCH-VERIFY-PROBLEMS " + problems);
         Debug.Log(sb.ToString());
     }

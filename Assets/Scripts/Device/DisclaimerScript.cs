@@ -34,11 +34,10 @@ public class DisclaimerScript : MonoBehaviour {
         if (Version != null)
             Version.text = "v" + Application.version;
 
-        AudioSource music = Camera.main ? Camera.main.GetComponent<AudioSource>() : null;
-        if (music != null) {
-            music.clip = AudioClipRegistry.GetMusic("mus_barrier");
-            music.Play();
-        }
+        // Through MenuAudio like the other screens. mus_barrier is in Default and resolves
+        // today, but a registry miss is thrown rather than returned, and everything below
+        // this line is what puts the screen on the screen.
+        MenuAudio.PlayMusic("mus_barrier", false);
 
         if (fade != null) {
             fade.color = Color.black;
