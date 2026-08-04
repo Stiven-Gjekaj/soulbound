@@ -11,13 +11,15 @@ using UnityEngine.UI;
 /// logo a header, something the eye passes on the way to the words; two by two makes it the
 /// thing the screen is built around, which is what a title screen is for.
 ///
-/// The layout leans inward. Each entry is placed a little nearer the middle and set a little
-/// smaller on the lower row than the upper one, and the logo shifts further under the pointer
-/// than the entries do. That parallax is the depth: two objects that move by different amounts
-/// when the view moves are read as being at different distances, and no amount of static
-/// perspective drawing does the same work. It is deliberately not a lens distortion. Bending
-/// the whole screen through a shader would have resampled every glyph on it, and this is a
-/// game of point sampled pixels at 640x480 where soft text is the one thing that looks wrong.
+/// The curve on this screen is a real one, in ScreenFisheye, applied to the finished frame.
+/// It used to be faked here instead, by leaning each element: the lower row nearer the middle
+/// and smaller, the logo shifting further under the pointer than the entries. That was chosen
+/// to keep the text pixel exact, and it did, and it was also too quiet to notice.
+///
+/// The lean is still here and still worth having. It does the one thing the shader cannot: a
+/// lens bends a picture, but only two things moving by different amounts when the view moves
+/// are read as being at different distances. The shader gives the screen its shape and the
+/// lean gives it parallax, and they are not the same effect wearing different names.
 ///
 /// Boot is not this screen's job. GlobalControls.Awake builds the singletons, loads the
 /// permanent globals and the keybinds, and does it once per run behind its own flag, so the

@@ -35,6 +35,8 @@ public static class SoulboundBatch {
     private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
     private const string WallSprite   = "Assets/Sprites/Disclaimer_Wall.png";
     private const string CobwebSprite = "Assets/Sprites/Cobweb.png";
+    private const string FisheyeShader   = "Assets/Shaders/MenuFisheye.shader";
+    private const string FisheyeMaterial = "Assets/Shaders/MenuFisheye.mat";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
     private const string CameraPrefab = "Assets/Resources/Prefabs/Main Camera.prefab";
 
@@ -139,6 +141,18 @@ public static class SoulboundBatch {
                     sb.AppendLine("    NO mote sprite");
                     problems++;
                 }
+
+                // The fisheye fails quietly in two ways that both leave a flat screen and no
+                // error: a missing material, and a canvas left on Overlay so the frame never
+                // reaches the effect at all.
+                ScreenFisheye lens = Object.FindObjectOfType<ScreenFisheye>();
+                Canvas menuCanvas = Object.FindObjectOfType<Canvas>();
+                sb.AppendLine("    ScreenFisheye    = " + Bound(lens)
+                              + ", material " + (lens == null ? "n/a" : Bound(lens.material))
+                              + ", canvas " + (menuCanvas == null ? "NULL" : menuCanvas.renderMode.ToString()));
+                if (lens == null || lens.material == null) problems++;
+                if (menuCanvas == null || menuCanvas.renderMode != RenderMode.ScreenSpaceCamera
+                 || menuCanvas.worldCamera == null) problems++;
             }
         }
 
@@ -276,20 +290,38 @@ public static class SoulboundBatch {
         public Entry(string label, Vector2 at, int size) { Label = label; At = at; Size = size; }
     }
 
+    /// <summary>
+    /// Pulled in from the edges further than the layout wants, because the fisheye pushes
+    /// everything outward and the amount depends on where it started. The corners are pinned
+    /// by the shader, but the middles of the left and right edges are not: content authored
+    /// against the frame edge there ends up about eight per cent past it and is simply gone.
+    /// The scope around the widest entry is the thing that runs out of room first, so the
+    /// columns sit where its outer bracket still lands inside the frame after the bend.
+    /// </summary>
     private static readonly Entry[] Rows = {
-        new Entry("BOSS SELECT", new Vector2(-196f,  54f), 19),
-        new Entry("OPTIONS",     new Vector2(-176f, -46f), 17),
-        new Entry("CREDITS",     new Vector2( 196f,  54f), 19),
-        new Entry("QUIT",        new Vector2( 176f, -46f), 17),
+        new Entry("BOSS SELECT", new Vector2(-176f,  54f), 19),
+        new Entry("OPTIONS",     new Vector2(-158f, -46f), 17),
+        new Entry("CREDITS",     new Vector2( 176f,  54f), 19),
+        new Entry("QUIT",        new Vector2( 158f, -46f), 17),
     };
 
     public static void BuildMenu() {
         UnityEngine.SceneManagement.Scene scene =
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
-        MakeCamera();
+        Camera cam = MakeCamera();
         MakeSupport();
         Canvas canvas = MakeCanvas();
+
+        // Through the camera rather than over it. An Overlay canvas is drawn after the camera
+        // has finished, so it never reaches an image effect, and the fisheye below would curve
+        // an empty black frame while the menu sat flat on top of it.
+        canvas.renderMode    = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera   = cam;
+        canvas.planeDistance = 5f;
+
+        ScreenFisheye lens = cam.gameObject.AddComponent<ScreenFisheye>();
+        lens.material = LoadOrCreateMaterial(FisheyeShader, FisheyeMaterial);
 
         // The specks, first, so they fall behind everything. Stretched rather than sized: the
         // canvas is not always the 640x480 the layout is authored against, and in fullscreen
@@ -342,6 +374,32 @@ public static class SoulboundBatch {
         EditorSceneManager.SaveScene(scene, TitlePath);
         Debug.Log("SOULBOUND-BATCH-MENU saved " + TitlePath + " with " + entries.Count
                   + " entries two to a side of the logo");
+    }
+
+    /// <summary>
+    /// The material the fisheye runs through, making it on first use.
+    ///
+    /// It has to exist as an asset rather than be built at runtime. A shader reaches a player
+    /// build only if something in a scene refers to it, and the reference that carries it is a
+    /// material: a component holding a shader by name would compile, ship without the shader,
+    /// and fall through to an unbent screen with no error to explain why.
+    /// </summary>
+    private static Material LoadOrCreateMaterial(string shaderPath, string materialPath) {
+        Material existing = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+        if (existing != null)
+            return existing;
+
+        Shader shader = AssetDatabase.LoadAssetAtPath<Shader>(shaderPath);
+        if (shader == null) {
+            Debug.LogError("SOULBOUND-BATCH no shader at " + shaderPath);
+            return null;
+        }
+
+        Material made = new Material(shader);
+        AssetDatabase.CreateAsset(made, materialPath);
+        AssetDatabase.SaveAssets();
+        Debug.Log("SOULBOUND-BATCH-MATERIAL created " + materialPath);
+        return made;
     }
 
     /// <summary>An Image on a sprite, placed. The menu builds enough of these to be worth one.</summary>

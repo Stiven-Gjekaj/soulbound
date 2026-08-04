@@ -309,6 +309,38 @@ ones.
 
 ### Changed
 
+- The menu's curve is a real lens now, `MenuFisheye.shader` run over the finished frame by
+  `ScreenFisheye.cs`, replacing the version that faked it by leaning each element. The fake
+  was chosen for a good reason, that it kept every glyph pixel exact, and it did. It was also
+  too quiet to notice, and a curve that has to be pointed out is not doing the job.
+
+  The cost is the one the fake was avoiding: bending a frame means reading it at positions
+  that are not whole pixels, so every glyph on this screen is now resampled. Point sampling is
+  what makes that bearable. It keeps the hard edges and lets the warp read as the pixel grid
+  itself bending, the way a CRT bends it, rather than smearing the text into something soft.
+  Bilinear here looks like a blurred screenshot.
+
+  The canvas moved from Overlay to ScreenSpaceCamera to make it possible at all. An Overlay
+  canvas is drawn after the camera has finished rather than through it, so it never reaches an
+  image effect, and the screen would have curved everything except the part anyone looks at.
+
+  Two details in the shader are not the textbook ones. The radius is corrected for aspect
+  before it is squared, so the curve stays circular when the window is not 4:3 instead of
+  bulging more vertically than horizontally. And the displacement is divided by its own value
+  at the corner, which pins the corners exactly where they were; without it a positive
+  strength samples past the edge of the frame out there and the effect arrives wearing four
+  black triangles.
+
+  The columns moved inward to pay for it. The corners are pinned but the middles of the left
+  and right edges are not, and content authored against the frame edge there ends up about
+  eight per cent past it and simply gone. The scope around the widest entry was the first
+  thing to run out of room.
+
+  The parallax lean is kept rather than replaced. A lens bends a picture; only two things
+  moving by different amounts when the view moves are read as being at different distances.
+  The shader gives the screen its shape and the lean gives it depth, and they are not the same
+  effect under two names.
+
 - The disclaimer fades up out of black and back down into it. Unity's splash ends on black and
   the menu now begins on black, so the screen sat between two hard cuts, and a legal notice
   that appears instantly and vanishes instantly reads as a flash rather than as something meant
