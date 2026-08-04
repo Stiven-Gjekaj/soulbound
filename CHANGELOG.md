@@ -89,6 +89,14 @@ ones.
 
 ### Added
 
+- `Disclaimer_Wall.png` at seed 6092 and `Cobweb.png` at seed 6093, the disclaimer's backing
+  and its corners.
+
+  Seed 6091 came first for the web and is not the one that shipped. It was 1.4 per cent ink,
+  a few loose strands that read as scratches rather than as a web, because the prompt asked
+  for something sparse and delicate and got it. The second asks for radial threads crossed by
+  concentric ones, which is what a web actually is, and gets a whole one.
+
 - `Menu_Backdrop.png` at seed 6090, a ruined stone corridor with a red lit doorway, and
   `Menu_Scrim.png`, a drawn left to right fade that sits over it so pale text stays legible
   whatever the painting does underneath.
@@ -228,6 +236,24 @@ ones.
   that one is why it does it.
 
 ### Changed
+
+- The disclaimer fades up out of black and back down into it. Unity's splash ends on black and
+  the menu now begins on black, so the screen sat between two hard cuts, and a legal notice
+  that appears instantly and vanishes instantly reads as a flash rather than as something meant
+  to be read. Both fades are smoothstepped and run on unscaled time, because this is
+  presentation rather than simulation.
+
+  A key pressed during the fade up is accepted rather than ignored. A screen that will not
+  answer while it finishes being pretty is worse than one that skips.
+
+- The menu fades up too, so the handoff is one continuous fall through black rather than a
+  fade to black followed by the menu arriving all at once.
+
+- The disclaimer is a rundown room rather than a blank screen. A cracked brick wall sits behind
+  everything at a tenth opacity, meant to be felt rather than looked at, and a cobweb sits in
+  each corner at about a fifth. The web sprite is a whole web, so each corner is centred on the
+  corner itself and the screen edge crops it to the quarter a corner web would be, and each is
+  turned so four copies of one sprite do not all sit the same way up.
 
 - The menu is laid out over a painting, following the shape of Portal 2's: the title top left,
   the rows left aligned and low, and the selection a filled bar behind a row rather than a

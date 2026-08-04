@@ -28,6 +28,8 @@ public static class SoulboundBatch {
     private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
     private const string BackdropSprite = "Assets/Sprites/Menu_Backdrop.png";
     private const string ScrimSprite    = "Assets/Sprites/Menu_Scrim.png";
+    private const string WallSprite   = "Assets/Sprites/Disclaimer_Wall.png";
+    private const string CobwebSprite = "Assets/Sprites/Cobweb.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
     private const string CameraPrefab = "Assets/Resources/Prefabs/Main Camera.prefab";
 
@@ -293,10 +295,18 @@ public static class SoulboundBatch {
             entries.Add(MakeText(Rows[i], canvas.transform, Rows[i], 20, TextAnchor.MiddleLeft,
                                  new Vector2(268f, 26f), new Vector2(-146f, -40f - i * 30f)));
 
+        // Last, so it covers everything while the menu comes up out of black.
+        GameObject cover = new GameObject("Fade", typeof(Image));
+        Image menuFade = cover.GetComponent<Image>();
+        menuFade.color         = Color.black;
+        menuFade.raycastTarget = false;
+        PlaceStretched(cover, canvas.transform, 0f);
+
         GameObject script = new GameObject("MenuScript", typeof(MainMenu), typeof(MenuBackdrop));
         MainMenu menu = script.GetComponent<MainMenu>();
         menu.entries      = entries.ToArray();
         menu.selectionBar = barRect;
+        menu.fade         = menuFade;
         script.GetComponent<MenuBackdrop>().backdrop = backdropRect;
 
         EditorSceneManager.SaveScene(scene, TitlePath);
@@ -486,6 +496,18 @@ public static class SoulboundBatch {
         Debug.Log("SOULBOUND-BATCH-SHOT wrote " + outPath);
     }
 
+    /// <summary>
+    /// Renders the disclaimer with its cover cleared. The cover sits opaque in the scene,
+    /// because that is where the fade up starts from, so a shot taken as saved is black.
+    /// </summary>
+    public static void ShotDisclaimer() {
+        EditorSceneManager.OpenScene(DisclaimerPath, OpenSceneMode.Single);
+        DisclaimerScript screen = Object.FindObjectOfType<DisclaimerScript>();
+        if (screen != null && screen.fade != null)
+            screen.fade.color = new Color(0f, 0f, 0f, 0f);
+        Shoot("/tmp/disclaimer.png");
+    }
+
     /// <summary>Renders the menu, with the first row selected the way Start leaves it.</summary>
     public static void ShotMenu() {
         EditorSceneManager.OpenScene(TitlePath, OpenSceneMode.Single);
@@ -494,6 +516,8 @@ public static class SoulboundBatch {
         for (int i = 0; i < menu.entries.Length; i++)
             menu.entries[i].color = i == 0 ? Color.white : new Color(0.78f, 0.78f, 0.78f, 1f);
         menu.selectionBar.anchoredPosition = menu.entries[0].rectTransform.anchoredPosition;
+        if (menu.fade != null)
+            menu.fade.color = new Color(0f, 0f, 0f, 0f);
 
         Shoot("/tmp/menu.png");
     }
@@ -922,6 +946,33 @@ public static class SoulboundBatch {
         MakeSupport();
         Canvas canvas = MakeCanvas();
 
+        // A wall, barely there. It is meant to be felt rather than looked at: enough texture
+        // that the screen is not a void, faint enough that nothing competes with the notice.
+        GameObject art = new GameObject("Wall", typeof(Image));
+        Image wall = art.GetComponent<Image>();
+        wall.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(WallSprite);
+        wall.color         = new Color(1f, 1f, 1f, 0.10f);
+        wall.raycastTarget = false;
+        PlaceStretched(art, canvas.transform, 0f);
+
+        // Cobwebs, one per corner. The sprite is a whole web, so each is centred on its corner
+        // and the screen edge crops it to the quarter that a corner web would be.
+        Sprite silk = AssetDatabase.LoadAssetAtPath<Sprite>(CobwebSprite);
+        Vector2[] corners = { new Vector2(-320f, 240f), new Vector2(320f, 240f),
+                              new Vector2(-320f, -240f), new Vector2(320f, -240f) };
+        float[] turns = { 90f, 0f, 180f, 270f };
+        for (int i = 0; i < corners.Length; i++) {
+            GameObject web = new GameObject("Cobweb" + (i + 1), typeof(Image));
+            Image image = web.GetComponent<Image>();
+            image.sprite        = silk;
+            image.color         = new Color(1f, 1f, 1f, 0.22f);
+            image.raycastTarget = false;
+            RectTransform rt = Place(web, canvas.transform, new Vector2(150f, 150f), corners[i]);
+            // Turned so the torn edge of the web faces into the screen rather than all four
+            // sitting the same way up, which reads as one sprite pasted four times.
+            rt.localRotation = Quaternion.Euler(0f, 0f, turns[i]);
+        }
+
         MakeText("Heading", canvas.transform, "DISCLAIMER", 32, TextAnchor.MiddleCenter,
                  new Vector2(600f, 40f), new Vector2(0f, 160f));
 
@@ -944,8 +995,17 @@ public static class SoulboundBatch {
         MakeText("Prompt", canvas.transform, "Press any key to continue", 16, TextAnchor.MiddleCenter,
                  new Vector2(620f, 20f), new Vector2(0f, -200f));
 
+        // Last, so it covers everything at both ends of the screen's life.
+        GameObject cover = new GameObject("Fade", typeof(Image));
+        Image fade = cover.GetComponent<Image>();
+        fade.color         = Color.black;
+        fade.raycastTarget = false;
+        PlaceStretched(cover, canvas.transform, 0f);
+
         GameObject script = new GameObject("DisclaimerScript", typeof(DisclaimerScript));
-        script.GetComponent<DisclaimerScript>().Version = version;
+        DisclaimerScript disclaimer = script.GetComponent<DisclaimerScript>();
+        disclaimer.Version = version;
+        disclaimer.fade    = fade;
 
         EditorSceneManager.SaveScene(scene, DisclaimerPath);
         Debug.Log("SOULBOUND-BATCH-DISCLAIMER saved " + DisclaimerPath);

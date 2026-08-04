@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -29,6 +30,14 @@ public class MainMenu : MonoBehaviour {
     /// <summary>Seconds the bar takes to travel between two rows.</summary>
     public float slideTime = 0.13f;
 
+    /// <summary>
+    /// The black the menu comes up out of. The disclaimer fades down to black on its way here,
+    /// so without this the handoff is a fade to black followed by the menu appearing all at
+    /// once, which wastes the fade.
+    /// </summary>
+    public Image fade;
+    public float fadeInTime = 0.6f;
+
     private int selected;
 
     // Where the bar is sliding from, to, and how far along it is. Keyframes rather than a
@@ -51,11 +60,26 @@ public class MainMenu : MonoBehaviour {
         // Keyboard only. The menus are driven with the same four directions and two buttons
         // the fight is, so a pointer would be a second way to do everything that has to be
         // kept working and that no controller has.
+        if (fade != null) {
+            fade.color = Color.black;
+            StartCoroutine(FadeIn());
+        }
+
         Select(0);
         if (selectionBar != null && entries.Length > 0) {
             selectionBar.anchoredPosition = entries[0].rectTransform.anchoredPosition;
             slide = 1f;
         }
+    }
+
+    private IEnumerator FadeIn() {
+        float t = 0f;
+        while (t < 1f) {
+            t += Time.unscaledDeltaTime / Mathf.Max(0.01f, fadeInTime);
+            fade.color = new Color(0f, 0f, 0f, 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t)));
+            yield return null;
+        }
+        fade.color = new Color(0f, 0f, 0f, 0f);
     }
 
     private void Update() {
