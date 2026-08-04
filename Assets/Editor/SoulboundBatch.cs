@@ -26,6 +26,8 @@ public static class SoulboundBatch {
     private const string LockSprite = "Assets/Sprites/Lock.png";
     private const string WheelSprite = "Assets/Sprites/Wheel_Rim.png";
     private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
+    private const string BackdropSprite = "Assets/Sprites/Menu_Backdrop.png";
+    private const string ScrimSprite    = "Assets/Sprites/Menu_Scrim.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
     private const string CameraPrefab = "Assets/Resources/Prefabs/Main Camera.prefab";
 
@@ -109,9 +111,9 @@ public static class SoulboundBatch {
             MainMenu menu = Object.FindObjectOfType<MainMenu>();
             if (menu != null) {
                 sb.AppendLine("    MainMenu.entries = " + (menu.entries == null ? "NULL" : menu.entries.Length.ToString()));
-                sb.AppendLine("    MainMenu.cursor  = " + (menu.cursor == null ? "NULL" : menu.cursor.name));
+                sb.AppendLine("    MainMenu.bar     = " + (menu.selectionBar == null ? "NULL" : "bound"));
                 if (menu.entries == null || menu.entries.Length != Rows.Length) problems++;
-                if (menu.cursor == null) problems++;
+                if (menu.selectionBar == null) problems++;
                 foreach (Text t in menu.entries ?? new Text[0])
                     if (t == null || t.font == null) problems++;
             }
@@ -222,44 +224,52 @@ public static class SoulboundBatch {
         MakeSupport();
         Canvas canvas = MakeCanvas();
 
-        // The title, in the upper third, at the size it was drawn.
+        // The painting, at exactly twice its sprite so it stays on the pixel grid, and larger
+        // than the screen so it has somewhere to drift to without showing an edge.
+        GameObject art = new GameObject("Backdrop", typeof(Image));
+        Image backdrop = art.GetComponent<Image>();
+        backdrop.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(BackdropSprite);
+        backdrop.raycastTarget = false;
+        RectTransform backdropRect = Place(art, canvas.transform, new Vector2(704f, 528f), Vector2.zero);
+
+        // A scrim down the left, so the words stay legible over whatever the painting does
+        // there. Drawn at the size it is used, and anchored to the screen rather than to the
+        // backdrop, so it does not drift with it.
+        GameObject veil = new GameObject("Scrim", typeof(Image));
+        Image scrim = veil.GetComponent<Image>();
+        scrim.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(ScrimSprite);
+        scrim.raycastTarget = false;
+        Place(veil, canvas.transform, new Vector2(320f, 480f), new Vector2(-160f, 0f));
+
+        // The title, top left, at half size. Full size is 528 of a 640 wide screen, which
+        // leaves the layout no room to be a layout.
         GameObject logo = new GameObject("Title", typeof(Image));
         Image logoImage = logo.GetComponent<Image>();
         logoImage.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(TitleSprite);
         logoImage.raycastTarget = false;
-        Place(logo, canvas.transform, new Vector2(528f, 96f), new Vector2(0f, 130f));
+        Place(logo, canvas.transform, new Vector2(264f, 48f), new Vector2(-164f, 162f));
 
-        // The rows sit in a left-aligned column so the soul can rest against the first
-        // letter of whichever one is selected rather than floating at a fixed distance.
+        // The bar first, so the words draw over it.
+        GameObject bar = new GameObject("SelectionBar", typeof(Image));
+        Image barImage = bar.GetComponent<Image>();
+        barImage.color         = new Color(0.85f, 0.85f, 0.85f, 0.28f);
+        barImage.raycastTarget = false;
+        RectTransform barRect = Place(bar, canvas.transform, new Vector2(268f, 26f), new Vector2(-146f, -40f));
+
+        // Left aligned and low, the way the reference lays them out.
         List<Text> entries = new List<Text>();
-        for (int i = 0; i < Rows.Length; i++) {
-            GameObject go = new GameObject(Rows[i], typeof(Text));
-            Text text = go.GetComponent<Text>();
-            text.font               = AssetDatabase.LoadAssetAtPath<Font>(MenuFont);
-            text.text               = Rows[i];
-            text.fontSize           = 32;
-            text.alignment          = TextAnchor.MiddleLeft;
-            text.color              = Color.white;
-            text.horizontalOverflow = HorizontalWrapMode.Overflow;
-            text.verticalOverflow   = VerticalWrapMode.Overflow;
-            text.raycastTarget      = false;
-            Place(go, canvas.transform, new Vector2(300f, 40f), new Vector2(40f, 30f - i * 50f));
-            entries.Add(text);
-        }
+        for (int i = 0; i < Rows.Length; i++)
+            entries.Add(MakeText(Rows[i], canvas.transform, Rows[i], 20, TextAnchor.MiddleLeft,
+                                 new Vector2(268f, 26f), new Vector2(-146f, -40f - i * 30f)));
 
-        GameObject soul = new GameObject("Soul", typeof(Image));
-        Image soulImage = soul.GetComponent<Image>();
-        soulImage.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(SoulSprite);
-        soulImage.raycastTarget = false;
-        RectTransform soulRect = Place(soul, canvas.transform, new Vector2(32f, 32f), new Vector2(-134f, 30f));
-
-        GameObject script = new GameObject("MenuScript", typeof(MainMenu));
+        GameObject script = new GameObject("MenuScript", typeof(MainMenu), typeof(MenuBackdrop));
         MainMenu menu = script.GetComponent<MainMenu>();
-        menu.entries = entries.ToArray();
-        menu.cursor  = soulRect;
+        menu.entries      = entries.ToArray();
+        menu.selectionBar = barRect;
+        script.GetComponent<MenuBackdrop>().backdrop = backdropRect;
 
         EditorSceneManager.SaveScene(scene, TitlePath);
-        Debug.Log("SOULBOUND-BATCH-MENU saved " + TitlePath + " with " + entries.Count + " rows");
+        Debug.Log("SOULBOUND-BATCH-MENU saved " + TitlePath + " with " + entries.Count + " rows over a backdrop");
     }
 
     // ---------------------------------------------------------------- the credits
@@ -441,6 +451,49 @@ public static class SoulboundBatch {
         string outPath = System.Environment.GetEnvironmentVariable("SOULBOUND_SHOT");
         if (string.IsNullOrEmpty(outPath))
             outPath = "/tmp/bossselect.png";
+        System.IO.File.WriteAllBytes(outPath, shot.EncodeToPNG());
+        Debug.Log("SOULBOUND-BATCH-SHOT wrote " + outPath);
+    }
+
+    /// <summary>Renders the menu, with the first row selected the way Start leaves it.</summary>
+    public static void ShotMenu() {
+        EditorSceneManager.OpenScene(TitlePath, OpenSceneMode.Single);
+
+        MainMenu menu = Object.FindObjectOfType<MainMenu>();
+        for (int i = 0; i < menu.entries.Length; i++)
+            menu.entries[i].color = i == 0 ? Color.white : new Color(0.78f, 0.78f, 0.78f, 1f);
+        menu.selectionBar.anchoredPosition = menu.entries[0].rectTransform.anchoredPosition;
+
+        Shoot("/tmp/menu.png");
+    }
+
+    /// <summary>
+    /// Renders whatever scene is open to a PNG. The canvas is switched off Overlay first,
+    /// because an Overlay canvas is drawn after the camera rather than through it and so never
+    /// reaches a RenderTexture. The scene is not saved.
+    /// </summary>
+    private static void Shoot(string fallbackPath) {
+        Camera cam = Camera.main;
+        Canvas canvas = Object.FindObjectOfType<Canvas>();
+        canvas.renderMode    = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera   = cam;
+        canvas.planeDistance = 5f;
+        Canvas.ForceUpdateCanvases();
+
+        RenderTexture rt = new RenderTexture(640, 480, 24);
+        cam.targetTexture = rt;
+        cam.Render();
+        RenderTexture.active = rt;
+
+        Texture2D shot = new Texture2D(640, 480, TextureFormat.RGB24, false);
+        shot.ReadPixels(new Rect(0, 0, 640, 480), 0, 0);
+        shot.Apply();
+        cam.targetTexture = null;
+        RenderTexture.active = null;
+
+        string outPath = System.Environment.GetEnvironmentVariable("SOULBOUND_SHOT");
+        if (string.IsNullOrEmpty(outPath))
+            outPath = fallbackPath;
         System.IO.File.WriteAllBytes(outPath, shot.EncodeToPNG());
         Debug.Log("SOULBOUND-BATCH-SHOT wrote " + outPath);
     }

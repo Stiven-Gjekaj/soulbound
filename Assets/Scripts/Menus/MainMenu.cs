@@ -19,16 +19,26 @@ public class MainMenu : MonoBehaviour {
     /// <summary>The rows, top to bottom. Bound in the scene, and the order is the order shown.</summary>
     public Text[] entries;
 
-    /// <summary>The soul sitting beside whichever row is selected.</summary>
-    public RectTransform cursor;
+    /// <summary>
+    /// The bar that sits behind whichever row is selected. A filled bar rather than a coloured
+    /// word, because the rows are laid over a painting: a colour change has to fight whatever
+    /// is behind it, and a bar brings its own background with it.
+    /// </summary>
+    public RectTransform selectionBar;
 
-    /// <summary>How far left of a row's text the soul sits.</summary>
-    public float cursorGap = 24f;
+    /// <summary>Seconds the bar takes to travel between two rows.</summary>
+    public float slideTime = 0.13f;
 
     private int selected;
 
-    private static readonly Color Idle   = new Color(1f, 1f, 1f, 1f);
-    private static readonly Color Picked = new Color(1f, 1f, 0f, 1f);
+    // Where the bar is sliding from, to, and how far along it is. Keyframes rather than a
+    // jump: the rows sit close together and a bar that teleports between them reads as the
+    // screen redrawing rather than as a selection moving.
+    private Vector2 slideFrom, slideTo;
+    private float   slide = 1f;
+
+    private static readonly Color Idle   = new Color(0.78f, 0.78f, 0.78f, 1f);
+    private static readonly Color Picked = new Color(1f,    1f,    1f,    1f);
 
     private void Start() {
         AudioSource music = Camera.main ? Camera.main.GetComponent<AudioSource>() : null;
@@ -42,11 +52,17 @@ public class MainMenu : MonoBehaviour {
         // the fight is, so a pointer would be a second way to do everything that has to be
         // kept working and that no controller has.
         Select(0);
+        if (selectionBar != null && entries.Length > 0) {
+            selectionBar.anchoredPosition = entries[0].rectTransform.anchoredPosition;
+            slide = 1f;
+        }
     }
 
     private void Update() {
         if (entries.Length == 0)
             return;
+
+        SlideBar();
 
         if (GlobalControls.input.Down == ButtonState.PRESSED)
             Select(Math.Mod(selected + 1, entries.Length));
@@ -56,20 +72,35 @@ public class MainMenu : MonoBehaviour {
             Activate(selected);
     }
 
-    /// <summary>Moves the highlight, and the soul with it.</summary>
+    /// <summary>Moves the highlight, and sends the bar after it.</summary>
     private void Select(int index) {
         selected = index;
         for (int i = 0; i < entries.Length; i++)
             entries[i].color = i == index ? Picked : Idle;
 
-        if (cursor == null || entries.Length == 0)
+        if (selectionBar == null || entries.Length == 0)
             return;
 
-        // Sit the soul off the left edge of the row's own text rather than at a fixed x, so a
-        // renamed or translated row keeps the soul against its first letter.
-        RectTransform row = entries[index].rectTransform;
-        Vector2 position = row.anchoredPosition;
-        cursor.anchoredPosition = new Vector2(position.x - row.sizeDelta.x / 2f - cursorGap, position.y);
+        // The bar takes the row's own position, so rows can be moved or added in the scene
+        // without the bar needing to be told where they went.
+        slideFrom = selectionBar.anchoredPosition;
+        slideTo   = entries[index].rectTransform.anchoredPosition;
+        slide     = 0f;
+    }
+
+    /// <summary>
+    /// Carries the bar from one row to the next. Eased out, so it leaves quickly and arrives
+    /// gently, which is what makes it read as one thing moving rather than two things blinking.
+    /// </summary>
+    private void SlideBar() {
+        if (selectionBar == null || slide >= 1f)
+            return;
+
+        slide = Mathf.Min(1f, slide + Time.unscaledDeltaTime / Mathf.Max(0.01f, slideTime));
+
+        // Cubic ease out.
+        float e = 1f - Mathf.Pow(1f - slide, 3f);
+        selectionBar.anchoredPosition = Vector2.Lerp(slideFrom, slideTo, e);
     }
 
     private void Activate(int index) {

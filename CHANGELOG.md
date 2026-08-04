@@ -89,6 +89,19 @@ ones.
 
 ### Added
 
+- `Menu_Backdrop.png` at seed 6090, a ruined stone corridor with a red lit doorway, and
+  `Menu_Scrim.png`, a drawn left to right fade that sits over it so pale text stays legible
+  whatever the painting does underneath.
+
+  The backdrop is 352x264 and drawn at twice that. Neither generator can produce 640x480:
+  Pixen caps at an area of 512 by 512, and 640x480 is half again past it. Two times a smaller
+  canvas keeps every pixel on the grid, where scaling to fit would not, and it leaves 64 by 48
+  of overscan for the drift and the parallax to move inside.
+
+  Seed 6089 came first and is not the one that shipped. It was a good corridor with gibberish
+  lettering carved across the arch, which is what image models do when a prompt leaves room for
+  a sign, so the second asks for bare stone and gets it.
+
 - A boss the game advertises rather than ships. A registry row marked `teased = true` appears on
   the select screen and can never be picked, which is the last capability the v0.6 list names.
   It lands now rather than with the boss it advertises, because building it into a screen that
@@ -215,6 +228,31 @@ ones.
   that one is why it does it.
 
 ### Changed
+
+- The menu is laid out over a painting, following the shape of Portal 2's: the title top left,
+  the rows left aligned and low, and the selection a filled bar behind a row rather than a
+  change of colour. A colour change has to fight whatever is behind it; a bar brings its own
+  background with it, which is why that layout uses one.
+
+  The title is drawn at half size. Full size is 528 of a 640 wide screen, which leaves a layout
+  no room to be one, and halving a sprite of solid block letters costs nothing.
+
+- The bar slides between rows instead of jumping, eased out over an eighth of a second so it
+  leaves quickly and arrives gently. The rows sit close together, and a bar that teleports
+  between them reads as the screen redrawing rather than as a selection moving.
+
+- The backdrop moves. It drifts on its own on two periods that do not divide into each other,
+  so the pattern does not visibly repeat, and it leans a little towards the pointer.
+
+  The pointer is not input here, and this does not undo the menus being keyboard only: it
+  tilts the picture the way looking around a room does, and the keyboard still decides
+  everything. Both movements share the overscan, and their limits are set so that both at once
+  still cannot pull an edge onto the screen.
+
+  Every offset is snapped to an even number, because the backdrop is drawn at twice its
+  sprite's size: one source pixel is two on screen, and any position between them samples
+  across the boundary and crawls. It is the argument the arena border is drawn under, that
+  pixel art has to land on the grid it was drawn for.
 
 - The tutorial boss's id is `illia` rather than `placeholder`, so her encounter is
   `Lua/Encounters/illia.lua` and her icon is `Sprites/Bosses/illia.png`. The id is what names
