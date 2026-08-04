@@ -89,6 +89,42 @@ ones.
 
 ### Added
 
+- The menu is built around the logo, with the four entries two to a side of it rather than
+  listed under it. A list makes the logo a header, something the eye passes on the way to the
+  words; two by two makes it the thing the screen is built around, which is what a title
+  screen is for. Left column is BOSS SELECT and OPTIONS, right is CREDITS and QUIT, and the
+  grid is derived from the entry order so Up and Down move within a column and Left and Right
+  cross between them.
+
+  The layout leans inward. The lower row sits nearer the middle than the upper one and is set
+  two points smaller, and under the pointer the logo shifts further than the entries do. That
+  parallax is the depth: two things that move by different amounts when the view moves read as
+  being at different distances, which no amount of static perspective drawing achieves.
+
+  It is deliberately not a lens distortion. Bending the whole screen through a shader would
+  have resampled every glyph on it, and this is a game of point sampled pixels at 640x480
+  where soft text is the one thing that looks wrong.
+
+- The menu opens once a launch: the soul fades up, the sword falls through it, the title is
+  left behind in it, the entries follow one at a time, and only then does the screen make a
+  sound and the specks start falling. Ordered rather than simultaneous because the sequence is
+  the sentence, a soul and then a sword and then a name that was not there before.
+
+  Once a launch rather than once ever, so coming back from options or credits drops straight
+  into the finished menu. Any key skips to the end of it, because a screen that ignores you
+  while it finishes being pretty is worse than one that skips.
+
+- `MenuMotes.cs`, the specks that drift down the menu. They carry no meaning and nothing reads
+  them. A menu of four words over black is a still image, and a still image looks broken
+  rather than calm: without something moving there is no way to tell the game from a
+  screenshot of it. Each speck carries its own size, speed and opacity standing in for its
+  distance, so the field has depth rather than being one sheet at one remove.
+
+- The selected entry is marked by a scope rather than by a bar behind it, and its word turns
+  slightly yellow. The scope slides between entries in the same column and fades out and back
+  in when the move crosses the middle, because dragging a reticle straight across the logo
+  would put it over the artwork twice a keypress.
+
 - The menu logo, in five sprites rather than one picture: `Soul.png` at seed 6100 and
   `Sword.png` at seed 6103, `Soul_Title.png` drawn, and `Menu_Scope.png` and `Menu_Mote.png`
   drawn.

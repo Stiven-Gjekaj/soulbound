@@ -21,13 +21,18 @@ public static class SoulboundBatch {
     private const string NamePath = "Assets/Scenes/EnterName.unity";
     private const string BattlePath = "Assets/Scenes/Battle.unity";
 
-    private const string TitleSprite = "Assets/Sprites/Soulbound_Title.png";
     private const string SoulSprite  = "Assets/Sprites/Soul_Cursor.png";
+
+    // The menu logo, in three pieces rather than one picture, because the opening reveals
+    // them one at a time.
+    private const string LogoSoulSprite  = "Assets/Sprites/Soul.png";
+    private const string LogoSwordSprite = "Assets/Sprites/Sword.png";
+    private const string LogoTitleSprite = "Assets/Sprites/Soul_Title.png";
+    private const string ScopeSprite     = "Assets/Sprites/Menu_Scope.png";
+    private const string MoteSprite      = "Assets/Sprites/Menu_Mote.png";
     private const string LockSprite = "Assets/Sprites/Lock.png";
     private const string WheelSprite = "Assets/Sprites/Wheel_Rim.png";
     private const string ArenaBorderSprite = "Assets/Sprites/Arena_Border.png";
-    private const string BackdropSprite = "Assets/Sprites/Menu_Backdrop.png";
-    private const string ScrimSprite    = "Assets/Sprites/Menu_Scrim.png";
     private const string WallSprite   = "Assets/Sprites/Disclaimer_Wall.png";
     private const string CobwebSprite = "Assets/Sprites/Cobweb.png";
     private const string MenuFont    = "Assets/Fonts/PixelOperator/PixelOperator-Bold.ttf";
@@ -113,17 +118,35 @@ public static class SoulboundBatch {
             MainMenu menu = Object.FindObjectOfType<MainMenu>();
             if (menu != null) {
                 sb.AppendLine("    MainMenu.entries = " + (menu.entries == null ? "NULL" : menu.entries.Length.ToString()));
-                sb.AppendLine("    MainMenu.bar     = " + (menu.selectionBar == null ? "NULL" : "bound"));
+                sb.AppendLine("    MainMenu logo    = soul " + Bound(menu.soul) + ", sword " + Bound(menu.sword)
+                              + ", title " + Bound(menu.title));
+                sb.AppendLine("    MainMenu scope   = " + Bound(menu.scope) + ", ink " + Bound(menu.scopeInk)
+                              + ", motes " + Bound(menu.motes) + ", fade " + Bound(menu.fade));
                 if (menu.entries == null || menu.entries.Length != Rows.Length) problems++;
-                if (menu.selectionBar == null) problems++;
+                // Every piece of the logo, because the opening reveals them one at a time and
+                // a null one is a beat that silently does nothing rather than an error.
+                if (!menu.soul || !menu.sword || !menu.title) problems++;
+                if (!menu.scope || !menu.scopeInk || !menu.motes || !menu.fade) problems++;
                 foreach (Text t in menu.entries ?? new Text[0])
                     if (t == null || t.font == null) problems++;
+
+                foreach (Image piece in new[] { menu.soul, menu.sword, menu.title, menu.scopeInk })
+                    if (piece != null && piece.sprite == null) {
+                        sb.AppendLine("    NO sprite on " + piece.name);
+                        problems++;
+                    }
+                if (menu.motes != null && menu.motes.mote == null) {
+                    sb.AppendLine("    NO mote sprite");
+                    problems++;
+                }
             }
         }
 
         sb.AppendLine(problems == 0 ? "SOULBOUND-BATCH-VERIFY-OK" : "SOULBOUND-BATCH-VERIFY-PROBLEMS " + problems);
         Debug.Log(sb.ToString());
     }
+
+    private static string Bound(Object o) { return o == null ? "NULL" : "ok"; }
 
     private static string Describe(Image image) {
         if (image == null) return "";
@@ -237,7 +260,28 @@ public static class SoulboundBatch {
 
     // ---------------------------------------------------------------- the menu
 
-    private static readonly string[] Rows = { "BOSS SELECT", "OPTIONS", "CREDITS", "QUIT" };
+    /// <summary>
+    /// The four entries, and where each sits. Left column first, so the order matches the
+    /// order MainMenu.Activate reads and the grid it derives from the index.
+    ///
+    /// The lower row is pulled in toward the middle and set two points smaller than the upper
+    /// one. That is the whole of the inward lean in the layout: a lower row nearer the centre
+    /// and smaller reads as a row further away, and the parallax under the pointer does the
+    /// rest at runtime.
+    /// </summary>
+    private struct Entry {
+        public string Label;
+        public Vector2 At;
+        public int Size;
+        public Entry(string label, Vector2 at, int size) { Label = label; At = at; Size = size; }
+    }
+
+    private static readonly Entry[] Rows = {
+        new Entry("BOSS SELECT", new Vector2(-196f,  54f), 19),
+        new Entry("OPTIONS",     new Vector2(-176f, -46f), 17),
+        new Entry("CREDITS",     new Vector2( 196f,  54f), 19),
+        new Entry("QUIT",        new Vector2( 176f, -46f), 17),
+    };
 
     public static void BuildMenu() {
         UnityEngine.SceneManagement.Scene scene =
@@ -247,53 +291,35 @@ public static class SoulboundBatch {
         MakeSupport();
         Canvas canvas = MakeCanvas();
 
-        // The painting, stretched to the canvas with 48 spare on every side. Stretched rather
-        // than sized, because the canvas is not always the 640x480 the layout is authored
-        // against: in fullscreen it reports whatever the window scaler makes of the monitor,
-        // and a fixed size that covers one of those does not cover the other.
-        GameObject art = new GameObject("Backdrop", typeof(Image));
-        Image backdrop = art.GetComponent<Image>();
-        backdrop.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(BackdropSprite);
-        backdrop.raycastTarget = false;
-        RectTransform backdropRect = PlaceStretched(art, canvas.transform, 48f);
+        // The specks, first, so they fall behind everything. Stretched rather than sized: the
+        // canvas is not always the 640x480 the layout is authored against, and in fullscreen
+        // it reports whatever the window scaler makes of the monitor.
+        // RectTransform up front. A GameObject built around a plain MonoBehaviour gets a
+        // Transform, and adding the RectTransform afterwards is too late for anything that
+        // has already asked for one.
+        GameObject dust = new GameObject("Motes", typeof(RectTransform), typeof(MenuMotes));
+        PlaceStretched(dust, canvas.transform, 0f);
+        MenuMotes motes = dust.GetComponent<MenuMotes>();
+        motes.mote = AssetDatabase.LoadAssetAtPath<Sprite>(MoteSprite);
 
-        // A scrim down the left, so the words stay legible over whatever the painting does
-        // there. Drawn at the size it is used, and anchored to the screen rather than to the
-        // backdrop, so it does not drift with it.
-        GameObject veil = new GameObject("Scrim", typeof(Image));
-        Image scrim = veil.GetComponent<Image>();
-        scrim.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(ScrimSprite);
-        scrim.raycastTarget = false;
-        // Pinned to the left edge and the full height of the canvas, so it keeps covering the
-        // words when the canvas is not the size the layout was authored against.
-        RectTransform scrimRect = veil.GetComponent<RectTransform>();
-        scrimRect.SetParent(canvas.transform, false);
-        scrimRect.anchorMin = new Vector2(0f, 0f);
-        scrimRect.anchorMax = new Vector2(0f, 1f);
-        scrimRect.pivot     = new Vector2(0f, 0.5f);
-        scrimRect.sizeDelta = new Vector2(320f, 0f);
-        scrimRect.anchoredPosition = Vector2.zero;
+        // The logo, three pieces in one group so the lean can move all of it at once. The
+        // sword goes in first: it is driven down through the soul, and the soul has to cover
+        // the part of the blade that is inside it.
+        GameObject group = new GameObject("Logo", typeof(RectTransform));
+        RectTransform logo = Place(group, canvas.transform, new Vector2(200f, 300f), new Vector2(0f, 8f));
 
-        // The title, top left, at half size. Full size is 528 of a 640 wide screen, which
-        // leaves the layout no room to be a layout.
-        GameObject logo = new GameObject("Title", typeof(Image));
-        Image logoImage = logo.GetComponent<Image>();
-        logoImage.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(TitleSprite);
-        logoImage.raycastTarget = false;
-        Place(logo, canvas.transform, new Vector2(264f, 48f), new Vector2(-164f, 162f));
+        Image sword = MakeSprite("Sword", logo, LogoSwordSprite, new Vector2(80f, 240f), new Vector2(0f, 22f));
+        Image soul  = MakeSprite("Soul",  logo, LogoSoulSprite,  new Vector2(160f, 160f), Vector2.zero);
+        Image title = MakeSprite("Title", logo, LogoTitleSprite, new Vector2(160f, 160f), Vector2.zero);
 
-        // The bar first, so the words draw over it.
-        GameObject bar = new GameObject("SelectionBar", typeof(Image));
-        Image barImage = bar.GetComponent<Image>();
-        barImage.color         = new Color(0.85f, 0.85f, 0.85f, 0.28f);
-        barImage.raycastTarget = false;
-        RectTransform barRect = Place(bar, canvas.transform, new Vector2(268f, 26f), new Vector2(-146f, -40f));
+        // The scope before the words, so a word is never drawn under its own highlight.
+        Image scope = MakeSprite("Scope", canvas.transform, ScopeSprite,
+                                 new Vector2(196f, 36f), Rows[0].At);
 
-        // Left aligned and low, the way the reference lays them out.
         List<Text> entries = new List<Text>();
-        for (int i = 0; i < Rows.Length; i++)
-            entries.Add(MakeText(Rows[i], canvas.transform, Rows[i], 20, TextAnchor.MiddleLeft,
-                                 new Vector2(268f, 26f), new Vector2(-146f, -40f - i * 30f)));
+        foreach (Entry row in Rows)
+            entries.Add(MakeText(row.Label, canvas.transform, row.Label, row.Size,
+                                 TextAnchor.MiddleCenter, new Vector2(196f, 36f), row.At));
 
         // Last, so it covers everything while the menu comes up out of black.
         GameObject cover = new GameObject("Fade", typeof(Image));
@@ -302,15 +328,30 @@ public static class SoulboundBatch {
         menuFade.raycastTarget = false;
         PlaceStretched(cover, canvas.transform, 0f);
 
-        GameObject script = new GameObject("MenuScript", typeof(MainMenu), typeof(MenuBackdrop));
+        GameObject script = new GameObject("MenuScript", typeof(MainMenu));
         MainMenu menu = script.GetComponent<MainMenu>();
-        menu.entries      = entries.ToArray();
-        menu.selectionBar = barRect;
-        menu.fade         = menuFade;
-        script.GetComponent<MenuBackdrop>().backdrop = backdropRect;
+        menu.entries  = entries.ToArray();
+        menu.soul     = soul;
+        menu.sword    = sword;
+        menu.title    = title;
+        menu.scope    = scope.rectTransform;
+        menu.scopeInk = scope;
+        menu.fade     = menuFade;
+        menu.motes    = motes;
 
         EditorSceneManager.SaveScene(scene, TitlePath);
-        Debug.Log("SOULBOUND-BATCH-MENU saved " + TitlePath + " with " + entries.Count + " rows over a backdrop");
+        Debug.Log("SOULBOUND-BATCH-MENU saved " + TitlePath + " with " + entries.Count
+                  + " entries two to a side of the logo");
+    }
+
+    /// <summary>An Image on a sprite, placed. The menu builds enough of these to be worth one.</summary>
+    private static Image MakeSprite(string name, Transform parent, string asset, Vector2 size, Vector2 at) {
+        GameObject go = new GameObject(name, typeof(Image));
+        Image image = go.GetComponent<Image>();
+        image.sprite        = AssetDatabase.LoadAssetAtPath<Sprite>(asset);
+        image.raycastTarget = false;
+        Place(go, parent, size, at);
+        return image;
     }
 
     // ---------------------------------------------------------------- the credits
@@ -508,14 +549,22 @@ public static class SoulboundBatch {
         Shoot("/tmp/disclaimer.png");
     }
 
-    /// <summary>Renders the menu, with the first row selected the way Start leaves it.</summary>
+    /// <summary>
+    /// Renders the menu as the opening leaves it, with the first entry selected.
+    ///
+    /// The scene is saved in the state the opening starts from, which is a black screen with
+    /// an invisible logo on it, so a shot taken as saved shows nothing. Everything the opening
+    /// would have brought up is brought up here instead.
+    /// </summary>
     public static void ShotMenu() {
         EditorSceneManager.OpenScene(TitlePath, OpenSceneMode.Single);
 
         MainMenu menu = Object.FindObjectOfType<MainMenu>();
         for (int i = 0; i < menu.entries.Length; i++)
-            menu.entries[i].color = i == 0 ? Color.white : new Color(0.78f, 0.78f, 0.78f, 1f);
-        menu.selectionBar.anchoredPosition = menu.entries[0].rectTransform.anchoredPosition;
+            menu.entries[i].color = i == 0 ? new Color(1f, 0.93f, 0.55f, 1f)
+                                           : new Color(0.80f, 0.80f, 0.80f, 1f);
+        if (menu.scope != null)
+            menu.scope.anchoredPosition = menu.entries[0].rectTransform.anchoredPosition;
         if (menu.fade != null)
             menu.fade.color = new Color(0f, 0f, 0f, 0f);
 
