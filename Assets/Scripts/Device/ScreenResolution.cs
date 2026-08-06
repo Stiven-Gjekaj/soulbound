@@ -39,6 +39,16 @@ public class ScreenResolution : MonoBehaviour {
             FSBorderRect = new Rect(inset/2, 0f, 1f-inset, 1f);
         }
 
+        // Here, and not at the end. Everything the flag actually promises is true by this
+        // line: the monitor size, the aspect ratio and the fullscreen rect are all computed,
+        // which is what GlobalControls needs before it will run a fullscreen shortcut.
+        //
+        // What follows is presentation. It loads a prefab, and a prefab that fails to load
+        // takes the rest of this method with it, including a flag that DisclaimerScript and
+        // MainMenu read before they will accept a keypress. Setting it last meant a missing
+        // BGCamera locked every screen in the game rather than costing a camera.
+        hasInitialized = true;
+
         SceneManager.sceneLoaded += BoxCameras2;
 
         // Load BGCamera Prefab and have it be in every scene, from the moment CYF starts.
@@ -53,7 +63,6 @@ public class ScreenResolution : MonoBehaviour {
         // If this is the user's first time EVER opening the engine, force 640x480 windowed
         SetFullScreen(PlayerPrefs.HasKey("once") && Screen.fullScreen, PlayerPrefs.HasKey("once") ? 0 : 2);
         PlayerPrefs.SetInt("once", 1);
-        hasInitialized = true;
     }
 
     private static bool setSize;
