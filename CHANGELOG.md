@@ -309,6 +309,29 @@ ones.
 
 ### Changed
 
+- The previous entry moved from Fixed to Changed, because nothing observable was broken. The
+  fragility it removes is real, and it is the same shape as the menu fault above, but a prefab
+  that fails to load is a thing that could happen rather than a thing that did. The player log
+  from the run that prompted the change shows a clean start, all three registries loading and
+  the window resizing, with no exception anywhere in it, so the flag was being set correctly
+  and the disclaimer was gating on nothing.
+
+- `ScreenResolution.hasInitialized` is set once the resolution maths is done rather than once
+  the whole of `Start` is, which is the same fault v0.6.50 fixed in the menu and the same fix.
+  Everything the flag promises is true by that line: monitor size, aspect ratio and the
+  fullscreen rect are all computed, which is what `GlobalControls` needs before it will act on
+  a fullscreen shortcut. What came after it was presentation, and it loads `Prefabs/BGCamera`.
+  A prefab that fails to load took the rest of the method with it, including the flag that
+  `DisclaimerScript` and `MainMenu` read before they will accept a keypress, so a missing
+  camera locked every screen in the game instead of costing a camera.
+
+  Moving the assignment to the top of `Start` would have been wrong, which is why it sits in
+  the middle. The flag is read three ways: as a re-entry guard for `Start` itself, by
+  `GlobalControls` to decide whether to run `Start` by hand, and by `GlobalControls` again to
+  gate the F4 and Alt-Enter shortcuts, which call `SetFullScreen` and need
+  `FSBorderRect` and `lastMonitorSize` to exist. Setting it before those are computed would
+  trade a locked menu for a fullscreen shortcut doing its arithmetic on zeroes.
+
 - The menu's curve is a real lens now, `MenuFisheye.shader` run over the finished frame by
   `ScreenFisheye.cs`, replacing the version that faked it by leaning each element. The fake
   was chosen for a good reason, that it kept every glyph pixel exact, and it did. It was also
@@ -724,22 +747,6 @@ Unskinned on purpose. The layouts get finished and lived with before anyone draw
 art for them, so the artists at v0.8 get a settled target rather than a moving one.
 
 ### Fixed
-
-- `ScreenResolution.hasInitialized` is set once the resolution maths is done rather than once
-  the whole of `Start` is, which is the same fault v0.6.50 fixed in the menu and the same fix.
-  Everything the flag promises is true by that line: monitor size, aspect ratio and the
-  fullscreen rect are all computed, which is what `GlobalControls` needs before it will act on
-  a fullscreen shortcut. What came after it was presentation, and it loads `Prefabs/BGCamera`.
-  A prefab that fails to load took the rest of the method with it, including the flag that
-  `DisclaimerScript` and `MainMenu` read before they will accept a keypress, so a missing
-  camera locked every screen in the game instead of costing a camera.
-
-  Moving the assignment to the top of `Start` would have been wrong, which is why it sits in
-  the middle. The flag is read three ways: as a re-entry guard for `Start` itself, by
-  `GlobalControls` to decide whether to run `Start` by hand, and by `GlobalControls` again to
-  gate the F4 and Alt-Enter shortcuts, which call `SetFullScreen` and need
-  `FSBorderRect` and `lastMonitorSize` to exist. Setting it before those are computed would
-  trade a locked menu for a fullscreen shortcut doing its arithmetic on zeroes.
 
 - Coming back to the menu from the boss select showed a black screen and then a menu that
   ignored the keyboard for good. Both halves were one thrown exception.
